@@ -63,6 +63,7 @@ Living documents that must always stay up to date:
 - `docs/handoff-latest.md` — **Context Bridge**. Actionable instructions for the next agent/session.
 - `docs/decisions/` — Architecture Decision Records (ADR).
 - `docs/spec.md` — Global goals and constraints.
+- `docs/ROADMAP.md` — Living high-level plan of phases and key milestones. Refined as experience accumulates. Not a substitute for `current-state.md` or handoff.
 
 ### Level 4. Crystallized Memory (Git)
 - All CAD code, firmware, configurations, scripts live in Git.

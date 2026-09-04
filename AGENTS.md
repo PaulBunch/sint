@@ -17,6 +17,7 @@ See `docs/spec.md` and `docs/long-term-memory.md`.
 - `docs/handoff-latest.md` or latest in `docs/handoffs/` — Actionable bridge from previous session (what was just done, next steps, warnings)
 - `docs/spec.md` — Project specification & goals
 - `docs/long-term-memory.md` — Memory principles & operational guidelines
+- `docs/ROADMAP.md` — High-level phased plan. Read to understand current phase and major priorities. Update when a phase is completed or priorities shift significantly.
 - Relevant ADR in `docs/decisions/`
 
 *Bootstrapping Rule (Missing Critical Documents):*
@@ -77,7 +78,7 @@ If `current-state.md` or `handoff-latest.md` do not exist (e.g., initial reposit
 - Do not invent hardware interfaces or protocols — check existing docs/CAD first
 
 ## Workflow
-1. Read `current-state.md` + latest handoff + relevant ADR/spec before making changes
+1. Read `current-state.md` + latest handoff + relevant ADR/spec + current phase of `docs/ROADMAP.md` before making changes
 2. Prefer small, reviewable changes
 3. After documentation changes — keep structure and frontmatter consistent
 4. When a discussion reaches a decision → create/update ADR and close the conversation file
