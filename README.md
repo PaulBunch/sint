@@ -39,6 +39,7 @@ The project is currently defining core requirements, candidate technical concept
 
 - **Single Source of Truth (SSOT):** See [`docs/current-state.md`](docs/current-state.md) for live system status.
 - **Canonical Specification:** See [`docs/spec.md`](docs/spec.md) for requirements and operational goals.
+- **Roadmap & Phases:** See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the high-level phased plan.
 - **Implementation Concepts:** Candidate designs (kinematics, motor drives, docking) are tracked in [`docs/implementation-concepts.md`](docs/implementation-concepts.md).
 
 ---
@@ -52,6 +53,7 @@ The project is currently defining core requirements, candidate technical concept
 | **[`docs/current-state.md`](docs/current-state.md)** | Single Source of Truth (SSOT) for current hardware/software progress. |
 | **[`docs/long-term-memory.md`](docs/long-term-memory.md)** | Architecture for long-term LLM agent memory and session handoffs. |
 | **[`docs/naming.md`](docs/naming.md)** | Project etymology, namespace conventions, and CLI standards. |
+| **[`docs/ROADMAP.md`](docs/ROADMAP.md)** | High-level phased plan (Phase 1–5) and key milestones. Updated as experience accumulates. |
 
 ---
 
