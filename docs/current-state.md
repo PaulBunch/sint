@@ -26,15 +26,18 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - Established licensing: CERN-OHL-S v2 (Hardware), GNU AGPLv3 (Software), CC-BY-SA-4.0 (Documentation).
 - Created `docs/ROADMAP.md` with phased plan (Phase 1–5) including initial steps discussion, CAD/tool selection, research of multiple options per key requirement, and justified selection criteria.
 - Integrated `ROADMAP.md` into critical document hierarchy (`AGENTS.md`, `docs/long-term-memory.md`).
+- **CAD Strategy (2026-09-06):** Adopted ADR-0001. Decided on Code-CAD (scripting) with mandatory headless execution and STEP as the source of truth for engineering data.
 - Added conversation record (`docs/conversations/2026-09-04--roadmap.md`) on ROADMAP integration and simulation tool evaluation (MuJoCo vs Isaac Sim).
+- Added conversation record (`docs/conversations/2026-09-06--CAD-selection.md`) and ADR-0001 regarding CAD tooling.
 
 ---
 
 ## Active Specification & Focus
 
 1. **`docs/spec.md`**: Completed initial draft capturing core vision, design principles, high-level requirements table, non-goals, open questions, and early success criteria.
-2. **Next Steps (Phase 1 — Foundation & Planning)**:
-   - Select CAD software and other tools enabling autonomous LLM interaction with minimal human assistance.
+2. **CAD Selection (Phase 1)**: ADR-0001 accepted. Next: comparative evaluation of OpenCASCADE-based tools (CadQuery, build123d, FreeCAD Python, llmcad).
+3. **Next Steps (Phase 1 — Foundation & Planning)**:
+   - Complete comparative evaluation of CAD tools and finalize primary selection.
    - Define core numerical characteristics (envelope, payload, power budget, torque/speed targets, acoustic limits, BOM cost).
    - Conduct research to identify multiple solution options for each key requirement (kinematics, docking, EE interface, sensors).
    - Make justified selection of the primary option for each key requirement and formalize ADRs.
