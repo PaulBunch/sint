@@ -21,9 +21,12 @@
 - Exported files: `hardware/s1_parametric_plate.step`, `hardware/s1_parametric_plate.stl`
 - Number of LLM iterations: **2**
 
-### S2 — Simple joint-like module
+### S2 — Simple joint-like module [COMPLETED 2026-09-13]
 - Housing / flange with bore, bolt circle, optional pocket or boss.
 - Closer to real sint joint geometry (still simplified).
+- Located at: `hardware/s2_joint_module.py`
+- Exported files: `hardware/s2_joint_module.step`, `hardware/s2_joint_module.stl`
+- Number of LLM iterations: **3**
 
 ### S3 — Mini assembly (optional but desirable)
 - 2–3 bodies combined via `Compound` or located copies.
@@ -62,14 +65,14 @@
 ## Success criteria
 
 - [x] S1 completes with ≤ 2–3 LLM iterations in typical case (Completed in 2 iterations)
-- [ ] S2 completes without manual rewriting of core logic
-- [ ] `cad-export.py` reliably produces valid STEP
+- [x] S2 completes without manual rewriting of core logic (Completed in 3 iterations)
+- [x] `cad-export.py` reliably produces valid STEP
 - [ ] Scripts stay pure and guidelines are sufficient (or gaps are documented)
 
 ## Deliverables
 
 1. Working example scripts + STEP files under `hardware/` for S1–S2 (and S3 if done)
-2. Short notes in `docs/conversations/`:
+2. Short notes in `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md`:
    - what worked
    - what guidelines/scripts need improvement
 3. Decision: infrastructure is ready for regular agent use / needs specific follow-up tasks

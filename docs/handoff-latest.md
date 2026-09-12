@@ -7,29 +7,24 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 # Handoff — 2026-09-13
 
 ## Summary of Changes
-- **CAD Infrastructure Testing (S1):**
-  - Designed and implemented the parametric plate script: `hardware/s1_parametric_plate.py`
-  - Successfully ran headless STEP and STL exports using `/home/bunch/.venv/cad/bin/python scripts/cad-export.py hardware/s1_parametric_plate.py --stl`
-  - Generated files: `hardware/s1_parametric_plate.step` & `hardware/s1_parametric_plate.stl`
-- **Guidelines and Bug Fixes:**
-  - Resolved namespace collection issue in exporter scripts by enforcing `_` prefixes for all intermediate CAD variables.
-  - Documented terminal sandbox limitations (ocp-vscode writes block outside workspace/tmp) and venv interpreter usage in `docs/build123d-guidelines.md`.
+- **CAD Infrastructure Testing (S1 & S2):**
+  - **S1 (Parametric Plate):** Script `hardware/s1_parametric_plate.py`, successful export to STEP/STL.
+  - **S2 (Joint Module):** Script `hardware/s2_joint_module.py`. Complex elements handled (boss, bolt circle, fillets).
+  - Identified and fixed fragility of face selectors after `fillet()` — adopted recommendation to use `Plane` for positioning.
+- **Guidelines & Infrastructure:**
+  - Added rules to `docs/build123d-guidelines.md`: use `#!/usr/bin/env python3`, `_` prefix for intermediate variables, and prefer `Plane` over complex selectors.
+  - Confirmed use of `/home/bunch/.venv/cad/bin/python` for stable execution.
 - **Documentation Updates:**
-  - Created conversation record `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md`.
-  - Checked off scenario S1 in `docs/tasks/0002-test-llm-cad-infrastructure.md`.
-  - Updated `docs/current-state.md` with progress.
+  - Updated `docs/current-state.md` and checklist `docs/tasks/0002-test-llm-cad-infrastructure.md`.
+  - All discussion details in `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md`.
 
 ## Current Working Tree
-- `hardware/s1_parametric_plate.py` — S1 Python model script
-- `hardware/s1_parametric_plate.step` — Exported S1 STEP model
-- `hardware/s1_parametric_plate.stl` — Exported S1 STL model
-- `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md` — Conversation record for test S1
-- `docs/tasks/0002-test-llm-cad-infrastructure.md` — S1 marked as completed
-- `docs/build123d-guidelines.md` — Updated with intermediate prefixing and venv execution rules
-- `docs/current-state.md` — Updated with latest project status
-- `docs/handoff-latest.md` — This file
+- `hardware/s1_parametric_plate.py`, `.step`, `.stl`
+- `hardware/s2_joint_module.py`, `.step`, `.stl`
+- `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md`
+- `docs/tasks/0002-test-llm-cad-infrastructure.md` — S1 and S2 completed.
+- `docs/build123d-guidelines.md` — Updated based on test results.
 
 ## Next Recommended Actions (Phase 1)
-1. **S2 Joint Module:** Proceed with Scenario S2 (simple joint-like module / housing) from `docs/tasks/0002-test-llm-cad-infrastructure.md` to verify complex geometry features (bores, bolt circles, flanges).
-2. **S3 Assembly:** Proceed with Scenario S3 (multi-body Compound exports) to verify multi-body STEP extraction structure.
-3. **Simulation Integration:** Test loading the exported STEP files into simulation tools (MuJoCo/URDF converter).
+1. **S3 Mini Assembly:** Execute the final scenario from the infrastructure test — assembly of multiple bodies to verify correct `Compound` export to STEP.
+2. **Simulation:** Try importing `s2_joint_module.step` into any viewer or simulator for final geometry verification.
