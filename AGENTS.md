@@ -35,6 +35,7 @@ If `current-state.md` or `handoff-latest.md` do not exist (e.g., initial reposit
 - `docs/` — all project knowledge, decisions, conversations, handoffs
 - `docs/conversations/` — raw multi-LLM discussion archive
 - `docs/decisions/` — Architecture Decision Records (ADR)
+- `docs/tasks/` — atomic checklists / work packages that break down ROADMAP items
 - `hardware/` — CAD, mechanical designs (future)
 - `firmware/` — embedded code (future)
 - `software/` — higher-level control, simulation, tools (future)
@@ -82,6 +83,7 @@ If `current-state.md` or `handoff-latest.md` do not exist (e.g., initial reposit
 2. Prefer small, reviewable changes
 3. After documentation changes — keep structure and frontmatter consistent
 4. When a discussion reaches a decision → create/update ADR and close the conversation file
+5. When working on a ROADMAP item that has a linked task file — read and update that checklist
 
 ## Agent Notes & Transparency
 - Agents may keep working notes in `docs/agent-notes/`.

@@ -64,6 +64,9 @@ Living documents that must always stay up to date:
 - `docs/decisions/` — Architecture Decision Records (ADR).
 - `docs/spec.md` — Global goals and constraints.
 - `docs/ROADMAP.md` — Living high-level plan of phases and key milestones. Refined as experience accumulates. Not a substitute for `current-state.md` or handoff.
+- `docs/tasks/` — operational checklists that decompose ROADMAP items into atomic steps.  
+  These are living working documents (more fluid than ADRs).  
+  ROADMAP points to them; ADRs remain pure decision records.
 
 ### Level 4. Crystallized Memory (Git)
 - All CAD code, firmware, configurations, scripts live in Git.

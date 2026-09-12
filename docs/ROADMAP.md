@@ -12,7 +12,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 ## Phase 1: Foundation & Planning
 
 - [x] Discuss optimal first steps for effective project implementation from the start
-- [/] Select CAD software (and other required tools) that LLM can interact with independently with minimal human assistance (ADR-0001 adopted, benchmark pending)
+- [/] Select CAD software (and other required tools) that LLM can interact with independently with minimal human assistance (ADR-0001 adopted, benchmark pending) → [tasks/0001-select-cad-software.md](tasks/0001-select-cad-software.md)
 - [ ] Define core numerical characteristics (envelope dimensions, payload without EE, electrical power budget, joint torque/speed targets, acoustic noise limits, target BOM cost)
 - [ ] Develop kinematic and mechanical scheme of the interface (topology, DoF layout, relocatable base concept)
 - [ ] Define component composition (motors, drivers, gearboxes, sensors, compute, connectors — COTS candidates)
