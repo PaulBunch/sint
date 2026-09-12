@@ -1694,3 +1694,145 @@ python scripts/cad-export.py hardware/joints/joint_module_v1.py -o build/export
 - [ ] Договориться о раскладке `hardware/.../*.py` + `*.step`
 
 После этого цикл `generate → run/export → inspect → fix` становится полностью рабочим и для тебя, и для LLM.
+
+---
+**Bunch**
+
+Инфраструктура готова к её тестированию. 
+Как думашеь нужно ли уточнить/изменить формулировки задач для следующего этапа с учётом полученного опыта:
+```md
+## C. Практические тесты (минимальный benchmark)
+- [ ] C1. Определить 2–3 тестовых сценария (например: простой joint module, parametric plate + holes + fillet, простая assembly из 2–3 деталей)
+- [ ] C2. Для каждого кандидата: генерация скрипта LLM → запуск → STEP + STL + screenshot/viewport
+- [ ] C3. Оценка: сколько итераций нужно LLM, качество геометрии, удобство отладки, стабильность
+- [ ] C4. Проверка Git-workflow (diff скрипта, CI-рендер, экспорт)
+```
+
+Подготовь описание задачи для тестированию инфораструктуры LLM + CAD.
+
+---
+**Grok 4.5 Fast**
+
+Да, формулировки блока **C** стоит обновить.  
+
+Старые пункты писались, когда ещё сравнивали нескольких кандидатов (CadQuery / build123d / FreeCAD…). Сейчас primary уже выбран — **build123d**, инфраструктура (`cad-show`, `cad-export`, guidelines, `hardware/`) готова. Значит, акцент смещается с «выбрать инструмент» на **проверку связки LLM ↔ build123d ↔ headless pipeline**.
+
+---
+
+### Обновлённый блок C
+
+```md
+## C. Практические тесты (LLM + build123d infrastructure)
+
+- [ ] C1. Зафиксировать 2–3 тестовых сценария возрастающей сложности
+      (простая parametric plate, joint-like module, мини-сборка 2–3 тел)
+- [ ] C2. Прогнать полный цикл для каждого сценария:
+      LLM generate → cad-show / cad-export → STEP (+ STL) → inspect → fix
+- [ ] C3. Оценить качество цикла:
+      число итераций LLM, стабильность селекторов/topology,
+      читаемость кода, удобство отладки по traceback/STEP
+- [ ] C4. Проверить Git-workflow:
+      diff чистого `.py`, наличиеция STEP рядом со скриптом,
+      воспроизводимость из чистого clone + venv
+- [ ] C5. Зафиксировать результаты и решить:
+      готова ли инфраструктура к регулярной работе агента
+      или нужны доработки guidelines / скриптов / раскладки `hardware/`
+```
+
+---
+
+### Описание задачи для тестирования инфраструктуры
+
+Можно положить как `docs/tasks/0002-test-llm-cad-infrastructure.md` (или следующий номер).
+
+````markdown
+# Task: Test LLM + build123d infrastructure
+
+**Status:** open  
+**Related:** ADR-0001, docs/build123d-guidelines.md, scripts/cad-show.py, scripts/cad-export.py  
+**Goal:** Verify that the current tooling allows an LLM agent to design, run, export and iteratively fix mechanical parts with minimal human help.
+
+## Context
+
+- Primary CAD stack is build123d (OpenCASCADE).
+- Model scripts must stay pure (no ocp_vscode / show calls).
+- Viewer: `scripts/cad-show.py`
+- Headless export: `scripts/cad-export.py` → STEP (source of truth) + optional STL
+- Guidelines for the agent: `docs/build123d-guidelines.md`
+
+## Test scenarios (minimum)
+
+### S1 — Parametric plate
+- Rectangular plate with 4 mounting holes and edge fillet/chamfer.
+- All key dimensions as named constants at the top of the file.
+
+### S2 — Simple joint-like module
+- Housing / flange with bore, bolt circle, optional pocket or boss.
+- Closer to real sint joint geometry (still simplified).
+
+### S3 — Mini assembly (optional but desirable)
+- 2–3 bodies combined via `Compound` or located copies.
+- Check that multi-body export to STEP works cleanly.
+
+## Execution protocol (per scenario)
+
+1. **Generate**  
+   LLM produces a pure `hardware/.../*.py` script following `build123d-guidelines.md`.
+
+2. **Run / view**  
+   ```bash
+   python scripts/cad-show.py hardware/.../part.py
+   ```
+
+3. **Export**  
+   ```bash
+   python scripts/cad-export.py hardware/.../part.py
+   # optional: --stl
+   ```
+
+4. **Inspect**  
+   - Visual check (ocp-vscode)  
+   - Open STEP in another viewer if needed  
+   - Note topology errors, wrong selectors, bad fillets, etc.
+
+5. **Fix loop**  
+   Feed traceback / description of the problem back to the LLM.  
+   Repeat until the part is correct or a clear blocker is found.
+
+6. **Record**  
+   - Number of LLM iterations  
+   - Class of errors (selector, Mode, fillet radius, import, …)  
+   - Final script + STEP committed under `hardware/`
+
+## Success criteria
+
+- [ ] S1 completes with ≤ 2–3 LLM iterations in typical case
+- [ ] S2 completes without manual rewriting of core logic
+- [ ] `cad-export.py` reliably produces valid STEP
+- [ ] Scripts stay pure and guidelines are sufficient (or gaps are documented)
+- [ ] Fresh clone + `python -m venv .venv` + `pip install -r requirements-cad.txt` reproduces the workflow
+
+## Deliverables
+
+1. Working example scripts + STEP files under `hardware/` for S1–S2 (and S3 if done)
+2. Short notes in this task file or in `docs/conversations/`:
+   - what worked
+   - what guidelines/scripts need improvement
+3. Decision: infrastructure is ready for regular agent use / needs specific follow-up tasks
+
+## Out of scope for this task
+
+- Final choice between build123d features vs CadQuery (already decided)
+- Full CI rendering pipeline (can be a follow-up)
+- Real kinematic joint of the robot (comes later)
+````
+
+---
+
+### Практический совет по порядку
+
+1. Сначала прогони **S1** сам (или с LLM) — это быстро проверит весь pipeline.  
+2. Потом **S2** — уже ближе к реальным деталям sint.  
+3. S3 — по желанию, если останется время.
+
+После этого блока C можно будет уверенно сказать: «инфраструктура LLM + CAD работает» и переходить к следующим пунктам ROADMAP (численные характеристики, кинематика и т.д.).
