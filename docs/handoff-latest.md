@@ -4,25 +4,32 @@ SPDX-FileCopyrightText: 2026 sint project contributors
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# Handoff — 2026-09-07
+# Handoff — 2026-09-13
 
 ## Summary of Changes
-- **CAD Tooling Strategy:** Adopted ADR-0001 defining Code-CAD and headless execution as mandatory for LLM autonomy.
-- **Documentation:**
-  - Added `docs/decisions/0001-cad-tooling-and-llm-interaction.md`.
-  - Added `docs/conversations/2026-09-06--CAD-selection.md` capturing the discussion on CAD candidates and versioning.
-  - Updated `docs/current-state.md` with the new CAD strategy status.
-  - (Planned) Update `docs/ROADMAP.md` to reflect partial completion of CAD selection.
+- **CAD Infrastructure Testing (S1):**
+  - Designed and implemented the parametric plate script: `hardware/s1_parametric_plate.py`
+  - Successfully ran headless STEP and STL exports using `/home/bunch/.venv/cad/bin/python scripts/cad-export.py hardware/s1_parametric_plate.py --stl`
+  - Generated files: `hardware/s1_parametric_plate.step` & `hardware/s1_parametric_plate.stl`
+- **Guidelines and Bug Fixes:**
+  - Resolved namespace collection issue in exporter scripts by enforcing `_` prefixes for all intermediate CAD variables.
+  - Documented terminal sandbox limitations (ocp-vscode writes block outside workspace/tmp) and venv interpreter usage in `docs/build123d-guidelines.md`.
+- **Documentation Updates:**
+  - Created conversation record `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md`.
+  - Checked off scenario S1 in `docs/tasks/0002-test-llm-cad-infrastructure.md`.
+  - Updated `docs/current-state.md` with progress.
 
 ## Current Working Tree
-- `docs/decisions/0001-cad-tooling-and-llm-interaction.md`: New ADR for CAD strategy.
-- `docs/conversations/2026-09-06--CAD-selection.md`: Record of the CAD discussion.
-- `docs/current-state.md`: Updated with recent progress on CAD selection.
-- `docs/handoff-latest.md`: This file.
+- `hardware/s1_parametric_plate.py` — S1 Python model script
+- `hardware/s1_parametric_plate.step` — Exported S1 STEP model
+- `hardware/s1_parametric_plate.stl` — Exported S1 STL model
+- `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md` — Conversation record for test S1
+- `docs/tasks/0002-test-llm-cad-infrastructure.md` — S1 marked as completed
+- `docs/build123d-guidelines.md` — Updated with intermediate prefixing and venv execution rules
+- `docs/current-state.md` — Updated with latest project status
+- `docs/handoff-latest.md` — This file
 
 ## Next Recommended Actions (Phase 1)
-1. **CAD Benchmark:** Conduct a small comparative evaluation of OpenCASCADE-based candidates (CadQuery, build123d, FreeCAD Python, llmcad) using 2–3 realistic joint/link examples.
-2. **Finalize CAD Selection:** Based on benchmark results, pick the primary tool and update ADR-0001/ROADMAP.
-3. **Define Numerical Characteristics:** Set targets for dimensions, payload, power, torque, and BOM cost (< $1000).
-4. **Kinematic Research:** Start research on multiple options for kinematics and docking interfaces.
-5. **Simulation Setup:** Begin evaluating MuJoCo for the selected CAD output (STEP -> mesh/URDF/MJCF).
+1. **S2 Joint Module:** Proceed with Scenario S2 (simple joint-like module / housing) from `docs/tasks/0002-test-llm-cad-infrastructure.md` to verify complex geometry features (bores, bolt circles, flanges).
+2. **S3 Assembly:** Proceed with Scenario S3 (multi-body Compound exports) to verify multi-body STEP extraction structure.
+3. **Simulation Integration:** Test loading the exported STEP files into simulation tools (MuJoCo/URDF converter).

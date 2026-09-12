@@ -14,9 +14,12 @@
 
 ## Test scenarios (minimum)
 
-### S1 — Parametric plate
+### S1 — Parametric plate [COMPLETED 2026-09-13]
 - Rectangular plate with 4 mounting holes and edge fillet/chamfer.
 - All key dimensions as named constants at the top of the file.
+- Located at: `hardware/s1_parametric_plate.py`
+- Exported files: `hardware/s1_parametric_plate.step`, `hardware/s1_parametric_plate.stl`
+- Number of LLM iterations: **2**
 
 ### S2 — Simple joint-like module
 - Housing / flange with bore, bolt circle, optional pocket or boss.
@@ -58,7 +61,7 @@
 
 ## Success criteria
 
-- [ ] S1 completes with ≤ 2–3 LLM iterations in typical case
+- [x] S1 completes with ≤ 2–3 LLM iterations in typical case (Completed in 2 iterations)
 - [ ] S2 completes without manual rewriting of core logic
 - [ ] `cad-export.py` reliably produces valid STEP
 - [ ] Scripts stay pure and guidelines are sufficient (or gaps are documented)

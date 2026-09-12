@@ -27,6 +27,11 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - Created `docs/ROADMAP.md` with phased plan (Phase 1–5) including initial steps discussion, CAD/tool selection, research of multiple options per key requirement, and justified selection criteria.
 - Integrated `ROADMAP.md` into critical document hierarchy (`AGENTS.md`, `docs/long-term-memory.md`).
 - **CAD Strategy (2026-09-06):** Adopted ADR-0001. Decided on Code-CAD (scripting) with mandatory headless execution and STEP as the source of truth for engineering data.
+- **CAD Infrastructure Testing (2026-09-13):**
+  - Completed Test S1 (Parametric Plate: `hardware/s1_parametric_plate.py`).
+  - Successfully exported to STEP (`hardware/s1_parametric_plate.step`) and STL (`hardware/s1_parametric_plate.stl`) using `scripts/cad-export.py` in headless mode.
+  - Resolved namespace pollution issue in export script by standardizing `_` prefix for intermediate variables.
+  - Documented sandbox visualizer limits and venv execution guidelines in `docs/build123d-guidelines.md`.
 - Added conversation record (`docs/conversations/2026-09-04--roadmap.md`) on ROADMAP integration and simulation tool evaluation (MuJoCo vs Isaac Sim).
 - Added conversation record (`docs/conversations/2026-09-06--CAD-selection.md`) and ADR-0001 regarding CAD tooling.
 
@@ -35,7 +40,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 ## Active Specification & Focus
 
 1. **`docs/spec.md`**: Completed initial draft capturing core vision, design principles, high-level requirements table, non-goals, open questions, and early success criteria.
-2. **CAD Selection (Phase 1)**: ADR-0001 accepted. Next: comparative evaluation of OpenCASCADE-based tools (CadQuery, build123d, FreeCAD Python, llmcad).
+2. **CAD Selection & Testing (Phase 1)**: ADR-0001 accepted. S1 test completed successfully. Currently working on S2 (Simple joint-like module) of `docs/tasks/0002-test-llm-cad-infrastructure.md`.
 3. **Next Steps (Phase 1 — Foundation & Planning)**:
    - Complete comparative evaluation of CAD tools and finalize primary selection.
    - Define core numerical characteristics (envelope, payload, power budget, torque/speed targets, acoustic limits, BOM cost).
