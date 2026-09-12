@@ -1,7 +1,7 @@
 # Task: Test LLM + build123d infrastructure
 
-**Status:** open  
-**Related:** docs/decisions/0001-cad-tooling-and-llm-interaction.md, docs/build123d-guidelines.md, scripts/cad-show.py, scripts/cad-export.py  
+**Status:** closed
+**Related:** docs/decisions/0001-cad-tooling-and-llm-interaction.md, docs/build123d-guidelines.md, scripts/cad-show.py, scripts/cad-export.py, docs/conversations/2026-09-13--test-llm-cad-infrastructure.md
 **Goal:** Verify that the current tooling allows an LLM agent to design, run, export and iteratively fix mechanical parts with minimal human help.
 
 ## Context
@@ -28,9 +28,12 @@
 - Exported files: `hardware/s2_joint_module.step`, `hardware/s2_joint_module.stl`
 - Number of LLM iterations: **3**
 
-### S3 — Mini assembly (optional but desirable)
+### S3 — Mini assembly [COMPLETED 2026-09-13]
 - 2–3 bodies combined via `Compound` or located copies.
 - Check that multi-body export to STEP works cleanly.
+- Located at: `hardware/s3_mini_assembly.py`
+- Exported files: `hardware/s3_mini_assembly.step`, `hardware/s3_mini_assembly.stl`
+- Number of LLM iterations: **2** (Iteration 1 failed due to duplicate global CAD variables)
 
 ## Execution protocol (per scenario)
 
@@ -66,8 +69,9 @@
 
 - [x] S1 completes with ≤ 2–3 LLM iterations in typical case (Completed in 2 iterations)
 - [x] S2 completes without manual rewriting of core logic (Completed in 3 iterations)
+- [x] S3 completes with 2 iterations (duplicate global variable fix)
 - [x] `cad-export.py` reliably produces valid STEP
-- [ ] Scripts stay pure and guidelines are sufficient (or gaps are documented)
+- [x] Scripts stay pure and guidelines are sufficient (documented duplicate variable edge case)
 
 ## Deliverables
 

@@ -30,9 +30,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - **CAD Infrastructure Testing (2026-09-13):**
   - Completed Test S1 (Parametric Plate: `hardware/s1_parametric_plate.py`).
   - Completed Test S2 (Joint Module: `hardware/s2_joint_module.py`).
-  - Successfully exported to STEP and STL using `scripts/cad-export.py` in headless mode.
-  - Resolved namespace pollution issue in export script by standardizing `_` prefix for intermediate variables.
-  - Refined CAD guidelines to prefer `Plane` over complex face selectors for robustness.
+  - Completed Test S3 (Mini Assembly: `hardware/s3_mini_assembly.py`).
+  - Successfully exported all tests to STEP and STL using `scripts/cad-export.py` in headless mode.
+  - Resolved namespace pollution and `anytree.TreeError` issues by standardizing `_` prefix for intermediate or duplicated CAD variables.
+  - Refined CAD guidelines to prefer `Plane` over complex face selectors for robustness, and clarified duplicate CAD variable avoidance.
   - Documented sandbox visualizer limits and venv execution guidelines in `docs/build123d-guidelines.md`.
 - Added conversation record (`docs/conversations/2026-09-04--roadmap.md`) on ROADMAP integration and simulation tool evaluation (MuJoCo vs Isaac Sim).
 - Added conversation record (`docs/conversations/2026-09-06--CAD-selection.md`) and ADR-0001 regarding CAD tooling.
@@ -42,7 +43,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 ## Active Specification & Focus
 
 1. **`docs/spec.md`**: Completed initial draft capturing core vision, design principles, high-level requirements table, non-goals, open questions, and early success criteria.
-2. **CAD Selection & Testing (Phase 1)**: ADR-0001 accepted. S1 and S2 tests completed successfully. S3 (Mini assembly) is next.
+2. **CAD Selection & Testing (Phase 1)**: ADR-0001 accepted. S1, S2, and S3 tests completed successfully. Infrastructure is fully validated and ready for regular CAD design.
 3. **Next Steps (Phase 1 — Foundation & Planning)**:
    - Complete comparative evaluation of CAD tools and finalize primary selection.
    - Define core numerical characteristics (envelope, payload, power budget, torque/speed targets, acoustic limits, BOM cost).
