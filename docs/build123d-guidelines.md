@@ -1,10 +1,12 @@
 # build123d rules for sint
 
 - Use ONLY build123d (never CadQuery `cq.Workplane`).
+- **Include shebang:** Always start the script with `#!/usr/bin/env python3`.
 - Prefer context managers: `with BuildPart()`, `with BuildSketch()`, `with BuildLine()`.
 - Keep model scripts pure: no `ocp_vscode`, no `show()`, no side-effect imports.
 - Put all key dimensions as named constants at the top of the file.
 - **Prefix intermediate CAD variables with `_`** (e.g. `_vertical_edges = ...`, `_top_face = ...`). This prevents namespace pollution, so `cad-export.py` / `cad-show.py` do not attempt to collect and bundle intermediate/sub-geometry references into the export compound. Only the final part or assembly should be exposed (e.g., `result = part.part`).
+- **Robust Positioning:** Prefer using `Plane(origin=(0, 0, Z_COORD))` or `Plane(part.faces()...)` *before* applying fillets/chamfers. Filtering faces after topology-changing operations (like `fillet`) is fragile and often leads to `IndexError`.
 - Prefer explicit `Mode.ADD` / `Mode.SUBTRACT` / `Mode.INTERSECT`.
 - Use modern selectors (`faces().sort_by(Axis.Z)[-1]`, `edges().filter_by(...)`).
 - After generation the script must be runnable headlessly and exportable to STEP.
