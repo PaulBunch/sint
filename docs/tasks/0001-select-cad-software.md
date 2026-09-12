@@ -7,13 +7,13 @@
 - [x] A4. Создать черновик ADR «CAD Tool Selection» (пока без финального выбора)
 
 ## B. Исследование кандидатов
-- [ ] B1. CadQuery — зрелость, API, LLM-опыт, assemblies, экспорт, headless
-- [ ] B2. build123d — сравнение с CadQuery, стиль API, документация, экосистема
-- [ ] B3. FreeCAD (Python API + headless + MCP) — возможности, ограничения, FEM
-- [ ] B4. llmcad — насколько минималистичный API реально помогает LLM
-- [ ] B5. Replicad — браузерный/TS-вариант, ограничения WASM
-- [ ] B6. OpenSCAD — только как baseline/fallback для простых деталей
-- [ ] B7. Сводная сравнительная таблица (критерии × кандидаты)
+- [x] B1. CadQuery — зрелость, API, LLM-опыт, assemblies, экспорт, headless
+- [x] B2. build123d — сравнение с CadQuery, стиль API, документация, экосистема
+- [x] B3. FreeCAD (Python API + headless + MCP) — возможности, ограничения, FEM
+- [x] B4. llmcad — насколько минималистичный API реально помогает LLM
+- [x] B5. Replicad — браузерный/TS-вариант, ограничения WASM
+- [x] B6. OpenSCAD — только как baseline/fallback для простых деталей
+- [x] B7. Сводная сравнительная таблица (критерии × кандидаты)
 
 ## C. Практические тесты (минимальный benchmark)
 - [ ] C1. Определить 2–3 тестовых сценария (например: простой joint module, parametric plate + holes + fillet, простая assembly из 2–3 деталей)
