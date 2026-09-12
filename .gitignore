@@ -1,3 +1,9 @@
+# --- CAD (temporary and backup files) ---
+*.stl
+*.FCBak
+*.FCStd~
+*.tmp
+
 # --- IDEs & Editors ---
 .zed/
 .vscode/
