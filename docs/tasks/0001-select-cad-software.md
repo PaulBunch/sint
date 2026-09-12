@@ -1,10 +1,10 @@
 # Select CAD software (and related tools)
 
 ## A. Критерии и рамки
-- [ ] A1. Зафиксировать обязательные критерии (LLM-friendliness, open-source, headless/CLI/MCP, STEP как SoT, Git-native, экспорт STL/3MF, скриптовость)
-- [ ] A2. Зафиксировать желательные критерии (сборка/assemblies, named faces/edges, интеграция с FEM, PCB/STEP, симуляция MuJoCo/Isaac)
-- [ ] A3. Определить приоритеты (что must-have vs nice-to-have для Phase 1–2)
-- [ ] A4. Создать черновик ADR «CAD Tool Selection» (пока без финального выбора)
+- [x] A1. Зафиксировать обязательные критерии (LLM-friendliness, open-source, headless/CLI/MCP, STEP как SoT, Git-native, экспорт STL/3MF, скриптовость)
+- [x] A2. Зафиксировать желательные критерии (сборка/assemblies, named faces/edges, интеграция с FEM, PCB/STEP, симуляция MuJoCo/Isaac)
+- [x] A3. Определить приоритеты (что must-have vs nice-to-have для Phase 1–2)
+- [x] A4. Создать черновик ADR «CAD Tool Selection» (пока без финального выбора)
 
 ## B. Исследование кандидатов
 - [ ] B1. CadQuery — зрелость, API, LLM-опыт, assemblies, экспорт, headless
