@@ -1,5 +1,10 @@
-*.tmp
+# --- IDEs & Editors ---
+.zed/
+.vscode/
+.idea/
+pyrightconfig.json
 
+# --- Project temporary & dev files ---
 changes.diff
 /trash
 /docs/temp.md
