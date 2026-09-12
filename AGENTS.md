@@ -36,7 +36,7 @@ If `current-state.md` or `handoff-latest.md` do not exist (e.g., initial reposit
 - `docs/conversations/` — raw multi-LLM discussion archive
 - `docs/decisions/` — Architecture Decision Records (ADR)
 - `docs/tasks/` — atomic checklists / work packages that break down ROADMAP items
-- `hardware/` — CAD, mechanical designs (future)
+- `hardware/` — CAD, mechanical designs
 - `firmware/` — embedded code (future)
 - `software/` — higher-level control, simulation, tools (future)
 
@@ -84,6 +84,10 @@ If `current-state.md` or `handoff-latest.md` do not exist (e.g., initial reposit
 3. After documentation changes — keep structure and frontmatter consistent
 4. When a discussion reaches a decision → create/update ADR and close the conversation file
 5. When working on a ROADMAP item that has a linked task file — read and update that checklist
+6. When working on hardware geometry:
+  1. Read docs/build123d-guidelines.md
+  2. Follow the pure-script rules (no ocp_vscode inside models)
+  3. Lifecycle for every part/assembly: generate → run scripts/cad-export.py → export STEP → inspect/measure → fix
 
 ## Agent Notes & Transparency
 - Agents may keep working notes in `docs/agent-notes/`.
