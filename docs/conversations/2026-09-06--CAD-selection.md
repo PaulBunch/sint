@@ -1085,3 +1085,612 @@ python test_cad.py
 ```
 
 При выполнении скрипта `ocp-vscode` автоматически инициализирует локальный сервер и запустит отдельное окно с 3D-моделью детали.
+
+
+---
+**Bunch**
+
+1. Да, переходим к настройке интеграции, если она требуется. Ознакомься с проектом для понимания контекста задачи: https://github.com/PaulBunch/sint
+2. В рамках проекта я не уверен, что в каждом python CAD скрипете нужно импортировать `from ocp_vscode import show`. Думаю, логичнее было бы сделать alias на уровне ОС, типа `cad-py show trash/test_cad.py`, который будет интегрировать на лету нужный импорт в скрипт, а в конце вызывать `show`, не внося измененияв сам файл python CAD скрипта.
+
+---
+**Geimi 3.6 Flash Extended**
+
+Разделение чистой геометрии и кода просмотра — верное архитектурное решение. Это делает CAD-файлы проекта **sint** автономными модулями, которые можно беспроблемно импортировать в сборки, экпортировать в STEP/STL или рендерить любым просмотрщиком.
+
+---
+
+### 1. Реализация обёртки просмотрщика (`cad-show`)
+
+Создайте универсальный Python-раннер, который выполняет CAD-скрипт и автоматически вылавливает все созданные 3D-объекты через `ocp_vscode.show_all()`.
+
+**Шаг 1. Создание скрипта-раннера**
+Создайте файл `~/.local/bin/cad-show`:
+
+```python
+#!/home/user/.venv/cad/bin/python
+import sys
+import runpy
+import inspect
+import ocp_vscode
+
+if len(sys.argv) < 2:
+    print("Использование: cad-show <path/to/script.py>")
+    sys.exit(1)
+
+target_script = sys.argv[1]
+global_vars = runpy.run_path(target_script, run_name="__main__")
+
+cad_objects = []
+for name, val in global_vars.items():
+    # Игнорируем приватные переменные, функции, модули и КЛАССЫ (Box, Cylinder и т.д.)
+    if name.startswith("_") or inspect.isclass(val) or inspect.isroutine(val):
+        continue
+
+    # Проверяем, что перед нами экземпляр контекстного менеджера или 3D-геометрии
+    if hasattr(val, "part") or hasattr(val, "sketch") or hasattr(val, "wrapped"):
+        cad_objects.append(val)
+
+if cad_objects:
+    ocp_vscode.show(*cad_objects)
+else:
+    print("Предупреждение: в скрипте не найдено 3D-объектов для отображения.")
+```
+
+**Шаг 2. Права и настройка алиаса**
+
+```bash
+chmod +x ~/.local/bin/cad-show
+```
+
+Если `~/.local/bin` у вас в `PATH`, вы можете запускать просмотр из любой папки:
+
+```bash
+cad-show trash/test_cad.py
+```
+
+При таком подходе чистый файл модели `trash/test_cad.py` выглядит лаконично и без зависимости от `ocp-vscode`:
+
+```python
+from build123d import *
+
+with BuildPart() as model:
+    Box(30, 30, 10)
+    Cylinder(radius=8, height=10, mode=Mode.SUBTRACT)
+```
+
+---
+
+### 2. Интеграция build123d с LLM (для Zed и систем разработки)
+
+Ключевая проблема при генерации кода для `build123d` нейросетями — галлюцинации устаревшим синтаксисом CadQuery (`cq.Workplane`) или использование устаревших методов `build123d`.
+
+Для проекта **sint** рекомендуется использовать трёхкомпонентную структуру контекста:
+
+#### 1. Системный промпт (Правила генерации)
+
+Добавьте в правила LLM (в Zed / Assistant / Cursor) следующий системный контекст:
+
+```markdown
+You are an expert in 3D CAD modeling using Python and build123d.
+Follow these mandatory rules:
+1. ALWAYS use build123d standard context managers (`with BuildPart():`, `with BuildSketch():`, `with BuildLine():`).
+2. NEVER use legacy CadQuery `cq.Workplane` syntax.
+3. Keep CAD scripts pure: DO NOT import `ocp_vscode` or call `show()`/`show_all()`.
+4. Output parametric design using named arguments for key dimensions at the top of the file.
+5. Use modern selectors: `faces().sort_by(Axis.Z)[-1]`, `edges().filter_by(GeomType.CIRCLE)`.
+6. Ensure correct boolean operations with explicit modes (`Mode.ADD`, `Mode.SUBTRACT`, `Mode.INTERSECT`).
+```
+
+#### 2. Базовый справочный контекст (Cheatsheet)
+
+Поскольку библиотека `build123d` активно развивается, сохраните в репозитории проекта файл `.zed/build123d_ref.md` или `docs/build123d_ref.md` с эталонными шаблонами:
+
+```python
+# Базовый деталь (BuildPart)
+with BuildPart() as part:
+    Box(width, length, height)
+    with BuildSketch(part.faces().sort_by(Axis.Z)[-1]) as sketch:
+        Circle(radius=5)
+    extrude(amount=-height, mode=Mode.SUBTRACT)
+
+# Сборка (Compound / Assemblies)
+gear_1 = Gear(...)
+gear_2 = Gear(...)
+assembly = Compound(children=[gear_1, gear_2.locate(Pos(x=50))])
+```
+
+#### 3. Патерн авто-исправления (Feedback Loop)
+
+В Zed при работе через Assistant встроенный терминал с `cad-show` мгновенно подсвечивает ошибки компиляции CAD-ядра (например, ошибки топологии `OpenCASCADE` или `ValueError` при скруглениях `fillet`).
+
+При возникновении ошибки достаточно передавать Traceback обратно в LLM с промптом:
+
+> `"Фигура упала с ошибкой OpenCASCADE: [Traceback]. Исправь селектор граней или радиус скругления."`
+
+---
+**Bunch**
+
+Для перехода от теории к практике. Я установил build123d и ocp-vscode в глобальное окружение `~/.venv/cad/` и настроил скрипты на уровне ОС для запуска python-CAD-скриптов. В этом мне помогала нейросеть Gemini. Тем не менее, у меня есть предчуствие, что возможно данные скрипты нужно разместить не на уровне ОС, а на уровен проекта, чтобы другие разработчики и LLM могли ими пользоваться. Как настроить окружение проекта и скрипты оптимально? При этом я терпеть не могу poetry и подобные системы, потому что с ними больше геморроя, чем пользы.
+В ручном режиме сейчас всё работает. Мне нужно настроить корректную интеграцию build123d с LLM. Вот что рекомендует Gemini, но он не учитывает контекст проекта, в который ты погружён. Интересно узнать твоё мнение.
+*Сюда прекреплён предыдущй ответ Gemini*
+
+---
+**Grok 4.5 Fast**
+
+**Короткий ответ:**  
+Да, скрипты и окружение лучше держать **на уровне проекта**, а не только в глобальном `~/.venv/cad/` и `~/.local/bin`. Глобальная установка удобна тебе лично, но для других людей и LLM-агентов она непрозрачна. При этом Poetry (и подобные менеджеры) использовать не обязательно — достаточно обычного `venv` + `requirements.txt` / `pyproject.toml` без poetry.
+
+Ниже — оптимальная схема именно под sint и ADR-0001.
+
+---
+
+### 1. Рекомендуемая структура окружения проекта
+
+```
+sint/
+├── .venv/                    # локальный venv проекта (в .gitignore)
+├── requirements-cad.txt      # или requirements.txt
+├── scripts/                  # утилиты проекта
+│   ├── cad-show.py
+│   └── cad-export.py         # (опционально: headless STEP/STL)
+├── hardware/                 # или cad/
+│   └── ...                   # чистые build123d-скрипты моделей
+├── docs/
+│   ├── decisions/
+│   ├── tasks/
+│   └── build123d-guidelines.md   # правила + cheatsheet для LLM
+└── ...
+```
+
+**Почему так:**
+- `.venv` внутри проекта → любой человек/агент делает `python -m venv .venv && source .venv/bin/activate && pip install -r requirements-cad.txt`.
+- Скрипты в `scripts/` версионируются и доступны всем.
+- Модели остаются «чистыми» (без `ocp_vscode`).
+
+Глобальный `~/.venv/cad/` можешь оставить для личных экспериментов, но **канонический** путь для проекта — локальный.
+
+---
+
+### 2. Минимальный `requirements-cad.txt` (без Poetry)
+
+```text
+build123d>=0.11
+ocp-vscode
+# при необходимости позже:
+# cadquery          # только если понадобится совместимость
+```
+
+Установка:
+```bash
+python -m venv .venv
+source .venv/bin/activate          # Linux/macOS
+pip install -U pip
+pip install -r requirements-cad.txt
+```
+
+Этого достаточно. Никакого poetry/lock-файла на старте не нужно.
+
+---
+
+### 3. Скрипт `scripts/cad-show.py` (улучшенная версия)
+
+Идея Gemini правильная, но лучше сделать её проектной и чуть надёжнее:
+
+```python
+#!/usr/bin/env python3
+"""Run a pure build123d script and show resulting geometry in ocp-vscode."""
+import sys
+import runpy
+import inspect
+from pathlib import Path
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        print("Usage: python scripts/cad-show.py <path/to/model.py>")
+        sys.exit(1)
+
+    target = Path(sys.argv[1]).resolve()
+    if not target.exists():
+        print(f"File not found: {target}")
+        sys.exit(1)
+
+    # Выполняем скрипт
+    global_vars = runpy.run_path(str(target), run_name="__main__")
+
+    # Собираем кандидатов на показ
+    cad_objects = []
+    for name, val in global_vars.items():
+        if name.startswith("_"):
+            continue
+        if inspect.isclass(val) or inspect.isroutine(val) or inspect.ismodule(val):
+            continue
+        # build123d / OCP объекты
+        if hasattr(val, "wrapped") or hasattr(val, "part") or hasattr(val, "sketch"):
+            cad_objects.append(val)
+
+    if not cad_objects:
+        print("Warning: no CAD objects found to display.")
+        sys.exit(0)
+
+    try:
+        import ocp_vscode
+        ocp_vscode.show(*cad_objects)
+    except ImportError:
+        print("ocp_vscode is not installed. Install it or use a different viewer.")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+```
+
+Запуск из корня проекта:
+```bash
+source .venv/bin/activate
+python scripts/cad-show.py hardware/joint_module.py
+```
+
+Можно добавить удобный алиас в `README` или в `scripts/`:
+```bash
+# scripts/cad-show (shell wrapper)
+#!/usr/bin/env bash
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+exec "$ROOT/.venv/bin/python" "$ROOT/scripts/cad-show.py" "$@"
+```
+
+---
+
+### 4. Чистые модели (как и рекомендовал Gemini)
+
+```python
+# hardware/example_plate.py
+from build123d import *
+
+# Параметры сверху — удобно и человеку, и LLM
+WIDTH = 80
+LENGTH = 50
+THICKNESS = 8
+HOLE_DIA = 6
+
+with BuildPart() as plate:
+    Box(WIDTH, LENGTH, THICKNESS)
+    with Locations(plate.faces().sort_by(Axis.Z)[-1]):
+        with GridLocations(WIDTH - 20, LENGTH - 20, 2, 2):
+            Hole(radius=HOLE_DIA / 2, depth=THICKNESS)
+
+# Можно явно экспортировать результат, если нужно
+result = plate.part
+```
+
+Никакого `ocp_vscode` внутри модели.
+
+---
+
+### 5. Интеграция с LLM (важнее, чем скрипт просмотрщика)
+
+Рекомендации Gemini в целом здравые, но их нужно привязать к sint.
+
+**Что сделать обязательно:**
+
+1. **Файл правил для агентов**  
+   Создай `docs/build123d-guidelines.md` (или `.zed/rules` / аналог в твоём редакторе) со строгими правилами:
+
+```markdown
+# build123d rules for sint
+
+- Use ONLY build123d (never CadQuery `cq.Workplane`).
+- Prefer context managers: `with BuildPart()`, `with BuildSketch()`, `with BuildLine()`.
+- Keep model scripts pure: no `ocp_vscode`, no `show()`, no side-effect imports.
+- Put all key dimensions as named constants at the top of the file.
+- Prefer explicit `Mode.ADD` / `Mode.SUBTRACT` / `Mode.INTERSECT`.
+- Use modern selectors (`faces().sort_by(Axis.Z)[-1]`, `edges().filter_by(...)`).
+- After generation the script must be runnable headlessly and exportable to STEP.
+```
+
+2. **Cheatsheet**  
+   В том же файле или отдельно — 5–10 эталонных паттернов (пластина с отверстиями, fillet, простой joint, Compound-сборка).
+
+3. **Feedback loop**  
+   Агент должен уметь:
+   - запустить `python scripts/cad-show.py ...` или headless-экспорт;
+   - получить traceback / скриншот / STEP;
+   - исправить код.
+
+Это уже покрывается ADR-0001 + task-файлом.
+
+---
+
+### 6. Headless-экспорт (очень желательно добавить сразу)
+
+Для агентов важнее не только `show`, но и детерминированный экспорт:
+
+```python
+# scripts/cad-export.py (эскиз)
+from build123d import export_step, export_stl
+# ... выполнить скрипт, найти главный Solid/Part, сделать export_step(..., "out.step")
+```
+
+Тогда LLM-цикл становится полностью без GUI:
+`generate → run → export STEP → inspect / measure → fix`.
+
+---
+
+### 7. Что я бы сделал на твоём месте прямо сейчас
+
+1. Создать в корне `requirements-cad.txt` + локальный `.venv`.
+2. Перенести `cad-show` в `scripts/cad-show.py`.
+3. Добавить `docs/build123d-guidelines.md` с правилами + коротким cheatsheet.
+4. Договориться, что все модели лежат в `hardware/` (или `cad/`) и не содержат viewer-кода.
+5. Глобальный `~/.venv/cad/` оставить только для личных быстрых опытов.
+
+Так ты получаешь:
+- воспроизводимость для других людей и агентов;
+- отсутствие Poetry;
+- чистое разделение геометрии и просмотра;
+- хорошую базу для LLM-цикла.
+
+Если хочешь, могу сразу набросать готовые тексты `requirements-cad.txt`, `scripts/cad-show.py` и черновик `docs/build123d-guidelines.md` в стиле проекта sint.
+
+---
+**Bunch**
+
+1. cad-show и requirements-cad.txt размещены в локальной области проекта — работает!
+
+2. build123d-guidelines.md создан в нём размещены тезисные правила, которые ты предложил. cheatsheet отсутствуют. Если ты считаешь, что нужно обязательно там разместить cheatsheet, напиши их, а я добавлю. Кроме того build123d-guidelines.md пока нигде не упомянается. Возможно, было бы правильно его упоминуть в локальном агенте, который будет заниматься именно CAD‐проектированием. С описанием жизненого цикла разработки конкретной детали/сборки `generate → run → export STEP → inspect / measure → fix`.
+
+3. python-CAD-скрипты и экспортируемые из них step-файлы будут находиться в одной директории `hardware/`?
+
+4. Подготовь код для скрипта `cad-export.py`
+
+---
+**Grok 4.5 Fast**
+
+### 1–2. Guidelines + cheatsheet + где упоминать
+
+**Cheatsheet стоит добавить.**  
+Короткие эталонные паттерны сильно снижают галлюцинации LLM. Ниже готовый блок — можешь просто вставить в `docs/build123d-guidelines.md`.
+
+````markdown
+## Quick Cheatsheet
+
+### Basic parametric part
+```python
+from build123d import *
+
+WIDTH, LENGTH, HEIGHT = 80, 50, 10
+HOLE_R = 3.0
+
+with BuildPart() as part:
+    Box(WIDTH, LENGTH, HEIGHT)
+    with Locations(part.faces().sort_by(Axis.Z)[-1]):
+        with GridLocations(WIDTH - 20, LENGTH - 20, 2, 2):
+            Hole(radius=HOLE_R, depth=HEIGHT)
+
+result = part.part
+```
+
+### Sketch + extrude (subtract)
+```python
+with BuildPart() as part:
+    Box(60, 40, 12)
+    with BuildSketch(part.faces().sort_by(Axis.Z)[-1]):
+        Circle(8)
+    extrude(amount=-12, mode=Mode.SUBTRACT)
+```
+
+### Fillet / chamfer
+```python
+with BuildPart() as part:
+    Box(30, 30, 15)
+    fillet(part.edges().filter_by(Axis.Z), radius=2)
+    # or: chamfer(part.edges(), length=1)
+```
+
+### Simple Compound (assembly-like)
+```python
+from build123d import *
+
+a = Box(20, 20, 10)
+b = Cylinder(radius=5, height=20).locate(Pos(x=30))
+assembly = Compound(children=[a, b])
+```
+
+### Selectors (most used)
+- Top face: `faces().sort_by(Axis.Z)[-1]`
+- Bottom face: `faces().sort_by(Axis.Z)[0]`
+- Vertical edges: `edges().filter_by(Axis.Z)`
+- Circular edges: `edges().filter_by(GeomType.CIRCLE)`
+````
+
+**Где упоминать файл**
+
+Да, его нужно явно подключить к CAD-агенту / правилам.
+
+Рекомендуемые места:
+- В системном промпте / rules локального CAD-агента (Zed, Cursor и т.п.).
+- Коротко в `AGENTS.md` или в task-файле по CAD (ссылка + жизненный цикл).
+
+Пример формулировки для агента:
+
+```text
+When working on hardware geometry:
+1. Read docs/build123d-guidelines.md
+2. Follow the pure-script rules (no ocp_vscode inside models)
+3. Lifecycle for every part/assembly:
+   generate → run (cad-show or cad-export) → export STEP → inspect/measure → fix
+```
+
+---
+
+### 3. Где лежат скрипты и STEP?
+
+**Да, лучше в одной директории `hardware/`** (или `cad/`), но с понятным разделением.
+
+Рекомендуемый вариант:
+
+```text
+hardware/
+├── joints/
+│   ├── joint_module_v1.py      # исходник
+│   ├── joint_module_v1.step    # экспорт (можно генерировать)
+│   └── joint_module_v1.stl     # опционально
+├── links/
+└── assemblies/
+```
+
+Правила:
+- **Источник истины** — `.py`.
+- `.step` — канонический экспорт (B-rep).
+- `.stl` / `.3mf` — производные для печати.
+- Сгенерированные файлы можно либо коммитить (удобно для обзора), либо держать в `.gitignore` и собирать в CI. На старте проще коммитить STEP вместе со скриптом.
+
+Главное — не разносить исходник и STEP по разным деревьям без необходимости.
+
+---
+
+### 4. Скрипт `scripts/cad-export.py`
+
+```python
+#!/usr/bin/env python3
+"""
+Headless runner for pure build123d scripts.
+Executes the script and exports found geometry to STEP (and optionally STL).
+
+Usage:
+  python scripts/cad-export.py path/to/model.py
+  python scripts/cad-export.py path/to/model.py --stl
+  python scripts/cad-export.py path/to/model.py -o out/dir
+"""
+
+from __future__ import annotations
+
+import argparse
+import inspect
+import runpy
+import sys
+from pathlib import Path
+from typing import Any, List
+
+def is_cad_object(obj: Any) -> bool:
+    """Heuristic: build123d / OCP-like geometry objects."""
+    if obj is None:
+        return False
+    if inspect.isclass(obj) or inspect.isroutine(obj) or inspect.ismodule(obj):
+        return False
+    return (
+        hasattr(obj, "wrapped")
+        or hasattr(obj, "part")
+        or hasattr(obj, "sketch")
+        or hasattr(obj, "solid")
+    )
+
+
+def unwrap(obj: Any) -> Any:
+    """Prefer the actual solid/part when a builder context is returned."""
+    if hasattr(obj, "part") and obj.part is not None:
+        return obj.part
+    if hasattr(obj, "solid") and callable(obj.solid):
+        try:
+            return obj.solid()
+        except Exception:
+            pass
+    return obj
+
+
+def collect_cad_objects(namespace: dict) -> List[Any]:
+    objects = []
+    for name, val in namespace.items():
+        if name.startswith("_"):
+            continue
+        if is_cad_object(val):
+            objects.append(unwrap(val))
+    return objects
+
+
+def export_objects(objects: List[Any], out_base: Path, do_stl: bool) -> None:
+    from build123d import export_step, export_stl, Compound
+
+    if not objects:
+        print("No CAD objects found to export.")
+        sys.exit(1)
+
+    # One object → direct export; several → Compound
+    if len(objects) == 1:
+        shape = objects[0]
+    else:
+        shape = Compound(children=objects)
+
+    step_path = out_base.with_suffix(".step")
+    export_step(shape, step_path)
+    print(f"STEP written: {step_path}")
+
+    if do_stl:
+        stl_path = out_base.with_suffix(".stl")
+        export_stl(shape, stl_path)
+        print(f"STL written:  {stl_path}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Export build123d script to STEP/STL")
+    parser.add_argument("script", type=Path, help="Path to pure build123d .py script")
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        type=Path,
+        default=None,
+        help="Directory for output files (default: same as script)",
+    )
+    parser.add_argument(
+        "--stl",
+        action="store_true",
+        help="Also export STL",
+    )
+    args = parser.parse_args()
+
+    script_path = args.script.resolve()
+    if not script_path.exists():
+        print(f"File not found: {script_path}")
+        sys.exit(1)
+
+    # Run the pure model script
+    namespace = runpy.run_path(str(script_path), run_name="__main__")
+    objects = collect_cad_objects(namespace)
+
+    out_dir = args.output_dir.resolve() if args.output_dir else script_path.parent
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_base = out_dir / script_path.stem
+
+    export_objects(objects, out_base, do_stl=args.stl)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+**Примеры использования:**
+
+```bash
+source .venv/bin/activate
+
+# STEP рядом со скриптом
+python scripts/cad-export.py hardware/joints/joint_module_v1.py
+
+# STEP + STL
+python scripts/cad-export.py hardware/joints/joint_module_v1.py --stl
+
+# в другую папку
+python scripts/cad-export.py hardware/joints/joint_module_v1.py -o build/export
+```
+
+---
+
+### Краткий чеклист на сейчас
+
+- [x] `requirements-cad.txt` + локальный venv  
+- [x] `scripts/cad-show.py`  
+- [ ] `scripts/cad-export.py` (код выше)  
+- [ ] Дописать cheatsheet в `docs/build123d-guidelines.md`  
+- [ ] Упомянуть guidelines + lifecycle в правилах CAD-агента  
+- [ ] Договориться о раскладке `hardware/.../*.py` + `*.step`
+
+После этого цикл `generate → run/export → inspect → fix` становится полностью рабочим и для тебя, и для LLM.
