@@ -4,6 +4,26 @@
 .idea/
 pyrightconfig.json
 
+# --- Python & Bytecode ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# --- Virtual Environments ---
+env/
+venv/
+ENV/
+.venv/
+env.bak/
+.venv-*/
+
 # --- Project temporary & dev files ---
 changes.diff
 /trash
