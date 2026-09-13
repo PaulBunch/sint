@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # ADR-0001: CAD Tooling Strategy for LLM-Autonomous Design
 
-- **Status:** Accepted
+- **Status:** Accepted (refined by ADR-0002)
 - **Date:** 2026-09-06
 - **Deciders:** Project maintainers / agents working on Phase 1
 - **Related:** `docs/ROADMAP.md` (Phase 1 — Select CAD software…), `docs/spec.md`, conversation on CAD selection
@@ -90,6 +90,7 @@ We adopt the following strategy for CAD and related geometry tooling:
 - Define repository layout under `hardware/` (or `cad/`) for scripts + generated STEP.
 - Add basic CI job that executes scripts headlessly and publishes STEP + preview images.
 - Update `docs/ROADMAP.md` and `docs/current-state.md` once the concrete primary tool is selected.
+- Concrete primary tool selected in ADR-0002 (build123d).
 
 ## References
 
