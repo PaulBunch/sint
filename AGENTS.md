@@ -85,9 +85,11 @@ If `current-state.md` or `handoff-latest.md` do not exist (e.g., initial reposit
 4. When a discussion reaches a decision → create/update ADR and close the conversation file
 5. When working on a ROADMAP item that has a linked task file — read and update that checklist
 6. When working on hardware geometry:
-  1. Read docs/build123d-guidelines.md
-  2. Follow the pure-script rules (no ocp_vscode inside models)
-  3. Lifecycle for every part/assembly: generate → run scripts/cad-export.py → export STEP → inspect/measure → fix
+  1. Read `docs/build123d-guidelines.md` (authoring contract: Must / Avoid / Patterns)
+  2. Pure scripts only: no `ocp_vscode` / `show()` inside `hardware/**/*.py`; expose a single final object as `result`
+  3. Agent lifecycle: generate → `python scripts/cad-export.py <script.py>` → inspect STEP/traceback → fix
+  4. Prefer headless export over `cad-show.py` in sandboxed agent terminals
+  5. Primary CAD is build123d (ADR-0002); do not use CadQuery unless explicitly falling back
 
 ## Agent Notes & Transparency
 - Agents may keep working notes in `docs/agent-notes/`.
