@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+
+# SPDX-FileCopyrightText: 2026 sint project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 """
 Headless runner for pure build123d scripts.
 Executes the script and exports found geometry to STEP (and optionally STL).

@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: 2026 Paul Bunch
-
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 

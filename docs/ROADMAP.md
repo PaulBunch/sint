@@ -13,7 +13,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 - [x] Discuss optimal first steps for effective project implementation from the start
 - [x] Select CAD software (and other required tools) that LLM can interact with independently with minimal human assistance (ADR-0001 strategy, ADR-0002 primary = build123d; infrastructure validated in tasks/0001 + 0002) → [tasks/0001-select-cad-software.md](tasks/0001-select-cad-software.md)
-- [ ] Define core numerical characteristics (envelope dimensions, payload without EE, electrical power budget, joint torque/speed targets, acoustic noise limits, target BOM cost)
+- [x] Define core numerical characteristics (envelope dimensions, payload without EE, electrical power budget, joint torque/speed targets, acoustic noise limits, target BOM cost) (ADR-0003) → [tasks/0003-define-core-numerical-characteristics.md](tasks/0003-define-core-numerical-characteristics.md)
 - [ ] Develop kinematic and mechanical scheme of the interface (topology, DoF layout, relocatable base concept)
 - [ ] Define component composition (motors, drivers, gearboxes, sensors, compute, connectors — COTS candidates)
 - [ ] Compile preliminary set of assembly operations and list of required external tools (screwdrivers, drivers, soldering equipment, etc.) — directly constrains DFAA design

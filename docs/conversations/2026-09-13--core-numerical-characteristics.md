@@ -1,21 +1,22 @@
 ---
-title: 
-date_created: 2026-09-13
+title: Core numerical characteristics
 date_updated: 2026-09-13
-participants: [Bunch, Grok]
-status: open
-closed_reason: 
+date_updated: 2026-09-13
+participants: [Bunch, Grok, Gemini]
+status: closed
+closed_reason: ADR-0003 proposed; task 0003 closed.
 language: ru
-tags: []
+tags: [numerical-targets, spec, payload, reach, power, torque]
 related:
   - docs/tasks/0003-define-core-numerical-characteristics.md
+  - docs/implementation-concepts.md
+  - docs/decisions/0003-core-numerical-characteristics.md
 ---
 
-# 
+# Core numerical characteristics
 
 ## Summary
-
-
+Working targets for task 0003 finalized: payload 0.5 kg cont (~1 kg peak), reach 0.5–0.8 m, ≥2 docks, 24 V / 100–200 W, torque/speed bands, acoustic no-masking @ 0.5–1 m, BOM < $1000. ADR-0003 drafted.
 
 ## Discussion
 
@@ -422,3 +423,56 @@ B лучше стыкуется с «чистой» Canadarm-логикой; и�
 3. Dock spacing × reach × зона A1 mini нужно будет один раз прорисовать сверху (даже эскизом), до выбора кинематики.
 
 Если нужно, следующим шагом соберу **готовый markdown-блок «Working numerical targets (Phase 1)»** для вставки в conversation или `current-state.md`.
+
+---
+**Bunch**
+
+Отлично. Я обновил наше обсуждение в репо: https://github.com/PaulBunch/sint/blob/main/docs/conversations/2026-09-13--core-numerical-characteristics.md
+Для закрытия задачи предлагаю на основе этого обсуждения сформировать ADR, а ссылку на это ADR уже добавить в current-state.md. В подготовке ADR необходимо учесть наши критерии:
+```md
+## Done when
+- [ ] A single summary table of working targets exists (with units and short rationale)
+- [ ] Open risks / “must revisit after first joint prototype” are listed
+- [ ] ROADMAP item can be marked progress / done; numbers referenced from current-state
+```
+
+---
+**Grok 4.5 Fast**
+
+Готовый **ADR-0003**. Его достаточно, чтобы закрыть task 0003 по критериям Done when.
+
+**Путь:** `docs/decisions/0003-core-numerical-characteristics.md`
+
+---
+
+### Фрагмент для `docs/current-state.md`
+
+```markdown
+- **Core numerical characteristics (2026-09-13):** ADR-0003 accepted.
+  Working targets: payload 0.5 kg continuous (~1 kg peak); reach 0.5–0.8 m;
+  ≥2 docks; 24 V / ~100–200 W continuous; proximal torque ~10–25 N·m;
+  acoustic = no masking of speech/clicks at 0.5–1 m; node BOM < $1000
+  (integration kit target ≤ $1000, stretch documented).
+  Details: `docs/decisions/0003-core-numerical-characteristics.md`.
+  Task: `docs/tasks/0003-define-core-numerical-characteristics.md` → closed.
+```
+
+---
+
+### ROADMAP (одна строка)
+
+```markdown
+- [x] Define core numerical characteristics (…) → ADR-0003
+```
+
+---
+
+### Task 0003 — Done when
+
+| Критерий | Как закрывается |
+|----------|-----------------|
+| Summary table with units + rationale | Таблица в ADR-0003 |
+| Open risks / revisit after prototype | Секция Risks в ADR |
+| ROADMAP + current-state reference | Строки выше |
+
+После коммита ADR + правок current-state/ROADMAP/task status — задачу **0003** можно закрывать и переходить к кинематике / scheme of the interface.

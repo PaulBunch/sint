@@ -1,12 +1,11 @@
 <!--
 SPDX-FileCopyrightText: 2026 sint project contributors
-
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
 # Project Current State — sint
 
-**Last Updated:** 2026-09-04  
+**Last Updated:** 2026-09-13  
 **Status:** Bootstrapping / Specification Phase — Phase 1 (Foundation & Planning)
 
 ---
@@ -30,6 +29,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - **CAD Infrastructure Testing (2026-09-13):** Completed S1–S3 (parametric plate, joint module, mini assembly). Key fixes: `_` prefix for intermediate/duplicate variables (prevents `anytree.TreeError`), `Plane` for robust positioning, headless export (`cad-export.py`) preferred over `cad-show.py` due to sandbox limits. Guidelines updated (`docs/build123d-guidelines.md`). Test artifacts (`hardware/s1_*`, `s2_*`, `s3_*`) removed after validation.
 - Added conversation record (`docs/conversations/2026-09-04--roadmap.md`) on ROADMAP integration and simulation tool evaluation (MuJoCo vs Isaac Sim).
 - Added conversation record (`docs/conversations/2026-09-06--CAD-selection.md`) and ADR-0001 regarding CAD tooling.
+- **Core numerical characteristics (2026-09-13):** ADR-0003 accepted.
+  Working targets: payload 0.5 kg continuous (~1 kg peak); reach 0.5–0.8 m; ≥2 docks; 24 V / ~100–200 W continuous; proximal torque ~10–25 N·m; acoustic = no masking of speech/clicks at 0.5–1 m; node BOM < $1000 (integration kit target ≤ $1000, stretch documented).
+  Details: `docs/decisions/0003-core-numerical-characteristics.md`.
 
 ---
 
@@ -38,7 +40,6 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 1. **`docs/spec.md`**: Completed initial draft capturing core vision, design principles, high-level requirements table, non-goals, open questions, and early success criteria.
 2. **CAD Selection & Testing (Phase 1)**: ADR-0001 accepted; primary CAD = build123d (ADR-0002). Tool-chain (`build123d` + headless `cad-export.py` + `STEP` as SoT) fully validated (S1–S3). Task 0001 (`docs/tasks/0001-select-cad-software.md`) closed (C4, C5, F1–F4 completed). `docs/build123d-guidelines.md` updated.
 3. **Next Steps (Phase 1 — Foundation & Planning)**:
-   - Define core numerical characteristics (envelope dimensions, payload, power budget, torque/speed targets, acoustic limits, BOM cost).
    - Develop kinematic and mechanical scheme (topology, DoF, relocatable base).
    - Define COTS component composition (motors, drivers, sensors, compute, connectors).
    - Compile preliminary assembly operations and required external tools (constrains DFAA).

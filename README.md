@@ -1,6 +1,5 @@
 <!--
 SPDX-FileCopyrightText: 2026 sint project contributors
-
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 

@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Task: Define core numerical characteristics
 
-**Status:** open  
+**Status:** closed  
 **Related:** `docs/spec.md` (§4 constraints, §7 success), `docs/implementation-concepts.md`, `docs/ROADMAP.md` Phase 1  
 **Goal:** Agree working target ranges (not final frozen physics) for envelope, payload, power, joint performance, acoustic noise, and BOM cost — enough to drive kinematics and COTS selection.
 
@@ -34,12 +34,12 @@ Without numbers, later ADRs on motors, links, docks, and DFAA sequences cannot b
 - [x] N5. Propose **joint torque & speed** bands (proximal vs distal if useful)
 - [x] N6. Propose **acoustic limit** (e.g. dB(A) at 1 m or qualitative + measurable proxy)
 - [x] N7. Confirm **BOM cost** target and what is included/excluded (one node vs full workspace)
-- [ ] N8. Write one-page summary table → promote candidates into conversation; freeze “working targets” in current-state or a small ADR when stable
+- [x] N8. Write one-page summary table → promote candidates into conversation; freeze “working targets” in current-state or a small ADR when stable
 
 ## Done when
-- [ ] A single summary table of working targets exists (with units and short rationale)
-- [ ] Open risks / “must revisit after first joint prototype” are listed
-- [ ] ROADMAP item can be marked progress / done; numbers referenced from current-state
+- [x] A single summary table of working targets exists (with units and short rationale)
+- [x] Open risks / “must revisit after first joint prototype” are listed
+- [x] ROADMAP item can be marked progress / done; numbers referenced from current-state
 
 ## Method
 1. Human or agent fills N1 from existing docs.

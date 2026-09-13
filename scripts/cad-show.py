@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+
+# SPDX-FileCopyrightText: 2026 sint project contributors
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
 """Run a pure build123d script and show resulting geometry in ocp-vscode."""
 import inspect
 import runpy
