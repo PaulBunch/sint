@@ -1,20 +1,25 @@
 ---
-title: 
+title: Выбор CAD-инструмента и инфраструктуры LLM + build123d
 date_created: 2026-09-06
-date_updated: 2026-09-12
+date_updated: 2026-09-13
 participants: [Bunch, Grok, Gemini]
-status: open
-closed_reason:
+status: closed
+closed_reason: decided
 language: ru
-tags: [cad, tasks]
+tags: [cad, tasks, build123d, infrastructure]
 related:
   - docs/decisions/0001-cad-tooling-and-llm-interaction.md
+  - docs/decisions/0002-primary-cad-build123d.md
+  - docs/tasks/0001-select-cad-software.md
+  - docs/tasks/0002-test-llm-cad-infrastructure.md
+  - docs/build123d-guidelines.md
 ---
 
-# 
+# Выбор CAD-инструмента и инфраструктуры LLM + build123d
 
 ## Summary
 
+Обсуждение выбора CAD для sint завершено решением: primary = build123d (OpenCASCADE), fallback = CadQuery. ADR-0001 и ADR-0002 приняты. Инфраструктура LLM + build123d протестирована (S1–S3): чистые `.py`-скрипты, headless-экспорт `cad-export.py`, `STEP` как SoT, `_`-префикс для промежуточных переменных, `Plane` для позиционирования. Выявлена и исправлена ошибка `anytree.TreeError` при дублировании глобальных CAD-переменных. `docs/build123d-guidelines.md` обновлен. Тестовые артефакты (`hardware/s1_*`, `s2_*`, `s3_*`) удалены. Task 0001 (C4, C5, F1–F4) закрыт. Следующий этап Phase 1 — численные характеристики, кинематика, COTS.
 
 ## Discussion
 

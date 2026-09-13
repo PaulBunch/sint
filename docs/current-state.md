@@ -36,12 +36,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 ## Active Specification & Focus
 
 1. **`docs/spec.md`**: Completed initial draft capturing core vision, design principles, high-level requirements table, non-goals, open questions, and early success criteria.
-2. **CAD Selection & Testing (Phase 1)**: ADR-0001 accepted. S1, S2, and S3 tests completed successfully. Infrastructure is fully validated and ready for regular CAD design.
+2. **CAD Selection & Testing (Phase 1)**: ADR-0001 accepted; primary CAD = build123d (ADR-0002). Tool-chain (`build123d` + headless `cad-export.py` + `STEP` as SoT) fully validated (S1–S3). Task 0001 (`docs/tasks/0001-select-cad-software.md`) closed (C4, C5, F1–F4 completed). `docs/build123d-guidelines.md` updated.
 3. **Next Steps (Phase 1 — Foundation & Planning)**:
-   - Complete comparative evaluation of CAD tools and finalize primary selection.
-   - Define core numerical characteristics (envelope, payload, power budget, torque/speed targets, acoustic limits, BOM cost).
-   - Conduct research to identify multiple solution options for each key requirement (kinematics, docking, EE interface, sensors).
-   - Make justified selection of the primary option for each key requirement and formalize ADRs.
-   - Evaluate simulation tools (MuJoCo / Isaac Sim) for kinematic validation and controller testing.
-   - Compile preliminary assembly operations and required external tools list (directly constrains DFAA design).
-   - Refine roadmap based on research outcomes.
+   - Define core numerical characteristics (envelope dimensions, payload, power budget, torque/speed targets, acoustic limits, BOM cost).
+   - Develop kinematic and mechanical scheme (topology, DoF, relocatable base).
+   - Define COTS component composition (motors, drivers, sensors, compute, connectors).
+   - Compile preliminary assembly operations and required external tools (constrains DFAA).
+   - Determine minimum mandatory end-effectors and workspace/docking grid concept.
+   - Evaluate simulation tools (MuJoCo / Isaac Sim) for kinematic validation.
+   - Conduct research and make justified selection of primary options for key requirements; formalize ADRs.
+   - Refine roadmap based on outcomes.
