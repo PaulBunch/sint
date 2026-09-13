@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2026 sint project contributors
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 # Task: Test LLM + build123d infrastructure
 
 **Status:** closed
