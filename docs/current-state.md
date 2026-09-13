@@ -27,14 +27,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - Created `docs/ROADMAP.md` with phased plan (Phase 1–5) including initial steps discussion, CAD/tool selection, research of multiple options per key requirement, and justified selection criteria.
 - Integrated `ROADMAP.md` into critical document hierarchy (`AGENTS.md`, `docs/long-term-memory.md`).
 - **CAD Strategy (2026-09-06):** Adopted ADR-0001. Decided on Code-CAD (scripting) with mandatory headless execution and STEP as the source of truth for engineering data.
-- **CAD Infrastructure Testing (2026-09-13):**
-  - Completed Test S1 (Parametric Plate: `hardware/s1_parametric_plate.py`).
-  - Completed Test S2 (Joint Module: `hardware/s2_joint_module.py`).
-  - Completed Test S3 (Mini Assembly: `hardware/s3_mini_assembly.py`).
-  - Successfully exported all tests to STEP and STL using `scripts/cad-export.py` in headless mode.
-  - Resolved namespace pollution and `anytree.TreeError` issues by standardizing `_` prefix for intermediate or duplicated CAD variables.
-  - Refined CAD guidelines to prefer `Plane` over complex face selectors for robustness, and clarified duplicate CAD variable avoidance.
-  - Documented sandbox visualizer limits and venv execution guidelines in `docs/build123d-guidelines.md`.
+- **CAD Infrastructure Testing (2026-09-13):** Completed S1–S3 (parametric plate, joint module, mini assembly). Key fixes: `_` prefix for intermediate/duplicate variables (prevents `anytree.TreeError`), `Plane` for robust positioning, headless export (`cad-export.py`) preferred over `cad-show.py` due to sandbox limits. Guidelines updated (`docs/build123d-guidelines.md`). Test artifacts (`hardware/s1_*`, `s2_*`, `s3_*`) removed after validation.
 - Added conversation record (`docs/conversations/2026-09-04--roadmap.md`) on ROADMAP integration and simulation tool evaluation (MuJoCo vs Isaac Sim).
 - Added conversation record (`docs/conversations/2026-09-06--CAD-selection.md`) and ADR-0001 regarding CAD tooling.
 
