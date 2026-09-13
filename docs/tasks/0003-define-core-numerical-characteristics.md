@@ -27,13 +27,13 @@ Without numbers, later ADRs on motors, links, docks, and DFAA sequences cannot b
 - Exact microphone SNR curves
 
 ## Subtasks
-- [ ] N1. Collect constraints already in `spec.md` / success criteria (BOM <$1000, FDM 200³ mm, quiet motion, consumer power…)
-- [ ] N2. Propose **envelope / reach** working range (reach class, stowed size, dock spacing hypothesis)
-- [ ] N3. Propose **payload without EE** (kg) with rationale (assembly tasks: modules, tools, printed parts)
-- [ ] N4. Propose **power budget** (W continuous / peak; bus voltage hypothesis)
-- [ ] N5. Propose **joint torque & speed** bands (proximal vs distal if useful)
-- [ ] N6. Propose **acoustic limit** (e.g. dB(A) at 1 m or qualitative + measurable proxy)
-- [ ] N7. Confirm **BOM cost** target and what is included/excluded (one node vs full workspace)
+- [x] N1. Collect constraints already in `spec.md` / success criteria (BOM <$1000, FDM 200³ mm, quiet motion, consumer power…)
+- [x] N2. Propose **envelope / reach** working range (reach class, stowed size, dock spacing hypothesis)
+- [x] N3. Propose **payload without EE** (kg) with rationale (assembly tasks: modules, tools, printed parts)
+- [x] N4. Propose **power budget** (W continuous / peak; bus voltage hypothesis)
+- [x] N5. Propose **joint torque & speed** bands (proximal vs distal if useful)
+- [x] N6. Propose **acoustic limit** (e.g. dB(A) at 1 m or qualitative + measurable proxy)
+- [x] N7. Confirm **BOM cost** target and what is included/excluded (one node vs full workspace)
 - [ ] N8. Write one-page summary table → promote candidates into conversation; freeze “working targets” in current-state or a small ADR when stable
 
 ## Done when
