@@ -10,6 +10,7 @@ tags: []
 related:
   - docs/tasks/0004-kinematic-and-mechanical-scheme.md
   - docs/conversations/2026-09-14--kinematic-survey-notebooklm.md
+  - docs/tasks/0004-kinematic-constraints.md
 ---
 
 # 
@@ -272,5 +273,117 @@ K1 constraints
 * **Сценарий питания (A vs B):** Место аккумулятора и планок докирования определяет балансировку руки в момент перестыковки между доками.
 
 *На этапе задачи 0004 не требуется разводка плат или 3D-моделирование корпусов — требуется зафиксировать **правила размещения** (Placement Policy).*
+
+---
+**Bunch**
+
+Я правильно понимаю, результаты этих задач:
+```md
+### K1. Constraint sheet
+- [ ] K1.1 One-page checklist: ADR-0003 + spec requirements that any scheme must satisfy
+- [ ] K1.2 Explicit DFAA veto rules (what makes a scheme unacceptable)
+```
+Нужны как рамки для проведения обзорной работы?
+
+Где разместить в проекте результат выполнения этой задачи? В отедльном документе, а потом загрузить его в NotebookLM или оставить в «простыне» файла с обсуждением?
+
+Реализуй эти задачи на основе свежих данных из репо проекта.
+
+---
+**Grok 4.5 Fasy**
+
+### Ответ на организацию
+
+**Да** — K1.1 и K1.2 как раз **рамки для K2 (survey) и для отбора схем**.  
+NotebookLM и любой обзор должны видеть один и тот же короткий «filter»: что обязательно, что запрещено, что non-goal.
+
+**Куда класть результат**
+
+| Вариант | Оценка |
+|---------|--------|
+| Только «простыня» conversation | Плохо: трудно цитировать, легко потерять |
+| **Отдельный документ в git** | **Лучше** |
+| Загрузка **этого** документа в NotebookLM вместе со списком внешних URL | Да — как *project constraints*, не вместо источников |
+
+Рекомендуемый путь:
+
+```text
+docs/tasks/0004-kinematic-constraints.md
+```
+
+(или `docs/decisions/drafts/…` — но это ещё не ADR; логичнее рядом с task 0004)
+
+В NotebookLM: загрузить **этот файл** + curated source list.  
+В conversation — только ссылка «K1 done → `docs/tasks/0004-kinematic-constraints.md`».
+
+Готовое содержимое документа (K1.1 + K1.2) по актуальным `spec.md` и ADR-0003: `docs/tasks/0004-kinematic-constraints.md`
+
+---
+
+### Что сделать в репо
+
+1. Сохранить как `docs/tasks/0004-kinematic-constraints.md` (или имя на ваш вкус).  
+2. В `0004-kinematic-and-mechanical-scheme.md`:
+
+```markdown
+### K1. Constraint sheet
+- [x] K1.1 … → [0004-kinematic-constraints.md](0004-kinematic-constraints.md)
+- [x] K1.2 … → same file
+```
+
+3. В survey conversation / NotebookLM: этот файл = **project scope document**.
+
+На этом K1 можно считать выполненным; дальше — K2.1–K2.3 (scope + criteria + URL list) уже по этим рамкам.
+
+---
+**Bunch**
+
+Супер! Отличный черновик. Предлагаю только немного доработать раздел `How to use this sheet`. Например, с самого начала понятно, что Canadarm2 не подходит под наши требования, но мы можем позаимствовать конкретные технические решения оттуда при условие того, что они могут быть масштабированы под наши требования. Если согласен, покажи какие изменения нужно внести в предложенный черновки. Можешь не переписывать документ полностью.
+
+---
+**Grok 4.5 Fast**
+
+Согласен. Имеет смысл явно разрешить **заимствование паттернов** у систем, которые целиком не проходят K1 (Canadarm2, крупные cable-arm и т.д.), если идея масштабируется под ADR-0003 / COTS / DFAA.
+
+Достаточно точечно поправить конец файла — блок **How to use this sheet** (и одна короткая ремарка в Non-claims).
+
+---
+
+### Diff-смысл правок
+
+**1. Заменить / расширить `## How to use this sheet`:**
+
+```markdown
+## How to use this sheet
+
+1. **Survey (K2 / NotebookLM):**  
+   - **Whole-system gate:** keep as *primary analogues* only systems that could plausibly pass K1.1 and not trigger K1.2.  
+   - **Pattern mining (allowed):** systems that fail as a whole (e.g. Canadarm2 / ERA class — wrong scale, cost, non-COTS, not DFAA-agent serviceable) may still contribute **isolated technical ideas** (dual-ended docking logic, latch concepts, walking sequence, load-path thinking), **if and only if** each borrowed idea can be scaled or re-implemented under ADR-0003, COTS/FDM, and DFAA vetoes.  
+   - When dropping a full system, tag the veto id; when retaining a pattern from it, note *“pattern only — not full-system analogue”* and the scaling condition.
+
+2. **Candidate schemes (K4):** each S1/S2/S3 must include a short “passes checklist / no veto” note. Borrowed patterns must be named explicitly (source → scaled mechanism).
+
+3. **Scoring (K5):** full-scheme DFAA veto failures are disqualifying, not soft −1 points. A scheme that *only* works by assuming industrial Canadarm-class hardware is vetoed even if the topology sketch looks elegant.
+
+4. **ADR (K6):** selected scheme cites this file + ADR-0003; list rejected full-system analogues vs retained scaled patterns separately if useful.
+```
+
+**2. В `## Non-claims` добавить один пункт:**
+
+```markdown
+- Rejecting a platform as a full-system analogue does **not** forbid scaled reuse of individual mechanisms or operational concepts from that platform.
+```
+
+---
+
+### Зачем так
+
+| Без правки | С правкой |
+|------------|-----------|
+| Риск выкинуть Canadarm2 «целиком из головы» | Canadarm2 = не прототип sint, но источник relocatable/dock *логики* |
+| Survey только «маленькие руки» | Survey = small primary analogues **+** large systems as pattern libraries |
+| Путаница retain/drop | Явные метки: full-system vs pattern-only |
+
+Остальной текст K1.1 / K1.2 можно не трогать.
 
 ---

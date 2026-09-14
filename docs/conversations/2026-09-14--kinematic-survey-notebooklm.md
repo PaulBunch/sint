@@ -10,6 +10,7 @@ tags: []
 related:
   - docs/tasks/0004-kinematic-and-mechanical-scheme.md
   - docs/conversations/2026-09-14--kinematic-mechanical-scheme.md
+  - docs/tasks/0004-kinematic-constraints.md
 ---
 
 # 

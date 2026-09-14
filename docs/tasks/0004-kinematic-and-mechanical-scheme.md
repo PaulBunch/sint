@@ -40,8 +40,8 @@ Out of scope for this task:
 - [x] K0.2 Link this task from ROADMAP item
 
 ### K1. Constraint sheet
-- [ ] K1.1 One-page checklist: ADR-0003 + spec requirements that any scheme must satisfy
-- [ ] K1.2 Explicit DFAA veto rules (what makes a scheme unacceptable)
+- [x] K1.1 One-page checklist: ADR-0003 + spec requirements that any scheme must satisfy → [0004-kinematic-constraints.md](0004-kinematic-constraints.md)
+- [x] K1.2 Explicit DFAA veto rules (what makes a scheme unacceptable) → same file
 
 ### K2. Survey of implemented analogues (curated, not open-web sprawl)
 - [ ] K2.1 Define survey scope (include / exclude)
