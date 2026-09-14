@@ -7,10 +7,10 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 **Parent:** `docs/tasks/0004-kinematic-and-mechanical-scheme.md`  
 **Constraints filter:** `docs/tasks/0004-kinematic-constraints.md`  
-**Status:** K2.1–K2.2 draft complete; K2.3 source list next
+**Status:** K2.1–K2.3 draft complete
 
-This document defines **what** we survey and **which projects qualify** as sources.  
-It does not list final URLs (K2.3) and does not choose sint’s topology (K4–K6).
+This document defines **what** we survey and **which projects qualify** as sources.
+It does not choose sint’s topology (K4–K6).
 
 ---
 
@@ -148,7 +148,70 @@ Full-system **P** sources should be plausible under project constraints *in spir
 
 ---
 
-## Next step (K2.3)
+## K2.3 — Curated source list (kinematics & mechanical schemes)
 
-Build a URL-only table: project, tag (P/M/L), links, one-line “why included”, pneumatic Y/N/unknown.  
-Do not commit copyrighted full texts or videos into git.
+**Rule:** URLs only in git. Do not commit PDFs, videos, or full scraped corpora.  
+For NotebookLM: upload *selected* public pages / papers the user legally obtains; keep this table as the index.
+
+**Tags:** **P** primary · **M** pattern-only · **L** low priority  
+**Pneumatics:** **Y** documented air/vacuum path · **N** electrical only · **?** unknown / not primary lesson
+
+### Primary analogues (deep review)
+
+| # | Project | Tag | Pneum. | Why (kinematics / mechanics) | Priority sources (URL) |
+|---|---------|-----|--------|------------------------------|-------------------------|
+| 1 | **PAROL6** (Source Robotics) | P | **Y** | Open 6-DoF desktop serial; PETG structure; planetary+belt reductions; **DH + link lengths published**; **2 pneumatic connectors**, tubes routed base→forearm for pneumatic/vacuum gripper | [GitHub README](https://github.com/Source-Robotics/PAROL6-Desktop-robot-arm) · [Specs + DH / kinematic diagram](https://source-robotics.github.io/PAROL-docs/page2_2/) · [Peripherals / pneumatics](https://source-robotics.github.io/PAROL-docs/page5/) · [BOM](https://github.com/Source-Robotics/PAROL6-Desktop-robot-arm/blob/main/BOM/BOM.md) · [Docs home](https://source-robotics.github.io/PAROL-docs/) |
+| 2 | **AR4-MK5** (Annin Robotics) | P | N/? | Mature open DIY 6-DoF; build manual + STL; **standard & modified DH sheets**; spherical-wrist serial layout; practical joint packaging | [MK5 product / downloads hub](https://anninrobotics.com/mk5/) · [Downloads (manual, DH sheets, STL)](https://anninrobotics.com/downloads/) · [Kinematics tutorial page](https://anninrobotics.com/Tutorials/) · [ROS 2 stack (URDF)](https://github.com/Ekumen-OS/ar4) |
+| 3 | **INNFOS GLUON** | P | N | Modular serial 6-DoF; repeated **integrated SCA/QDD actuators** in joints; quiet BLDC class; ~0.42 m reach / ~0.5 kg payload order | [Hackster overview](https://www.hackster.io/news/innfos-unveils-a-modular-robotic-arm-driven-by-sca-actuators-e436f9b29823) · [Controller/docs mirror (params)](https://github.com/mintasca/innfos-gluon-controller) · [Skyentific review (arm)](https://www.youtube.com/watch?v=ZlJENPxR7yM) · [Actuator teardown/control](https://www.youtube.com/watch?v=0sgR_RaxYu4) · Optional patent trail: [US20190262989A1](https://patents.google.com/patent/US20190262989A1/en) |
+| 4 | **LIMS2-AMBIDEX** (IRIM Lab / KOREATECH) | P/M | N | **7-DoF tendon-driven**; motors concentrated proximal; tension amplification; low distal inertia; wrist rolling-contact mechanism | [IROS 2018 paper (LIMS2)](https://www.researchgate.net/publication/330595465_Development_of_Low-Inertia_High-Stiffness_Manipulator_LIMS2_for_High-Speed_Manipulation_of_Foldable_Objects) · [Mechatronics 2020 hybrid model / AMBIDEX kinematics notes](https://www.sciencedirect.com/science/article/abs/pii/S0957415820300787) · [Basic motion test](https://www.youtube.com/watch?v=Sg1z725Dsd8) · [Mechanical design video](https://www.youtube.com/watch?v=aLaqMreVj9o) · [IRIM Lab channel](https://www.youtube.com/@IRIMLAB) |
+| 5 | **myCobot 280 M5** (Elephant Robotics) | P | N | Compact serial 6-DoF baseline; small reach/payload; joint module density limits; consumer product docs | [Specs (M5 2023)](https://www.elephantrobotics.com/en/mycobot-280-m5-2023-specificatons-en/) · [GitBook product parameters](https://docs.elephantrobotics.com/docs/mycobot_280_m5_en/1-ProductInformation/2.ProductParameter/2-ProductParameters.html) |
+
+### Pattern-only (relocatable base / dual-ended interface)
+
+| # | Project | Tag | Pneum. | Why | Priority sources (URL) |
+|---|---------|-----|--------|-----|-------------------------|
+| 6 | **Canadarm2 (SSRMS)** | M | ? | **Identical LEEs on both ends**; base change via PDGF; latch + power/data grapple — scale down *logic*, not hardware | [CSA — About Canadarm2](https://www.asc-csa.gc.ca/eng/iss/canadarm2/about.asp) · [LEE image / description](https://www.asc-csa.gc.ca/eng/multimedia/search/image/9362) · [StackExchange — LEE operational stages](https://space.stackexchange.com/questions/55753/what-are-the-operational-details-of-the-canadarm-latching-end-effectors) · [NASA LEE context](https://www.nasa.gov/image-article/leading-end-effector-canadarm2-robotic-arm/) |
+| 7 | **European Robotic Arm (ERA)** | M | ? | Same family: **symmetric end effectors**, walk between base points; power/data at base points | [ESA ESMATS paper (EES / grapple)](https://www.esmats.eu/amspapers/pastpapers/pdfs/2014/cruijssen.pdf) · [Wikipedia ERA (structure overview)](https://en.wikipedia.org/wiki/European_Robotic_Arm) |
+
+### Explicitly deferred / exclude from this round
+
+| Project | Decision |
+|---------|----------|
+| Berkeley Blue / Open Arms | Queue — promote only if open mechanical package is as clear as PAROL6/AR4 |
+| Haro380 | Queue — identity + public kinematics unclear |
+| 1X EVE | **Exclude** from kinematic survey (mobile platform, not arm scheme) |
+
+---
+
+### NotebookLM loading hints (aligned with Gemini)
+
+| Cluster | Feed NotebookLM preferentially | Extract for sint |
+|---------|--------------------------------|------------------|
+| **PAROL6** | README, BOM, specs/DH page, pneumatics peripherals page | Link lengths, joint reduction types, **air path base→forearm→gripper** |
+| **AR4-MK5** | Build manual TOC/chapters on structure, DH calculation sheets, kinematics tutorial | Serial 6-DoF + spherical wrist; modular DIY joint layout |
+| **GLUON** | Product/review summaries; actuator-level material; patent abstract if useful | Repeated in-joint actuator module; quiet integrated drive |
+| **AMBIDEX / LIMS2** | IROS paper + lab mechanism videos | Proximal motor placement, tendon routing, tension amplification, wrist mechanism |
+| **Canadarm2 / ERA** | CSA/ESA pages on LEE/EES and base-change narrative only | Dual-ended latch + power/data; walk sequence — **pattern only** |
+
+**Pneumatic design question (track in K2.5 takeaways):**  
+Most desktop serial arms are **electrical-only** through the wrist. **PAROL6** documents onboard pneumatic connectors and tube routing for tool air/vacuum. Space arms show **multi-utility** pass-through at the latch (power/data; sometimes mechanical power). For sint, note whether dock→EE should reserve an **air channel** for pneumatic EE without treating it as mandatory in ADR-0003 yet.
+
+---
+
+### Suggested NotebookLM prompt skeleton (K2.4)
+
+```text
+You may use ONLY the uploaded sources. Project constraints are in 0004-kinematic-constraints.md.
+
+For each primary system (PAROL6, AR4-MK5, GLUON, LIMS2-AMBIDEX, myCobot 280):
+1) Topology (DoF layout, wrist type, approximate link arrangement)
+2) Actuator placement (in-joint vs remote) and transmission type
+3) How utilities reach the EE (electrical / pneumatic / none)
+4) What is DFAA-friendly vs hostile if an agent had to assemble/service it
+5) What scales to: reach 0.5–0.8 m, payload 0.5 kg, ≥2 docks, COTS/FDM
+
+For Canadarm2 and ERA only:
+- Extract relocatable-base / dual-ended operating pattern; ignore mass, cost, and flight hardware.
+
+Output a retain/drop table of mechanical patterns for sint (not product recommendations).
+```

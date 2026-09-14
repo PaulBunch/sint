@@ -47,8 +47,8 @@ Out of scope for this task:
 - [x] K2.1 Define survey scope (include / exclude) → [0004-kinematic-survey-scope.md](0004-kinematic-survey-scope.md)
   - Include: desktop/cobot serial arms, dual-ended or relocatable concepts, tendon/remote-drive arms, quiet BLDC modular joints, printable actuator stacks
   - Exclude: industrial 50+ kg arms, pure SCARA/Delta as primary, legged humanoids as primary
-- [x] K2.2 Define selection criteria for analogues (reached hardware, public docs/video, relevance to DFAA/relocatable/quiet/COTS) → same
-- [ ] K2.3 Build source list (URLs only; **do not commit copyrighted full texts/media to git**) → same
+- [x] K2.2 Define selection criteria for analogues (reached hardware, public docs/video, relevance to DFAA/relocatable/quiet/COTS) → same (§ K2.2)
+- [x] K2.3 Build source list (URLs only; **do not commit copyrighted full texts/media to git**) → same (§ K2.3)
 - [ ] K2.4 Run structured review (optional: Google NotebookLM bounded to that source list)
 - [ ] K2.5 Write takeaways table: pattern → pros/cons for sint → retain / drop
 - [ ] K2.6 Record survey conversation (prompts, limits, summary). Optional: short “patterns retained” note or lightweight ADR if team wants a hard gate before drawing schemes

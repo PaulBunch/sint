@@ -558,3 +558,67 @@ docs/tasks/0004-kinematic-survey-scope.md
 3. **K2.1/K2.2** — реализованы в блоке выше; дальше — **K2.3** (URL-таблица по provisional set).
 
 ---
+**Gemini 3.6 Flash Extended**
+
+## Задача K2.3 — Таблица источников обзора (URL-only Source List)
+
+Ниже представлен готовый блок секции **K2.3**, подготовленный для вставки в `docs/tasks/0004-kinematic-survey-scope.md`. Все ссылки ведут на канонические открытые репозитории, техническую документацию и научные публикации (без загрузки бинарников/видео в git).
+
+---
+
+### K2.3 — Curated source list for NotebookLM review
+
+| Проект | Tag | Канонические URL | Ключевые аспекты для изучения | Pneumatic / EE Pass-through |
+| --- | --- | --- | --- | --- |
+| **PAROL6** *(Source Robotics)* | **P** | • [GitHub: Source-Robotics/PAROL6](https://github.com/Source-Robotics/PAROL6-Desktop-robot-arm)<br>• [MakerWorld: PAROL6 3D Model & Specs](https://makerworld.com/en/models/419189-parol6-3d-printed-desktop-robotic-arm) | 3D-печатный 6-DoF desktop arm, планетарные редукторы, ремённые передачи, компоновка масс, изолированные I/O / CAN-шина. | **Да** *(пневмоканалы и комплиантный схват)* |
+| **INNFOS GLUON** | **P** | • [Hackster: INNFOS SCA Actuators](https://www.hackster.io/news/innfos-unveils-a-modular-robotic-arm-driven-by-sca-actuators-e436f9b29823)<br>• [GitHub: SuperHouse GLUONC Controller](https://github.com/SuperHouse/GLUONC) | Серийный тихий BLDC+FOC модуль (SCA: мотор, привод, энкодер, волновой редуктор в одном корпусе), сквозной CAN-bus. | **Нет** *(только питание / CAN)* |
+| **Annin Robotics AR4 MK5** | **P** | • [Official Docs: Annin Robotics](https://www.anninrobotics.com/)<br>• [GitHub: Ekumen-OS/ar4 ROS2 stack](https://github.com/Ekumen-OS/ar4) | Открытый 6-DoF манипулятор промышленного типа на шаговых/сервоприводах; технологичность DFAA-сборки человеком. | **Нет** *(электрический серво-схват)* |
+| **IRIM Lab / NAVER AMBIDEX (LIMS2)** | **P** | • [Aparobot: AMBIDEX Specs](https://www.aparobot.com/robots/ambidex)<br>• [Hackaday Overview & Mechanisms](https://hackaday.com/2019/10/20/humanoid-robot-has-joints-that-inspire/) | Дистанционный тросовый привод (tendon/cable-driven), распределение масс в плечевом узле, двойной сустав локтя (DLCJ), малая инерция. | **Нет** *(Focus: haptic/cable)* |
+| **Elephant Robotics myCobot 280** | **P** | • [GitHub: elephantrobotics/mycobot_ros](https://github.com/elephantrobotics/mycobot_ros)<br>• [Docs: myCobot 280 M5](https://www.google.com/search?q=https://docs.elephantrobotics.com/) | Компактный desktop 6-DoF базового уровня, плотная упаковка joint-модулей, ограничения по грузоподъёмности/жесткости. | **Опционально** *(внешняя прокладка)* |
+| **Canadarm2 (SSRMS)** | **M** | • [CSA: Canadarm2 technical background](https://www.asc-csa.gc.ca/eng/iss/canadarm2/)<br>• [NASA: Space Station Remote Manipulator System](https://www.nasa.gov/) | Симметричная схема с двумя одинаковыми рабочий/базовый концами (Latching End Effectors), логика смены базы (walk-off dock). | **Да** *(передача флюидов/энергии/данных через PDGF)* |
+| **European Robotic Arm (ERA)** | **M** | • [ESA: European Robotic Arm Overview](https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/International_Space_Station/European_Robotic_Arm) | Симметричный манипулятор с возможностью шагания по станции (relocatable base), автоматическая фиксация за базовые точки. | **Да** *(силовые и коммуникационные разъёмы)* |
+
+---
+
+### Замечания по формированию корпуса источников для NotebookLM (K2.4)
+
+1. **Формат скормливаемых данных:**
+* Для **PAROL6** и **AR4** в NotebookLM стоит загрузить страницы `README.md` репозиториев, мануалы по сборке (PDF/Markdown) и описание кинематических звеней.
+* Для **GLUON** и **AMBIDEX** — файлы статей/патентов о приводах SCA и кинематике роликовых/тросовых суставов.
+* Для **Canadarm2 / ERA** — главу или выдержку из документов NASA/ESA о структуре Latching End Effector (LEE) и логикепереключения с базовой точки на инструментальную.
+
+2. **Зафиксированный вопрос по пневмоканалу:**
+* Во всех кандидатах классического desktop-класса (кроме PAROL6) прокладка утилит ограниченна электрическими линиями. PAROL6 и космические манипуляторы служат ключевыми примерами того, как проектировать каналы прохода (пневматика/вакуум) через сочленения и стыковочные узлы (docks).
+
+---
+**Bunch**
+
+Переходим к подбору источников информации с акцентом на кинематические и механические схемы. Результат допишем в только что созданный 0004-kinematic-survey-scope.md.
+
+Gemini предложил следующие рекомендации к подбору источников, к которым можно прислушаться. Также можно поискать рецензируемые статьи по проприетарным кандидатам, у которых закрыта инженерная документация.
+
+(список замечаний для NotebookLM от Gemini из предыдущего сообщения)
+
+---
+**Grok 4.5 Fast**
+
+Готовый блок **K2.3** дописан в `docs/tasks/0004-kinematic-survey-scope.md`. Акцент на кинематику/механику; учтены замечания Gemini и пневмоканал.
+
+---
+
+### Что сделать в репо
+
+1. Дописать блок в `0004-kinematic-survey-scope.md` после K2.1–K2.2.  
+2. В parent task:
+
+```markdown
+- [x] K2.3 Build source list → 0004-kinematic-survey-scope.md (§ K2.3)
+- [ ] K2.4 Run structured review (NotebookLM + sources above)
+- [ ] K2.5 Takeaways table …
+```
+
+3. Для NotebookLM: не грузить «весь интернет» — только строки из таблицы + constraint sheet.
+
+**PAROL6** подтверждён как главный источник по **пневмотрассе** (2 connector’а, трубки base→forearm). Это сильнее, чем типичный desktop-only electrical loom, и напрямую закрывает ваш open question без опоры только на космические LEE.
+
+---
