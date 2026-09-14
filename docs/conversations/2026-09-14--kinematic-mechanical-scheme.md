@@ -11,6 +11,7 @@ related:
   - docs/tasks/0004-kinematic-and-mechanical-scheme.md
   - docs/conversations/2026-09-14--kinematic-survey-notebooklm.md
   - docs/tasks/0004-kinematic-constraints.md
+  - docs/tasks/0004-kinematic-survey-scope.md
 ---
 
 # 
@@ -385,5 +386,175 @@ docs/tasks/0004-kinematic-constraints.md
 | Путаница retain/drop | Явные метки: full-system vs pattern-only |
 
 Остальной текст K1.1 / K1.2 можно не трогать.
+
+---
+**Bunch**
+
+Преходим к задачам:
+```md
+### K2. Survey of implemented analogues (curated, not open-web sprawl)
+- [ ] K2.1 Define survey scope (include / exclude)
+  - Include: desktop/cobot serial arms, dual-ended or relocatable concepts, tendon/remote-drive arms, quiet BLDC modular joints, printable actuator stacks
+  - Exclude: industrial 50+ kg arms, pure SCARA/Delta as primary, legged humanoids as primary
+- [ ] K2.2 Define selection criteria for analogues (reached hardware, public docs/video, relevance to DFAA/relocatable/quiet/COTS)
+```
+
+Я не совсем поинмаю, чем задача K2.2 отличается от уже подготовленного документа?
+
+В рамках подготовки списка проектов для обзора предлагаю обсудить следующих кандидатов (мне интересно узнать твоё мнение):
+```md
+## Основные кандидаты:
+- Annin Robotics AR4 MK5
+- POROL6
+- Canadarm2
+- European Robotic Arm
+- INNFOS GLUON — modular desktop arm / integrated quiet actuators (Kickstarter & reviews)
+- IRIM Lab KOREATECH — LIMS2-AMBIDEX tendon-driven low-inertia arms
+
+## Потенциальные кандидаты:
+- Robot Learning Lab (RLL) — Project Blue (также известен как Berkeley Open Arms)
+- 1X Technologies — EVE (Halodi Eve)
+- Haro380
+- Elephant Robotics myCobot 280 M5 X Edition
+```
+
+---
+**Grok 4.5 Fast**
+
+### K2.2 vs constraint sheet — в чём разница
+
+| | **K1 (`0004-kinematic-constraints.md`)** | **K2.2 (selection criteria for analogues)** |
+|---|------------------------------------------|-----------------------------------------------|
+| Вопрос | Какой **наша** схема **должна** уметь / что **запрещено** | Какой **чужой проект** вообще **имеет смысл читать** |
+| Объект | Будущий sint | Источники для survey |
+| Пример | «Veto, если нет ≥2 dock story» | «Берём в обзор только то, что дошло до железа и есть публичное видео/док» |
+| Пример | «Payload 0.5 kg continuous» | «Релевантен ли проект к quiet BLDC / relocatable / DFAA, даже если цифры другие» |
+
+K1 = **фильтр на выход** (наша схема).  
+K2.2 = **фильтр на вход** (кого изучаем).
+
+K2.1 = **тематические границы** (какие *классы* машин).  
+K2.2 = **качество и полезность источника** (железо vs слайд, открытость, чему учимся).
+
+Краткий текст для K2.2 (можно вписать в task):
+
+```markdown
+### K2.2 Selection criteria (for including a project in the survey)
+
+Include a source if most of the following hold:
+1. **Reached hardware** — built and demonstrated, not only a paper concept
+2. **Public evidence** — docs, paper, and/or video sufficient to judge topology / actuation / docking
+3. **Relevance to at least one sint axis:** relocatable/dual-ended logic, serial modular joints, remote/tendon drive, quiet BLDC, printable/COTS actuators, agent-serviceable modularity
+4. **Learnable pattern** — even if the full system fails K1, a scalable subsystem idea exists (see constraint sheet “pattern mining”)
+
+Deprioritize or exclude from *primary* list if:
+- Brochure-only / no motion evidence
+- Closed industrial cell with no transferable mechanics
+- Relevant only to locomotion (legs) or planar pick-and-place as the main lesson
+```
+
+---
+
+### Мнение по вашему списку
+
+Легенда: **P** = primary analogue (близкий класс), **M** = pattern mine only, **L** = low priority / узкий урок, **X** = слабый fit для этого survey.
+
+#### Основные кандидаты
+
+| Проект | Роль | Комментарий |
+|--------|------|-------------|
+| **INNFOS GLUON** | **P** | Уже в implementation-concepts: тихий modular BLDC, ~0.5 kg, desktop serial. Обязателен. |
+| **IRIM LIMS2-AMBIDEX** | **P** (pattern + partial system) | Ключевой урок remote drive / mass distribution; целиком не COTS/DFAA-агент, но паттерн — must. |
+| **Annin AR4 MK5** | **P** | Открытый/полуоткрытый 6-DoF, реальное железо, maker-сборка, serial in-joint. Хорош для DFAA-модульности и «как собирает человек → что упростить для агента». |
+| **POROL6** (если это open 6-DoF / Poroline-класс open arm — уточните точный репозиторий при K2.3) | **P** или **L** | Имеет смысл, если есть публичная кинематика + BOM/сборка; иначе не раздувать список. Перед фиксацией — одна проверка «hardware + docs». |
+| **Canadarm2** | **M only** | Не primary: масштаб, стоимость, не COTS, не agent-DFAA. **Оставить** ради dual-ended / walk-off-dock / base change logic (как в constraint sheet). |
+| **European Robotic Arm (ERA)** | **M only** | То же семейство, что Canadarm: relocatable base, symmetrical operations. Дублирует Canadarm2 — в survey достаточно **одного** детального + второго короткой строкой «same family». |
+
+#### Потенциальные
+
+| Проект | Роль | Комментарий |
+|--------|------|-------------|
+| **Berkeley / RLL Blue (Open Arms)** | **P** (если смотрите open hardware arm stack) | Полезен для open manipulators + learning stack; кинематика скорее классический serial. Брать за modularity/open docs, не за relocatable base. |
+| **Elephant myCobot 280** | **P (light)** | Массовый desktop 6-DoF, малый payload, понятная serial схема, слабый relocatable. Урок: компактные joint modules, лимиты payload/reach — хорошо стыкуется с N3/N2. |
+| **1X EVE (Halodi)** | **L / M** | Колёсный humanoid-service, не arm-primary. Имеет смысл только точечно (тихоходность, human-near), **не** как kinematic analogue руки. Легко размазать scope — я бы **не** в core list. |
+| **Haro380** | **L** до проверки | Нужно ясно, *какой* Haro380 (часто путают линейки). В core не ставить, пока нет 2–3 публичных артефактов (DoF, drive, video). Иначе шум в NotebookLM. |
+
+---
+
+### Рекомендуемый состав survey (сбалансированный)
+
+**Primary (глубоко):**
+1. INNFOS GLUON  
+2. Annin AR4 MK5  
+3. IRIM LIMS2-AMBIDEX  
+4. Elephant myCobot 280 (короче, compact serial baseline)  
+5. Berkeley Blue / open arms — *если* подтверждается открытая мехчасть; иначе заменить на другой open 6-DoF (e.g. SO-ARM / similar — на этапе K2.3)
+
+**Pattern-only (коротко):**
+6. Canadarm2 (reloctable / dual-role ends)  
+7. ERA — one paragraph, same family  
+
+**Optional / queue (не блокируют K2.5):**
+- POROL6 — после верификации  
+- Haro380 — после верификации  
+- 1X EVE — лучше **исключить** из kinematic survey (scope creep)
+
+Так вы попадаете в дух K2.1 (include/exclude) и не раздуваете NotebookLM до 50 равноправных «главных».
+
+---
+
+### Практично для task
+
+- **K2.1** — зафиксировать include/exclude как в 0004 (+ «space arms = pattern-only»).  
+- **K2.2** — вставить критерии выше (hardware, public evidence, relevance, pattern-mining).  
+- **K2.3** — URL-список по **рекомендуемому составу**; POROL6/Haro380 — только после 10-минутной проверки «есть железо + доки».
+
+Могу следующим шагом набросать готовые формулировки **K2.1 + K2.2** одним markdown-блоком для вставки в `0004` и шаблон таблицы источников для K2.3.
+
+---
+**Bunch**
+
+1. Я опечатался, я имел ввиду проект PAROL6 от Source Robotics: https://github.com/Source-Robotics/PAROL6-Desktop-robot-arm
+   Этот проект имеет для меня больший приоритет, чем дрожащая рука SO-ARM. Как минимум в этом проекте можно изучить пневматическую силовую систему. У меня есть мысли, что нам нужно будет прокидвать пневматический канал от dock до энд-эффектора. Для пневматических типов эндэффекторов. 
+2. Насчёт расширения task-0004. Если мы принимаем решени фиксировать резульат выполнения K2.1 – K2.3 в tasks, то это нужно делать в отдельном документе, а не в уже имещющихся: 0004-kinematic-and-mechanical-scheme и 0004-kinematic-constraints.
+3. Реализуй K2.1 и K2.2. После этого перейдём к подбору источников информации для обзора.
+
+---
+**Grok 4.5 Fast**
+
+### Уточнения
+
+**PAROL6 (Source Robotics)** — да, логичнее SO-ARM: открытый desktop arm, железо + репо, плюс у вас явный интерес к **пневматике до EE**. Имеет смысл **primary** в survey, с отдельной строкой takeaway: «нужен ли air pass-through dock→EE». Это не ломает K1, но расширяет R3 (интерфейс EE) на возможный **пневмоканал** — зафиксировать как *open design question*, не как требование ADR-0003.
+
+**Куда писать K2.1–K2.3:** согласен — **отдельный документ**, не раздувать `0004-kinematic-and-mechanical-scheme.md` и не смешивать с constraint sheet.
+
+Рекомендуемый файл:
+
+```text
+docs/tasks/0004-kinematic-survey-scope.md
+```
+
+В task 0004 только ссылки и чекбоксы `[x]` → этот файл.
+
+Готовое содержимое для **K2.1 + K2.2** (K2.3 — следующим шагом) → [0004-kinematic-survey-scope.md](docs/tasks/0004-kinematic-survey-scope.md)
+
+---
+
+### В parent task 0004
+
+```markdown
+### K2. Survey …
+- [x] K2.1 … → [0004-kinematic-survey-scope.md](0004-kinematic-survey-scope.md)
+- [x] K2.2 … → same
+- [ ] K2.3 Build source list …
+```
+
+---
+
+### Кратко
+
+1. **PAROL6** — в primary; пневмоканал dock→EE — open question в survey.  
+2. **K2.1–K2.3** — отдельный `0004-kinematic-survey-scope.md` (сейчас K2.1–K2.2).  
+3. **K2.1/K2.2** — реализованы в блоке выше; дальше — **K2.3** (URL-таблица по provisional set).
 
 ---
