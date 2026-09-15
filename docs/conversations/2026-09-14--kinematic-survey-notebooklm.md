@@ -1,22 +1,29 @@
 ---
-title: 
-date_updated: 2026-09-14
+title: Исследование кинематических и механических схем (NotebookLM)
+date_created: 2026-09-14
 date_updated: 2026-09-15
 participants: [Bunch, Gemini]
-status: open
-closed_reason: 
+status: closed
+closed_reason: Обзор завершен, выводы сформулированы
 language: ru
-tags: []
+tags: [kinematics, research, mechanical-design, survey]
 related:
   - docs/tasks/0004-kinematic-and-mechanical-scheme.md
   - docs/conversations/2026-09-14--kinematic-mechanical-scheme.md
   - docs/tasks/0004-kinematic-constraints.md
   - docs/tasks/0004-kinematic-survey-scope.md
+  - docs/decisions/0004-kinematic-survey-patterns.md
 ---
 
-# 
+# Исследование кинематических и механических схем (NotebookLM)
 
 ## Summary
+В ходе обсуждения проведен сравнительный анализ существующих роботизированных систем (PAROL6, AR4-MK5, INNFOS GLUON, LIMS2-AMBIDEX, myCobot 280) и космических манипуляторов (Canadarm2, ERA). Сформулированы рекомендации для проекта `sint`:
+- Подтверждена целесообразность несимметричной схемы с выносом моторов к основанию и тросовым приводом (паттерн LIMS2).
+- Рассмотрены стратегии "перешагивания" между доками: приоритет отдается либо усилению запястного сустава, либо использованию двухэтапного дока (Dual-Latch).
+- Поддержана концепция локального "спинного мозга" (MCU в звеньях) для компенсации нелинейностей механики.
+- Рекомендован отказ от переключаемых трансмиссий в пользу выделенных BLDC моторов.
+- Подготовлена база для расчета крутящих моментов при вылете 0.5-0.8 м.
 
 
 ## Discussion

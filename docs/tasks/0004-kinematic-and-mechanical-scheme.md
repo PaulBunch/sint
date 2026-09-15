@@ -49,9 +49,9 @@ Out of scope for this task:
   - Exclude: industrial 50+ kg arms, pure SCARA/Delta as primary, legged humanoids as primary
 - [x] K2.2 Define selection criteria for analogues (reached hardware, public docs/video, relevance to DFAA/relocatable/quiet/COTS) → same (§ K2.2)
 - [x] K2.3 Build source list (URLs only; **do not commit copyrighted full texts/media to git**) → same (§ K2.3)
-- [ ] K2.4 Run structured review (optional: Google NotebookLM bounded to that source list)
-- [ ] K2.5 Write takeaways table: pattern → pros/cons for sint → retain / drop
-- [ ] K2.6 Record survey conversation (prompts, limits, summary). Optional: short “patterns retained” note or lightweight ADR if team wants a hard gate before drawing schemes
+- [x] K2.4 Run structured review (optional: Google NotebookLM bounded to that source list)
+- [x] K2.5 Write takeaways table: pattern → pros/cons for sint → retain / drop
+- [x] K2.6 Record survey conversation (prompts, limits, summary). Optional: short “patterns retained” note or lightweight ADR if team wants a hard gate before drawing schemes
 
 ### K3. Placement policy (motors & electronics) — principles only
 - [ ] K3.1 Motor placement options: in-joint vs proximal/base + transmission (tendon/belt/gear)

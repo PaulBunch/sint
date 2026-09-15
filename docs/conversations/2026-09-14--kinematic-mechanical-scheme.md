@@ -1,6 +1,6 @@
 ---
 title: 
-date_updated: 2026-09-14
+date_created: 2026-09-14
 date_updated: 2026-09-14
 participants: [Bunch, Grok, Gemini]
 status: open
@@ -12,6 +12,7 @@ related:
   - docs/conversations/2026-09-14--kinematic-survey-notebooklm.md
   - docs/tasks/0004-kinematic-constraints.md
   - docs/tasks/0004-kinematic-survey-scope.md
+  - docs/decisions/0004-kinematic-survey-patterns.md
 ---
 
 # 
@@ -620,5 +621,153 @@ Gemini предложил следующие рекомендации к под�
 3. Для NotebookLM: не грузить «весь интернет» — только строки из таблицы + constraint sheet.
 
 **PAROL6** подтверждён как главный источник по **пневмотрассе** (2 connector’а, трубки base→forearm). Это сильнее, чем типичный desktop-only electrical loom, и напрямую закрывает ваш open question без опоры только на космические LEE.
+
+---
+**2026-09-15**
+---
+
+---
+**Bunch**
+
+Я произвёл обзор отобранных проектов в NotebookLM:
+https://github.com/PaulBunch/sint/blob/main/docs/conversations/2026-09-14--kinematic-survey-notebooklm.md
+
+Остались ли ещё вопросы, на которые необходимо получить ответы для закрытия задач:
+```md
+- [ ] K2.4 Run structured review (optional: Google NotebookLM bounded to that source list)
+- [ ] K2.5 Write takeaways table: pattern → pros/cons for sint → retain / drop
+```
+
+Что думаешь о моих идеях: каскадного выноса масс, двухэтапного дока (Dual-Latch) и локальных вычислительных модулей звеньев («спинной мозг»)? Подходят ли они для sint и стоит ли их учесть при разработке кинематической схемы?
+
+---
+**Grok 4.5 Fast**
+
+### K2.4 / K2.5 — можно ли закрывать?
+
+**Да, по сути закрыты.** В conversation уже есть:
+
+| Задача | Что сделано |
+|--------|-------------|
+| **K2.4** | Разбор PAROL6, AR4, GLUON, LIMS2, myCobot + Canadarm2/ERA по топологии, приводам, коммуникациям, DFAA, масштабируемости |
+| **K2.5** | Таблица паттернов → pros/cons → Retain / Pattern-only / Drop, включая пневмоканал |
+
+Дополнительно полезны, но **не блокируют** закрытие K2:
+
+- массы/звенья и углы суставов (уже есть в conversation);
+- формальное копирование takeaways-таблицы в `0004-kinematic-survey-scope.md` или короткий note в task 0004;
+- status conversation → `closed` после фиксации.
+
+**Не обязательно** снова гонять NotebookLM. Пробелы, если есть, лучше закрывать уже в **K3–K5** (placement policy + схемы), а не в survey.
+
+Рекомендация: отметить K2.4/K2.5 `[x]`, перенести итоговую takeaways-таблицу в git-документ survey-scope (чтобы не жила только в chat), и идти к **K3**.
+
+---
+
+### Три идеи — оценка для sint
+
+#### 1. Каскадный вынос масс (proximal cascade)
+
+**Плечо у основания → локоть в плечевом звене → запястье в предплечье, тросы/ремни снаружи для доступа агента.**
+
+| | Оценка |
+|---|--------|
+| Согласуется с survey | Да: компромисс между in-joint (PAROL6/GLUON) и full-shoulder remote (LIMS) |
+| N5 / инерция EE | Сильный плюс: лёгкая «кисть» для точной сборки |
+| DFAA | **Хорошо**, если передачи **доступны снаружи** (снимает риск V5 полного «тросового клубка») |
+| Риски | Люфт/растяжение ремней; калибровка; акустика ремней vs N6 |
+
+**Вердикт:** **стоит учесть как placement policy** в K3/K4 (гибрид S2-класса), не как обязательный полный LIMS-клон.
+
+---
+
+#### 2. Dual-Latch / двухэтапный док
+
+Идея: слабое низкоинерционное запястье **не** держит всю руку на консоли; dock имеет **зацеп для запястья + силовой зацеп для плеча**.
+
+| | Оценка |
+|---|--------|
+| Физика | Верная: при payload/torque из ADR-0003 дистальный joint **~1–5 N·m** не тянет консоль 2.5–5+ кг на 0.5–0.8 m (нужны проксимальные **10–25 N·m**) |
+| Canadarm-паттерн | Классика решает симметрией мощных LEE на **обоих** концах; dual-latch — другой путь к асимметричной руке |
+| R2 relocatable | Рабочий **если** протокол чёткий: временная фиксация запястьем → силовая стыковка плечом → отпускание запястья |
+| Минусы | Сложнее dock (BOM N7, DFAA сборки dock); два разных интерфейса на одном узле; режим «только на запястье» нерабочий под нагрузкой |
+
+**Вердикт:** **иметь в виду как candidate для relocatable story** в K4 (особенно с асимметричной рукой). Не принимать сразу: сначала stick-схема шага A→B и грубая оценка моментов. Альтернатива проще: **более мощный «base end»** (полусимметрия) без двух зацепов на одном dock.
+
+---
+
+#### 3. Локальные compute-модули звеньев («спинной мозг»)
+
+Локальные MCU + offline-адаптация весов/микромодели звена, разгрузка LLM.
+
+| | Оценка |
+|---|--------|
+| R8 / implementation-concepts | Согласуется с distributed joint MCU (CAN) + central brain |
+| Практическая польза | Да: FOC, энкодеры, лимиты, простая компенсация — на link-MCU; LLM — задачи/траектории высокого уровня |
+| DFAA | Ок, если модуль **заменяемый brick** на звене |
+| Риски перегиба | Полноценный «сон» с обучаемыми весами на каждое звено — рано для Phase 1; раздует ПО, отладку, BOM |
+| N6 / real-time | Локальный контур как раз нужен, чтобы FOC не зависел от LLM |
+
+**Вердикт:** **да как принцип K3** — *distributed low-level control + central agent*.  
+**Нет** как обязательная «нейромодель звена во сне» до первого железа. Зафиксировать: joint/link MCU = servo+sensing; обучение/адаптация — later research.
+
+*(Сырая идея «один мощный мотор + маленький на переключение направления» — отдельный риск: сложная управляемая трансмиссия vs два простых привода; в K3 только как optional research, не default.)*
+
+---
+
+### Сводка: что тащить в кинематическую схему
+
+| Идея | Учесть сейчас? | Как |
+|------|----------------|-----|
+| Каскадный вынос масс | **Да** | Placement policy / hybrid scheme candidate |
+| Dual-latch dock | **Условно** | Один из вариантов R2-story; проверить vs полусимметричные ends |
+| «Спинной мозг» MCU | **Да, упрощённо** | Distributed joint/link controllers; без обязательного ML-адаптера Phase 1 |
+| Switchable multi-DOF gearbox | **Позже / low** | Не блокирует схему |
+
+---
+
+### Практический next step
+
+1. Закрыть K2.4/K2.5 в task + вложить takeaways-таблицу в survey-scope.  
+2. В **K3** явно записать:
+   - bias: **cascaded proximal mass** + accessible belt/tendon where used;
+   - compute: **per-joint or per-link MCU + central compute**;
+   - dock: перечислить варианты (symmetric dual-LEE-lite / asymmetric + dual-latch / power scenario A battery) без финального выбора.  
+3. В **K4** нарисовать 2–3 stick-схемы, одна из которых — ваша каскадная + полусимметричные концы, и отдельно прогнать вопрос: **кто несёт консоль при шаге между dock**.
+
+Идеи **в тему sint** и хорошо стыкуются с survey; главное не смешать «лёгкое запястье для сборки» с «запястье как единственная силовая опора при walk» без dual-latch или усиленного base-end.
+
+---
+**Bunch**
+
+Отлично! Подготовь ADR с takeaways-таблицей, чтобы закрыть задачу: `- [ ] K2.6 Record survey conversation (prompts, limits, summary). Optional: short “patterns retained” note or lightweight ADR if team wants a hard gate before drawing schemes`
+
+---
+**Grok 4.5 Fast**
+
+Готовый лёгкий **ADR-0004** — gate по паттернам после survey, до рисования схем (K3–K4).
+
+**Путь:** `docs/decisions/0004-kinematic-survey-patterns.md`
+
+---
+
+### В task 0004
+
+```markdown
+### K2. Survey …
+- [x] K2.4 Run structured review → conversation `2026-09-14--kinematic-survey-notebooklm.md`
+- [x] K2.5 Write takeaways table → same conversation; normative copy in ADR-0004
+- [x] K2.6 Record survey + patterns gate → [ADR-0004](../decisions/0004-kinematic-survey-patterns.md)
+```
+
+### Опционально в `current-state.md`
+
+```markdown
+- **Kinematic survey (2026-09-15):** ADR-0004 accepted — patterns retained for scheme design
+  (6-DoF serial base; cascaded mass bias; quiet FOC modules; reserved pneumatics;
+  scaled walking-arm logic; myCobot-class dropped).
+```
+
+Этого достаточно, чтобы считать **K2.6** и весь блок survey закрытыми перед K3.
 
 ---
