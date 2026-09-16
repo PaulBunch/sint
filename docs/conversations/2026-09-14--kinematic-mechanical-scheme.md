@@ -13,6 +13,7 @@ related:
   - docs/tasks/0004-kinematic-constraints.md
   - docs/tasks/0004-kinematic-survey-scope.md
   - docs/decisions/0004-kinematic-survey-patterns.md
+  - docs/tasks/0004-placement-policy.md
 ---
 
 # 
@@ -769,5 +770,279 @@ https://github.com/PaulBunch/sint/blob/main/docs/conversations/2026-09-14--kinem
 ```
 
 Этого достаточно, чтобы считать **K2.6** и весь блок survey закрытыми перед K3.
+
+---
+**Bunch**
+
+Как будем закрывать? Достаточно ли информации для закрытия этих задач?
+
+```md
+### K3. Placement policy (motors & electronics) — principles only
+- [ ] K3.1 Motor placement options: in-joint vs proximal/base + transmission (tendon/belt/gear)
+- [ ] K3.2 Preferred mass distribution bias (e.g. proximal-heavy, light distal) aligned with N3/N5
+- [ ] K3.3 Compute / power electronics zones (central proximal vs distributed joint MCUs)
+- [ ] K3.4 Interaction with power scenario A vs B (battery location; mirrored ends or not)
+- [ ] K3.5 DFAA implications (what the agent must be able to replace: joint module, tensioner, compute brick)
+```
+
+Имеет ли смысл рассмотреть шаровые повопротные суставы (Spherical Gear), модели которых уже печатаются на 3D-принтере? Или у них низккя жёсткость и низкая точность позиционирования при относительно больших габаритах?
+
+---
+**Grok 4.5 Fast**
+
+### Достаточно ли данных для K3?
+
+**Да — для уровня “principles only”.**  
+ADR-0003 (числа), ADR-0004 (паттерны), survey и ваши идеи (каскад масс, dual-latch, link MCU) закрывают K3.1–K3.5 без новых обзоров. Нужен не research, а **короткая placement policy** в git, затем переход к K4 (схемы).
+
+Ниже — готовая политика (можно как `docs/tasks/0004-placement-policy.md` или секция в conversation → потом в ADR схемы).
+
+---
+
+### Placement policy (черновик закрытия K3)
+
+#### K3.1 — Motor placement
+
+| Опция | Роль для sint |
+|--------|----------------|
+| **In-joint** (модуль в оси) | Допустима на **проксимальных** осях и как fallback; проще DFAA-модуль, хуже инерция на дистале |
+| **Cascaded proximal** (предпочтение) | Тяжёлые приводы локтя — в плечевом звене; приводы запястья — в предплечье; передача **ремнём/коротким тросом в доступном канале** |
+| **Full shoulder remote (LIMS-style)** | **Не default** — opaque multi-cable pack → риск DFAA V5 |
+
+**Решение:** default = **hybrid cascade**; чистый in-joint — допустим на base/shoulder, если модуль тихий FOC и сменный.
+
+#### K3.2 — Mass distribution (N3/N5)
+
+- **Bias:** proximal-heavy, **light distal / EE**  
+- Цель: уложиться в distal **~1–5 N·m**, proximal **~10–25 N·m** при 0.5 kg @ 0.5–0.8 m  
+- Не обещать walk «на одном слабом запястье» без усиленного base-end или dual-latch  
+
+#### K3.3 — Compute / power electronics
+
+| Зона | Содержимое |
+|------|------------|
+| **Per-joint или per-link MCU** (“спинной мозг” упрощённо) | FOC/драйвер, энкодер, лимиты, локальный servo-loop |
+| **Central compute** (проксимальное звено / base-end) | LLM/VLA edge, планирование, зрение/аудио fusion |
+| **Не** | Обучаемая «нейромодель звена во сне» как Phase 1 must |
+
+Шина: CAN (или аналог) между звеньями; R8 — всё на mobile unit.
+
+#### K3.4 — Power A vs B
+
+| | Default |
+|--|---------|
+| **Scenario A** | Работа от dock; **optional** battery на **проксимальном** сегменте для transit |
+| Концы | **Могут быть несимметричны** (силовой base-end vs лёгкий EE-end) |
+| **Scenario B** | Alternate: mirrored ends + dual-dock handoff — только если dual-ended схема выиграет в K5 |
+
+Battery **не** на запястье (масса против N3/N5).
+
+#### K3.5 — DFAA: что агент обязан уметь заменить
+
+| Модуль | Требование |
+|--------|------------|
+| Joint / drive module | Снять–поставить без разрушения звена |
+| Tensioner / belt idler (если cascade) | Доступ снаружи, без полной разборки руки |
+| Link compute brick | Разъёмный модуль на звене |
+| Dock latch / power-data insert | Отдельный сервисный юнит |
+| EE | Quick-change per R3 |
+
+Скрытая тросовая «паутина» без agent-accessible tensioning — **запрещена** (V5).
+
+---
+
+**Итог K3:** информации достаточно → зафиксировать policy текстом выше → `[x]` на K3.1–K3.5 → K4.
+
+---
+
+### Spherical gear (ABENICS-класс) — нужно ли сейчас?
+
+Кратко: **интересно как research wrist, не как default Phase 1 joint.**
+
+| Аспект | Оценка для sint |
+|--------|------------------|
+| Идея | 2–3 DoF в одной компактной «точке» (pitch/roll/yaw), есть **печатаемые** прототипы |
+| Точность FDM | Типично **градусы** ошибки (порядка ~1–5° в публикациях PLA/PETG), backlash + износ зуба |
+| Жёсткость | Полимерный mesh под **0.5 kg консолью / dock-walk** слабее классических revolute + редуктор; металл/PEEK сильно лучше пластика |
+| Габарит / сложность | Сфера + несколько приводов/дифференциалов; калибровка и сингулярности у полюсов |
+| DFAA | Сложная геометрия зуба, притирка, замена mesh — тяжелее сменного revolute-модуля |
+| N6 | Пластиковый зуб под нагрузкой → риск шума/визга |
+| Survey ADR-0004 | Не в retained patterns; ломает «простую serial + cascade» без сильной выгоды для R2 |
+
+**Вывод:**  
+- **Не** закладывать spherical gear как основной shoulder/elbow/dock joint в K4.  
+- **Опционально** — отдельный research track на **лёгкое запястье** (после MVP serial), если появится жёсткий/износостойкий printable или hybrid metal tooth.  
+- Для Phase 1: **стандартные revolute** (in-joint или cascade + belt) ближе к PAROL6/GLUON-паттернам и DFAA.
+
+Ваша интуиция верна: у чистого FDM spherical gear часто **низкая жёсткость/точность при заметных габаритах и люфте** — плохо стыкуется с 0.5 kg, quiet motion и agent service.
+
+---
+
+### Как закрывать процедурно
+
+1. Записать placement policy (блок выше) в репо.  
+2. В task 0004: K3.1–K3.5 → `[x]`, ссылка на policy.  
+3. Spherical gear: одна строка в policy или implementation-concepts — *“deferred / not Phase 1 default”*.  
+4. Дальше **K4**: 2–3 stick-схемы на serial + cascade + (A) asymmetric ends / (B) dual-latch option.
+
+Если нужно — следующим сообщением оформлю policy одним файлом в стиле ADR/task note.
+
+---
+**2026-09-16**
+---
+
+---
+**Bunch**
+
+1. Достаточно ли информации для релизации задач?
+```md
+### K4. Candidate schemes (2–3)
+- [ ] K4.1 Scheme S1 — description + stick diagram + joint list (DoF, approximate axis roles)
+- [ ] K4.2 Scheme S2 — same
+- [ ] K4.3 Scheme S3 (optional) — e.g. dual-ended symmetric variant
+- [ ] K4.4 For each: relocatable-base story (≥2 docks), EE interface role, how printer/table/tool-bay workspace is covered
+- [ ] K4.5 Diagrams: 2D stick / SVG / simple sketch preferred; build123d only if helpful — not mandatory at this stage
+```
+2. Возможно существуют открытые инструменты с открытыми текстовыми форматами хранения для построения и расчёта кинематических схем, котороые мы можем использовать в проекте? Желательно общепринятые форматы хранения или нотации, которым можно использовать, как входные данные в различных расчётах. У меня есть интуитивное опасение, что svg‐формат (xml) слишком перегружен тегами для нашей задачи.
+3. Сможет ли агент сам решить задачи K4 с имеющейся информацией? Какой запрос передать агенту?
+
+---
+**Grok 4.5 Fast**
+
+### 1. Достаточно ли данных для K4?
+
+**Да.** Для stick-level схем (не детальный CAD) хватает:
+
+| Вход | Откуда |
+|------|--------|
+| Числа (reach, payload, torque, docks, print envelope) | ADR-0003 |
+| Допустимые паттерны | ADR-0004 |
+| Placement (cascade, MCU, power A) | `0004-placement-policy.md` |
+| Veto / DFAA | `0004-kinematic-constraints.md` |
+| Workspace story | printer + table + tool bay, ≥2 docks |
+
+K4 **не** требует FEA, точных DH до мм или build123d. Нужны: описание, joint list, stick-схема, relocatable story, покрытие workspace.
+
+Имеет смысл зафиксировать **три** кандидата (как в task):
+
+| ID | Суть |
+|----|------|
+| **S1** | Serial 6-DoF, mostly in-joint / modular FOC (PAROL6/GLUON-like), asymmetric ends, power A |
+| **S2** | Serial 6-DoF **cascade** (policy default): light wrist, proximal drives, accessible belts |
+| **S3** | Dual-ended / semi-symmetric walk (Canadarm logic scaled) ± dual-latch option |
+
+Без S3 слабее проверка R2; S3 можно пометить higher risk / BOM.
+
+---
+
+### 2. Форматы и инструменты (лучше, чем «голый SVG»)
+
+Опасение по SVG справедливо: для **кинематики** он — картинка, не модель. Считать по SVG неудобно.
+
+| Формат | Роль | Открытость | Для sint |
+|--------|------|------------|----------|
+| **Таблицы DH / MDH + joint limits** (Markdown/CSV/YAML) | Оси, a/α/d/θ, лимиты | Универсально | **Основной SoT для схемы** |
+| **URDF / xacro** | Звенья, joints, approx inertia | Open, ROS-экосистема | Хорош, когда появятся длины/массы; тяжеловат на чистом stick-этапе |
+| **SDF** (Gazebo) | Симуляция | Open | Позже |
+| **JSON/YAML “kin schema”** (свой минимальный) | `joints[]`, `parent`, `type`, `axis`, `rpy/xyz` | Полный контроль | Удобно агенту + git-diff |
+| **ASCII/Mermaid stick** | Топология в PR | — | Быстрые review |
+| **Pinocchio / rbdl / PyBullet** | Расчёт FK/IK/dyn | Open | Вход: URDF или свой JSON→URDF |
+| **ikpy**, **roboticstoolbox-python** | FK/IK, простые модели | Open | DH/ET-строки или URDF |
+| SVG/Typst/draw.io | Только иллюстрация | — | Опционально, не SoT |
+
+**Практичная иерархия для sint**
+
+1. **SoT схемы:** `hardware/kinematics/<scheme>.yaml` (или `.md` таблица) — joints, roles, approx `a_i`, placement tags (`in_joint` | `cascade`), dock story.  
+2. **Опционально:** генерация URDF из YAML для проверки reach/FK.  
+3. **Картинка:** Mermaid/ASCII в том же md; SVG — только если нужна презентация.
+
+Так агент и CI работают с **текстом**, без XML-шума SVG.
+
+Минимальный YAML-скелет:
+
+```yaml
+scheme_id: S2
+dof: 6
+family: serial_cascade
+joints:
+  - id: J1
+    role: base_yaw
+    placement: in_joint
+    torque_class: proximal
+  - id: J2
+    role: shoulder_pitch
+    placement: in_joint
+    torque_class: proximal
+  # ...
+reach_m: [0.5, 0.8]
+payload_kg: 0.5
+power_scenario: A
+relocatable: true
+ends: asymmetric  # or dual_ended
+notes: "wrist not sole walk support"
+```
+
+---
+
+### 3. Сможет ли агент закрыть K4? Какой запрос?
+
+**Да**, если дать жёсткий brief и запретить уходить в CAD/SKU.
+
+Рекомендуемый запрос (скопировать агенту):
+
+```text
+Role: kinematics architect for project sint.
+
+Read and obey:
+- docs/decisions/0003-core-numerical-characteristics.md
+- docs/decisions/0004-kinematic-survey-patterns.md
+- docs/tasks/0004-kinematic-constraints.md
+- docs/tasks/0004-placement-policy.md
+- docs/tasks/0004-kinematic-and-mechanical-scheme.md (§ K4)
+
+Task: produce exactly three candidate schemes S1, S2, S3 at stick level only.
+
+For EACH scheme deliver:
+1. Short description (≤15 lines)
+2. Joint list: id, DoF axis role, placement (in_joint|cascade), torque_class (proximal|distal)
+3. ASCII or Mermaid stick diagram (no build123d, no SVG required)
+4. Relocatable-base story for ≥2 docks (who carries cantilever loads on walk)
+5. EE interface role; power scenario A/B assumption
+6. How A1-mini + table + tool-bay workspace is covered (reach/dock spacing in words + order-of-magnitude m)
+7. Explicit “passes K1 vetoes / no Drop patterns from ADR-0004”
+8. One YAML block (scheme_id, joints[], ends, relocatable, power_scenario)
+
+Scheme intent:
+- S1: serial 6-DoF, mostly in-joint modular FOC, asymmetric ends, power A
+- S2: serial 6-DoF cascaded mass (placement policy default), light wrist, accessible belts/tendons
+- S3: dual-ended or semi-symmetric walk pattern (scaled Canadarm logic); note dual-latch only if needed
+
+Constraints:
+- Do NOT choose the final winner (that is K5)
+- Do NOT invent detailed CAD, BOM SKUs, or spherical-gear joints
+- Do NOT violate ADR-0003 numbers or placement policy
+- Prefer text tables + Mermaid/ASCII over SVG
+
+Output: one markdown file content suitable for docs/tasks/0004-candidate-schemes.md
+```
+
+**Контроль качества после ответа агента**
+
+- Есть ли у S2 cascade и accessible transmission?  
+- Не делает ли S1/S2 walk «только на слабом запястье» без оговорки?  
+- S3 реально про R2, а не копия S1?  
+- Нет Drop-паттернов (myCobot-class, opaque full tendon)?
+
+---
+
+### Кратко
+
+| Вопрос | Ответ |
+|--------|--------|
+| Данных на K4 хватает? | **Да** |
+| SVG как SoT? | **Нет**; DH/YAML/URDF (+ Mermaid для глаз) |
+| Агент закроет K4? | **Да**, с brief выше и проверкой по чеклисту |
+
+После трёх схем — **K5** (scorecard + down-select), уже с человеком или узким review-промптом.
 
 ---

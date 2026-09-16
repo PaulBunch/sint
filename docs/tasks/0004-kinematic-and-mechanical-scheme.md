@@ -54,11 +54,13 @@ Out of scope for this task:
 - [x] K2.6 Record survey conversation (prompts, limits, summary). Optional: short “patterns retained” note or lightweight ADR if team wants a hard gate before drawing schemes
 
 ### K3. Placement policy (motors & electronics) — principles only
-- [ ] K3.1 Motor placement options: in-joint vs proximal/base + transmission (tendon/belt/gear)
-- [ ] K3.2 Preferred mass distribution bias (e.g. proximal-heavy, light distal) aligned with N3/N5
-- [ ] K3.3 Compute / power electronics zones (central proximal vs distributed joint MCUs)
-- [ ] K3.4 Interaction with power scenario A vs B (battery location; mirrored ends or not)
-- [ ] K3.5 DFAA implications (what the agent must be able to replace: joint module, tensioner, compute brick)
+- [x] K3.1 Motor placement options: in-joint vs proximal/base + transmission (tendon/belt/gear)
+- [x] K3.2 Preferred mass distribution bias (e.g. proximal-heavy, light distal) aligned with N3/N5
+- [x] K3.3 Compute / power electronics zones (central proximal vs distributed joint MCUs)
+- [x] K3.4 Interaction with power scenario A vs B (battery location; mirrored ends or not)
+- [x] K3.5 DFAA implications (what the agent must be able to replace: joint module, tensioner, compute brick)
+
+→ [0004-placement-policy.md](0004-placement-policy.md)
 
 ### K4. Candidate schemes (2–3)
 - [ ] K4.1 Scheme S1 — description + stick diagram + joint list (DoF, approximate axis roles)
