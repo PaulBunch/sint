@@ -1047,3 +1047,75 @@ Output: one markdown file content suitable for docs/tasks/0004-candidate-schemes
 После трёх схем — **K5** (scorecard + down-select), уже с человеком или узким review-промптом.
 
 ---
+**Bunch**
+
+Вот результат работа агента:
+https://github.com/PaulBunch/sint/blob/main/docs/tasks/0004-candidate-schemes.md
+
+Есть ли у тебя замечания к исполнению или принимаем работу и двигаемся дальше?
+
+---
+**Grok 4.5 Fast**
+
+### Вердикт: **принимаем работу и идём в K5**
+
+Документ закрывает K4.1–K4.5 по сути: три схемы, joint lists, Mermaid, relocatable story, EE/power, workspace, gate checks, YAML. Это нормальный вход для scorecard, не для финального CAD.
+
+Ниже — замечания **не блокирующие** (зафиксировать в K5 / лёгким edit, не переделывать K4 с нуля).
+
+---
+
+### Что сделано хорошо
+
+| Критерий | Оценка |
+|----------|--------|
+| S1 / S2 / S3 по заданному intent | Совпадает с brief |
+| Placement policy | S2 = cascade + accessible belts; S1 = in-joint; S3 = dual-ended |
+| Walk / консоль | Явно: слабое запястье **не** несущая опора (S1/S2); у S3 — проксимальный класс на обоих концах |
+| ADR-0003 / 0004 | Числа и паттерны в коридоре; Drop не протащены |
+| YAML + таблицы | Пригодны как текстовый SoT без SVG |
+| Power A/B | S1/S2 → A; S3 → B — логично |
+
+---
+
+### Замечания (minor / для K5)
+
+**1. Путаница в ролях осей (S1)**  
+В §1.1: *Yaw-Pitch-Pitch-…*, в таблице J4 = Forearm Roll/Pitch, в Mermaid J4→J5 подписи расходятся с YAML (`forearm_pitch` vs roll).  
+→ В K5 выровнять **одну** согласованную цепочку осей (например classic RRR + spherical wrist) во всех трёх местах.
+
+**2. S1 relocatable story чуть «размыта»**  
+*Temporary support strut / walk-end adapter / dual-dock overlap* — несколько механизмов сразу. Для сравнения с S2/S3 лучше одна каноническая формулировка (например: *base-segment auxiliary latch + dual-dock overlap only*).
+
+**3. S3 и BOM / масса**  
+Семь суставов **proximal-class** на обоих концах — честно для walk, но риск **N7** и дистальной массы при работе как EE. В K5 явно штрафовать cost/mass, не дисквалифицировать по R2.
+
+**4. Reach «stretch 0.85–1.0 m»**  
+Верх ADR-0003 — stretch ≤ 1.0 m; ок как край, но в scorecard опираться на **0.5–0.8 m nominal**, не на optimistic stretch.
+
+**5. Печать ≤ 175 mm vs link 0.30–0.35 m**  
+Написано, что сегментируют — хорошо; в K5 одна строка: *N printable segments per link*.
+
+**6. Нет явного dual-latch**  
+Для асимметрии S1/S2 walk через *auxiliary base latch* ≈ тот же класс идей; можно в K5 назвать *«base dual-contact / aux latch»* без нового ADR.
+
+**7. Мелочи**  
+- S2 Mermaid: `J4 Roll / J5 Pitch / J6 Roll` vs таблица — сверить.  
+- S3 joint naming (Pitch/Yaw mixed) — достаточно стабилизировать перед любым URDF.  
+- Статус *Draft for K5* — оставить до down-select.
+
+Ничего из этого не откатывает K4.
+
+---
+
+### Рекомендация по процессу
+
+```text
+K4 → [x] accept 0004-candidate-schemes.md
+K5 → scorecard: DFAA, relocatable clarity, inertia/N5, BOM risk, acoustic path, complexity
+     likely lean: S2 default policy vs S1 simplicity vs S3 R2 purity
+```
+
+**Итог:** работу агента **принимаем**; замечания — в K5 (согласование осей + честный штраф S3 по BOM/массе). Переписывать файл целиком не нужно.
+
+---

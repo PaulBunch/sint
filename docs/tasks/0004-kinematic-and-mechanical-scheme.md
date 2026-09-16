@@ -63,11 +63,13 @@ Out of scope for this task:
 → [0004-placement-policy.md](0004-placement-policy.md)
 
 ### K4. Candidate schemes (2–3)
-- [ ] K4.1 Scheme S1 — description + stick diagram + joint list (DoF, approximate axis roles)
-- [ ] K4.2 Scheme S2 — same
-- [ ] K4.3 Scheme S3 (optional) — e.g. dual-ended symmetric variant
-- [ ] K4.4 For each: relocatable-base story (≥2 docks), EE interface role, how printer/table/tool-bay workspace is covered
-- [ ] K4.5 Diagrams: 2D stick / SVG / simple sketch preferred; build123d only if helpful — not mandatory at this stage
+- [x] K4.1 Scheme S1 — description + stick diagram + joint list (DoF, approximate axis roles)
+- [x] K4.2 Scheme S2 — same
+- [x] K4.3 Scheme S3 (optional) — e.g. dual-ended symmetric variant
+- [x] K4.4 For each: relocatable-base story (≥2 docks), EE interface role, how printer/table/tool-bay workspace is covered
+- [x] K4.5 Diagrams: 2D stick / SVG / simple sketch preferred; build123d only if helpful — not mandatory at this stage
+
+→ [0004-candidate-schemes.md](0004-candidate-schemes.md)
 
 ### K5. Compare and down-select
 - [ ] K5.1 Scorecard: DFAA, relocatable base, payload/inertia, complexity, BOM risk, acoustic risk, fit to ADR-0003
