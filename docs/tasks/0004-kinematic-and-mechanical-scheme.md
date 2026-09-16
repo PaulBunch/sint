@@ -72,9 +72,11 @@ Out of scope for this task:
 → [0004-candidate-schemes.md](0004-candidate-schemes.md)
 
 ### K5. Compare and down-select
-- [ ] K5.1 Scorecard: DFAA, relocatable base, payload/inertia, complexity, BOM risk, acoustic risk, fit to ADR-0003
-- [ ] K5.2 Order-of-magnitude checks on leading scheme (link length budget vs print envelope; torque vs N5; dock spacing vs reach)
-- [ ] K5.3 Choose preferred scheme + list rejected alternatives with reasons
+- [x] K5.1 Scorecard: DFAA, relocatable base, payload/inertia, complexity, BOM risk, acoustic risk, fit to ADR-0003
+- [x] K5.2 Order-of-magnitude checks on leading scheme (link length budget vs print envelope; torque vs N5; dock spacing vs reach)
+- [x] K5.3 Choose preferred scheme + list rejected alternatives with reasons
+
+→ [0004-scheme-downselect.md](0004-scheme-downselect.md)
 
 ### K6. Decision record
 - [ ] K6.1 Draft ADR (kinematic & mechanical scheme): topology, DoF layout, relocatable concept, placement policy, open issues
