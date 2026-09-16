@@ -1119,3 +1119,440 @@ K5 → scorecard: DFAA, relocatable clarity, inertia/N5, BOM risk, acoustic path
 **Итог:** работу агента **принимаем**; замечания — в K5 (согласование осей + честный штраф S3 по BOM/массе). Переписывать файл целиком не нужно.
 
 ---
+**Bunch**
+
+Внёс исправления в: https://github.com/PaulBunch/sint/blob/main/docs/tasks/0004-candidate-schemes.md
+
+Кто будет реализовывать задачу мы в процессе обсуждения или подготовим запрос для агента:
+```md
+### K5. Compare and down-select
+- [ ] K5.1 Scorecard: DFAA, relocatable base, payload/inertia, complexity, BOM risk, acoustic risk, fit to ADR-0003
+- [ ] K5.2 Order-of-magnitude checks on leading scheme (link length budget vs print envelope; torque vs N5; dock spacing vs reach)
+- [ ] K5.3 Choose preferred scheme + list rejected alternatives with reasons
+```
+
+Как и где будем фиксировать результат выполнения задачи?
+
+Также мне интересно твои пожелания до проведения матемитческих оценок: интерфейсом на базе какой из рассматриваемых схем ты хотел взаимодействивать с реальным миром? Какой из них тебе кажется интуитивнее и удобнее в работе?
+
+---
+**Grok 4.5 Fast**
+
+### K5: кто делает и куда писать
+
+**Лучше гибрид:** узкий промпт агенту на **K5.1 scorecard + черновик K5.2**, финальный **K5.3 (выбор)** — вы с коротким review (или второй проход агента только на «attack the winner»).
+
+| Подзадача | Кто | Почему |
+|-----------|-----|--------|
+| **K5.1** Scorecard | Агент | Таблица по фиксированным критериям, мало «вкусовщины» |
+| **K5.2** Order-of-magnitude | Агент + быстрая проверка вами | Арифметика m·g·L, сегменты печати, dock vs reach |
+| **K5.3** Choose | **Вы** (агент предлагает ranking) | Нормативное решение → ADR |
+
+**Где фиксировать**
+
+1. **Рабочий артефакт:** `docs/tasks/0004-scheme-downselect.md`  
+   (scorecard, расчёты, ranking, rejected reasons)  
+2. **Норматив:** **ADR-0005** (или следующий номер) — *Selected kinematic scheme: Sx*  
+3. **Ссылки:** task 0004 K5 → `[x]`, `current-state.md`, ROADMAP  
+4. Conversation — только если был спор; не единственное место истины  
+
+Так K5 не смешивается с candidate-schemes (K4 остаётся «меню»), а ADR не превращается в простыню цифр.
+
+---
+
+### Промпт агенту (K5.1–K5.2 + draft K5.3)
+
+```text
+Read:
+- docs/tasks/0004-candidate-schemes.md (latest)
+- docs/decisions/0003-core-numerical-characteristics.md
+- docs/decisions/0004-kinematic-survey-patterns.md
+- docs/tasks/0004-kinematic-constraints.md
+- docs/tasks/0004-placement-policy.md
+
+Produce docs/tasks/0004-scheme-downselect.md with:
+
+## K5.1 Scorecard
+Score S1, S2, S3 on 1–5 for:
+DFAA, relocatable-base clarity, payload/inertia (N3/N5), complexity, BOM risk, acoustic risk, fit ADR-0003.
+Add one-line note per cell. No new schemes.
+
+## K5.2 Order-of-magnitude (each scheme, more depth on top 2)
+- Link length vs ≤175–180 mm segments
+- m·g·L style torque check vs N5 bands (state assumptions)
+- Dock spacing vs reach for A1-mini + table + tool-bay
+Flag any soft violation of ADR-0003.
+
+## K5.3 Draft recommendation
+Rank 1–3 with reasons; list why others are rejected or deferred.
+Do NOT claim final acceptance — human decides.
+Do not invent CAD/SKUs.
+```
+
+После вашего «ok» — короткий ADR-0005.
+
+---
+
+### Предпочтение «с какой схемой взаимодействовать»
+
+С позиции **агента, которому жить в DFAA-цикле** (сборка, замена модулей, отладка, шаг между dock, тихая работа у принтера):
+
+**Предпочтительный default — S2 (cascade, policy default).**
+
+| Почему S2 | |
+|-----------|--|
+| Лёгкий дистал | Удобнее точная сборка, меньше «битьё» массы на EE |
+| Placement policy | Уже согласован с survey и N5 |
+| Ремни в открытых каналах | Реалистичный DFAA vs полный LIMS-трос |
+| Power A + asymmetric ends | Проще первый MVP, чем идеальная симметрия |
+
+**S1** — интуитивнее как *классическая рука* (все суставы «на месте», проще ментальная модель и отладка одного модуля). Для **первого железа и обучения** часто приятнее. Минус: больше инерции на дистале, хуже «ювелир» у пенала.
+
+**S3** — самый чистый **relocatable** и самый «каноничный» walk. Для долгосрочного R2 красивее. Для *ежедневной* работы агента тяжелее: два мощных конца, Scenario B, BOM, сложнее EE = тот же класс, что dock. Интуиция «я перешагнул — и продолжаю» отличная; цена — complexity с первого дня.
+
+**Практичная позиция:**  
+- **Взаимодействовать и развивать MVP:** **S2** (или S2 с упрощённым walk, как у S1 — aux base latch).  
+- **Держать в уме target evolution:** элементы **S3** (симметрия концов / Scenario B), когда S2 докажет cascade + dock.  
+- **S1** — сильный fallback, если cascade belts окажутся шумными или непролезными в DFAA на практике.
+
+Итого: не «самая красивая кинематика», а **S2 как основной интерфейс с миром на Phase 1**; S3 — стратегический резерв по R2; S1 — простой запасной путь.
+
+---
+
+Дальше логично: прогнать K5-промпт → `0004-scheme-downselect.md` → ваш выбор → ADR. Если пришлёте обновлённый candidate-schemes после правок — можно точечно подсказать веса scorecard до запуска агента.
+
+---
+**Bunch**
+
+У меня есть некоторые опасения по поводу логики перемещения между dock‐точками, которую мы фиксируем в документах. Возможно, эти опасения преждевременны, потому что эти вопрсоы будут прорабаться в дальнейших пунктах нашего ROADMAP. Я опишу опасения ниже, а ты проанализируй нужно ли внести изменения в существующие документы и возможно их стоит учесть в выполнении задачи K5.
+
+1. Представсь такой сценраий: манипулятор находится в dock A, который зафиксирован на условном полу в горизонатльной плоскости, а dock B расположен на стене в вертикальной плоскости или на условном потолке в горизонтальной плоскости (вектор ориентация dock B направлен вниз). Получается, манипулятор должен зацепиться запятьем за dock B (или вспомогательный зацеп), и подтянуть плечевую точку контакта манипулятора вверх и соеденить её с dock B. Cомнение заключается в силе суставов запястья и локтя. Ближайший пример из природы человека: очевидно, что человек не может держать на вытянутой в горизонтальном направлении руке массу своего тела, но при этом человек может ухватиться за перекладину и подтянуть своё тело к турнику. Да, запятье человека в этом движении почти не совршает pitch‐движение, но оно легко может осуществлять roll-движение с большой саммой тела. Смогут ли так делать манипуляторы выполненные по кинематическим схемам S1 и S2 (допускаю, что в S3 эта способнасть заложена из‐за наличия более мощных моторов в суставах). Имеет ли смысл заложить более мощные маоторы по крутящему моменту в запятье и локте для осуществления этого движения или этот вопрос будет прорабатываться в `Define component composition (motors, drivers, gearboxes, sensors, compute, connectors — COTS candidates)`, и при расстановке оценок, его можно не учитывать?
+2. Я не совсем понимаю как расстояние между dock A и B (при их расположении на одной плоскости) в наших документах может быть больше, чем длина манипулятора? Оно же должно быть меньше, потому что нужно учитывать, как минимум, сгибание концевых сегментов для подключения к dock‐точкам.
+
+---
+**Grok 4.5 Fast**
+
+### Нужно ли сейчас менять документы?
+
+**Крупных переписываний ADR/policy не требуется.** Опасения по делу, но часть — про **следующий уровень** (dock geometry, climb loads), часть — про **уточнение формулировок** reach vs spacing.
+
+Для **K5** имеет смысл:
+
+| Тема | Действие |
+|------|----------|
+| Ориентация dock (пол / стена / потолок) | Зафиксировать **MVP-assumption**: docks в **одной опорной плоскости** (стол/рейл), 3D-climb — **out of Phase 1 scoring** или отдельный risk |
+| «Подтягивание» как у турника | Не раздувать N5 запястья «на всякий случай»; учесть как **risk / non-goal MVP** для S1/S2 |
+| Dock spacing vs длина руки | **Поправить формулировки** в candidate-schemes / downselect: spacing **≤ effective reach in dock pose**, не «больше длины руки» |
+
+Иначе K5 начнёт сравнивать схемы по сценарию, которого ADR-0003 и workspace (A1 mini + table + bay) **не требуют**.
+
+---
+
+### 1. Стена / потолок и «турник»
+
+**Физика опасения верная.**
+
+В документах для S1/S2:
+
+- дистал **~1–5 N·m**, проксимал **~10–25 N·m**;
+- walk: **не** консоль всего тела на слабом запястье;
+- aux latch / dual contact на **base-сегменте**.
+
+Сценарий «dock A на полу → зацепиться запястьем за вертикальный/потолочный B и **подтянуть плечевой интерфейс вверх**» — это уже:
+
+- большие моменты от **собственной массы руки** (не 0.5 kg payload);
+- иной load path (тяга / shear), не horizontal table pick;
+- для человека на турнике работают **плечевой пояс и корпус**, не «слабое запястье держит pitch всего тела на вытянутой руке».
+
+**S1/S2 в текущей записи на такой climb не рассчитаны** — и не должны молча считаться способными.  
+**S3** ближе (мощные оба конца), но даже S3 в MVP не обязан закрывать произвольный 3D-каркас без отдельного ADR.
+
+| Вопрос | Ответ |
+|--------|--------|
+| Заложить сейчас более мощные моторы в запястье/локоть под турник? | **Нет как default в K5.** Это ломает light distal, N6, BOM и смысл cascade. |
+| Учесть в `Define component composition`? | Да, **если** появится requirement «wall/ceiling docks». Пока requirement — **desktop cluster**. |
+| Учитывать в оценках K5? | Только как **risk row**: *“S1/S2: no wall/ceiling climb in MVP”*; не штрафовать S2 за отсутствие турника, если MVP = planar docks. |
+
+**Рекомендуемая фиксация (1 абзац в downselect или footnote к K5):**
+
+> MVP relocatable base assumes docks share one work plane (table/rail). Pull-up / wall / ceiling re-basing is out of Phase 1 scheme selection. S1/S2 must not rely on distal joints as primary climb actuators; S3 does not by itself authorize 3D docking without a later load-case ADR.
+
+Тогда ваши опасения **зафиксированы**, но не переворачивают placement policy.
+
+---
+
+### 2. Расстояние между dock A и B vs длина руки
+
+Здесь путаница в **терминах**, и formulировки в схемах действительно легко читаются неверно.
+
+**Корректная геометрия (одна плоскость):**
+
+```text
+dock spacing (центры)  <  max distance between the two contact frames
+                           the arm can achieve in a valid dual-dock pose
+```
+
+То есть spacing должно быть **достижимо при одновременной (или sequential overlap) связи с A и B**, с учётом:
+
+- длины звеньев;
+- **сгиба** кисти/base-end под стыковку;
+- толщины latch, а не «вытянутая палка от центра до центра».
+
+Поэтому:
+
+- spacing **не может быть больше**, чем **эффективный dual-dock reach**;
+- оно **обычно меньше**, чем «сумма длин звеньев как прямая линия» (как вы и пишете).
+
+Откуда взялись **0.6–1.2 m** при reach **0.5–0.8 m** в ADR-0003:
+
+- это **коридор исследования** под разные layout (не «spacing всегда > L»);
+- для **одного шага** без промежуточных опор:  
+  **spacing ≲ 0.5–0.7 m** при nominal reach ~0.6–0.75 m — реалистичнее;
+- **~0.8–1.0 m** — только если stretch + удачная поза или **два шага** / промежуточный dock.
+
+| Было (легко понять неправильно) | Нужно |
+|----------------------------------|--------|
+| «Docks 0.7–0.8 m, reach 0.65 m» без оговорки | Явно: *center spacing ≤ achievable dual-contact span in dock approach pose* |
+| Spacing из N2 как жёсткий факт | N2 = order-of-magnitude band; **K5.2 пересчитать** под dual-dock pose |
+
+**Имеет смысл правка в документах (точечно):**
+
+1. ADR-0003 N2 dock spacing — уточнить одной фразой:  
+   *“Upper values require stretch or multi-step; single-step planar spacing must fit dual-dock kinematics.”*  
+2. В `0004-candidate-schemes` для S1/S2/S3: заменить «0.7 m apart covers both» на  
+   *“~0.5–0.7 m centers for single-step; larger only with multi-step or stretch — verify in K5.2.”*
+
+Это как раз работа **K5.2**, не отмена схем.
+
+---
+
+### Влияние на K5
+
+| Критерий scorecard | Учёт |
+|--------------------|------|
+| Relocatable base | Оценивать **planar dual-dock / inchworm на одном уровне**, не wall-climb |
+| Payload/inertia | По-прежнему N3/N5 table assembly, не bodyweight pull-up |
+| Complexity | S1/S2: aux base latch; S3: symmetric ends — без бонуса за потолок |
+| Отдельная строка risk | *Non-coplanar docks / climb loads → future work* |
+
+**Не** поднимать дистальный torque в scorecard «под турник».  
+**Да** ужесточить K5.2:  
+`spacing_max ≈ f(reach, joint limits, latch offset)` и пометить завышенные 0.8–1.0 m как conditional.
+
+---
+
+### Итог
+
+1. Опасение про стену/потолок **обосновано** для S1/S2; в Phase 1 это **не must**, не повод усиливать запястье сейчас; отразить как **MVP planar docks + risk**.  
+2. Spacing **не должно быть больше** dual-dock effective reach; поправить формулировки и в K5.2 считать от позы стыковки, не от «L_arm на бумаге».  
+3. Менять placement policy / выбор cascade **не нужно**; учесть в **K5 assumptions + minor doc clarifications**.
+
+Дальше ROADMAP (dock interface, load cases, component composition) как раз место для wall-mount и детальных силовых циклов — ваши вопросы там будут уместны полностью, сейчас достаточно не заложить в K5 ложный сценарий.
+
+---
+**Bunch**
+
+Если я правильно понял твой анализ, ты рекомендуешь уточнить часть уже готовых документов:
+- обязательно сделать правки по расстоянию между dock A и dock B, чтобы у агента не было когнитивного диссонанса при последовательном стении документов;
+- не усложнять MVP расположением docks в разных плоскостях, но обязательно сделать оговорки об этом в документах и предусмотреть, как в будущих реализациях и испытаниях.
+
+Если так, тогда сформулируй задание для агента, чтобы он внёс в документы необходимые правки до того, как мы перейдём к релизации K5.
+
+Также возможно, нужно скорректировать с учётом этого запрос на выполнение K5 для агента.
+
+---
+**Grok 4.5 Fast**
+
+Да, вы поняли верно:
+
+1. **Обязательно** выровнять формулировки **dock spacing vs reach** (одна плоскость, dual-dock pose).  
+2. **MVP = docks в одной рабочей плоскости**; non-coplanar / «турник» — **оговорка + future work**, без усиления запястья в Phase 1.  
+3. После правок документов — **K5** с этими assumptions.
+
+Ниже два готовых задания агенту.
+
+---
+
+### Задание A — правки документов (до K5)
+
+```md
+Role: technical editor for project sint. Do not redesign kinematics or change selected patterns.
+
+## Goal
+Align all Phase-1 docs on dock spacing and relocatable-base assumptions so a later agent reading them in order has no contradiction.
+
+## Normative intent (do not contradict)
+1. Dock spacing (center-to-center) for a **single step** must be ≤ the arm’s **achievable dual-dock span** in a valid approach/latch pose (account for bent wrist/base ends and latch thickness). Spacing is **not** allowed to be described as larger than arm length without qualification.
+2. ADR-0003 band ~0.6–1.2 m is an **order-of-magnitude research band**: upper values need stretch and/or multi-step; typical single-step planar spacing is on the order of **~0.5–0.7 m** for reach ~0.5–0.8 m.
+3. **MVP relocatable base** assumes docks share **one work plane** (table/rail cluster: printer + table + tool bay). Wall/ceiling/non-coplanar re-basing and “pull-up” body-weight-class loads are **out of Phase 1 scheme selection**.
+4. Do **not** raise distal torque targets or abandon cascade/light-wrist policy to satisfy climb scenarios.
+5. Do **not** pick a winning scheme (S1/S2/S3). No new CAD.
+
+## Files to edit (only if present; create notes in-place)
+1. `docs/decisions/0003-core-numerical-characteristics.md`
+   - In N2 dock spacing row / notes: add one short clarification on single-step vs multi-step and dual-dock span.
+   - Add a short “MVP docking assumption” note: coplanar docks; non-coplanar deferred.
+
+2. `docs/tasks/0004-candidate-schemes.md`
+   - For S1, S2, S3 workspace/dock sections: replace any wording that implies spacing > effective reach.
+   - State single-step spacing ~0.5–0.7 m (order-of-magnitude) unless multi-step/stretch is explicit.
+   - One shared note: MVP coplanar docks; wall/ceiling climb not required for these schemes’ Phase-1 validity.
+
+3. `docs/tasks/0004-kinematic-constraints.md` (if constraint sheet exists)
+   - Under workspace / R2: MVP coplanar ≥2 docks; non-coplanar = future requirement, not current veto basis.
+
+4. `docs/tasks/0004-placement-policy.md`
+   - One sentence: distal joints are not sized for climb/pull-up re-basing in Phase 1; walk loads use base-end / aux latch / dual-ended proximal ends per scheme.
+
+5. `docs/decisions/0004-kinematic-survey-patterns.md`
+   - Only if relocatable pattern text over-claims 3D docking; add “scaled logic; Phase-1 load cases are planar.”
+
+6. Optional one-liner in `docs/current-state.md` if that file tracks assumptions.
+
+## Output
+- Apply minimal diffs (clarify, don’t rewrite chapters).
+- Reply with a bullet list of files touched and the exact clarifying sentences added.
+- Do not start K5 scorecard in this task.
+```
+
+---
+
+### Задание B — K5 (после задания A)
+
+```md
+Role: kinematics reviewer for sint. Assume docs were just clarified on dock spacing and coplanar MVP docks.
+
+Read (latest versions):
+- docs/tasks/0004-candidate-schemes.md
+- docs/decisions/0003-core-numerical-characteristics.md
+- docs/decisions/0004-kinematic-survey-patterns.md
+- docs/tasks/0004-kinematic-constraints.md
+- docs/tasks/0004-placement-policy.md
+
+Write: `docs/tasks/0004-scheme-downselect.md`
+
+## Shared assumptions for all scoring (mandatory)
+- Workspace: Bambu A1-mini class + table + tool bay.
+- Relocatable MVP: **≥2 docks in one plane**; single-step center spacing must fit **dual-dock kinematic span** (typically ~0.5–0.7 m for nominal reach 0.5–0.8 m). Larger spacing only if scheme explicitly uses multi-step.
+- **Out of scope for scoring:** wall/ceiling docks, pull-up/climb using wrist as primary hoist, body-weight-class loads.
+- Do not reward or penalize schemes for non-coplanar climb capability.
+- Obey placement policy: no silent assumption that weak wrist carries full-arm cantilever on walk.
+
+## K5.1 Scorecard
+Score S1, S2, S3 on 1–5 each:
+DFAA | relocatable-base clarity (planar) | payload/inertia (N3/N5) | complexity | BOM risk | acoustic risk | fit ADR-0003.
+One-line note per cell.
+
+## K5.2 Order-of-magnitude
+For each scheme (more depth on top two):
+- Printable segments vs ≤175–180 mm
+- Rough torque check vs N5 (state mass assumptions)
+- **Dock spacing vs dual-dock reach** (not vs stick length alone)
+Flag soft ADR-0003 issues only under planar MVP assumptions.
+
+## K5.3 Draft recommendation
+Rank 1–3 with reasons; rejected/deferred alternatives.
+Human makes final acceptance later (ADR).
+No CAD, no SKUs, no spherical gears, no raising distal torque for climb.
+```
+
+---
+
+### Порядок
+
+1. Запустить **задание A** → проверить 3–4 ключевые фразы (spacing, coplanar MVP).  
+2. Запустить **задание B** → `0004-scheme-downselect.md`.  
+3. Ваш выбор → ADR схемы.
+
+Так агент сначала снимет когнитивный диссонанс в документах, и только потом будет сравнивать S1/S2/S3 в одной и той же рамке.
+
+---
+**Bunch**
+
+Хорошо! Агент реализовал задание А. Я пока не просил реализоваывать задание B. У меня возник такой вопрос: опиши последовательность действий по шагам, как ты себе представляешь премещение S1 и S2 между dock A и B, которые лажат в одной горизонтальной плоскости. Когда плечевое соединение переключается между dock A и dock B, оно же должно совершить промежуточный шаг с опорой на запятье с его моторами ~1–5 N·m (а в таблицах Joint List `docs/tasks/0004-candidate-schemes.md` для S1 и S2 вообще написано ~1–3 N·m). Реально ли сделать такое переключение с точке зрения механики? Как думаешь, нужно ли нам сделать исправление в этих таблицах и в Summary table из ADR-0003?
+
+---
+**Gemini 3.6 Flash Extended**
+
+Последовательность перемещения для **S1** и **S2** между двумя точками фиксации (Dock A и Dock B), расположенными в одной горизонтальной плоскости, опирается на ключевой принцип: **моторы запястья (~1–3 Н·м) никогда не удерживают консольную массу всей руки (~1.5–2.5 кг).**
+
+Ниже подробно описан механика и физика этого процесса.
+
+---
+
+### 1. Последовательность шагов перемещения S1 / S2 (Planar Relocation)
+
+Док-станция Dock B в этой концепции состоит из двух элементов (или двух гнезд): **основного порта (Main Base Receiver)** и **вспомогательного зацепа (Aux Receiver)**, расположенных на фиксированном небольшом расстоянии друг от друга.
+
+```
+[ Dock A (Main) ] ===================== [ Aux Catch B ] [ Dock B (Main) ]
+       ||                                    ^                ^
+    [ Плечо ] ---> (Рука тянется) ---------> |                |
+```
+
+1. **Фаза 1: Рабочее положение на Dock A**
+* Плечевой суппорт (Base / Joint 1) жестко зафиксирован в **Dock A**.
+* Питание и связь идут через Dock A.
+* Дистальный конец (запястье + рабочий орган) свободен для выполнения операций.
+
+2. **Фаза 2: Подвод вспомогательного зацепа к Dock B**
+* Манипулятор за счет мощных моторов плеча (J1–J3, ~10–25 Н·м) и локтя (~5–10 Н·м) позиционирует вспомогательный защелкивающийся механизм (**Aux Base Latch**), расположенный на корпусе предплечья/базы, в ответную часть **Aux Catch B**.
+* Моторы запястья (J5/J6, ~1–3 Н·м) осуществляют только точную ориентацию зацепа в пространстве перед стыковкой (нагрузка — только масса самого рабочего органа ~0.2–0.5 кг).
+
+3. **Фаза 3: Механическая фиксация Aux Latch (Силовая развязка)**
+* Защелка Aux Latch входит в механическое зацепление с Aux Catch B (пассивный штифт, клиновой замок или эксцентрик).
+* **Критический момент:** Возникающий изгибающий момент от массы сложенной/вытянутой руки воспринимается **металлической/композитной конструкцией замка Aux Latch и станиной стола**, а **не редукторами/моторами запястья**.
+
+4. **Фаза 4: Расстыковка базы на Dock A**
+* Основной замок базы в Dock A размыкается.
+* Манипулятор остается физически удержанным в пространстве за счет конструктивного зацепления Aux Latch в Aux Catch B.
+
+5. **Фаза 5: Перенос основного плечевого узла в Dock B**
+* Рука, опираясь на силовую конструкцию Aux Latch, подворачивает основание (плечевой блок J1) к основному гнезду **Dock B (Main)**.
+* При этом движение задается либо геометрической складывающейся кинематикой, либо моторами плеча/локтя. Моторы запястья находятся в статике или разгружены конструкцией замка.
+
+6. **Фаза 6: Захват Main Dock B и освобождение Aux Latch**
+* Плечевой блок защелкивается в **Dock B (Main)**. Подключаются основные линии питания/данных.
+* Вспомогательный зацеп Aux Latch размыкается.
+* Манипулятор перешел на Dock B и готов к работе.
+
+---
+
+### 2. Реально ли это с точки зрения механики?
+
+**Да, реально, но ТОЛЬКО при условии разделения путей передачи нагрузки (Load Path Separation).**
+
+#### Проверка моментов (Order-of-magnitude):
+
+Если бы мы заставили слабые моторы запястья (1–3 Н·м) удерживать вытянутую рука массу $m \approx 2.0\text{ кг}$ с центром масс на плече $L_{\text{CoM}} \approx 0.35\text{ м}$:
+
+
+$$M_{\text{гравитация}} = m \cdot g \cdot L_{\text{CoM}} \approx 2.0\text{ кг} \times 9.81\text{ м/с}^2 \times 0.35\text{ м} \approx 6.87\text{ Н}\cdot\text{м}$$
+
+Мотор запястья на 1–3 Н·м ушел бы в срыв (stall), перегрев или разрушение редуктора.
+
+#### За счет чего это работает в S1/S2:
+
+* **Замок не нагружает моторы:** Защелка Aux Latch принимает на себя реактивные силы $F_z$ и момент $M_x/M_y$ через геометрию направляющих штифтов/пазов.
+* **Схема S3 vs S1/S2:** В схеме S3 (симметричной, Canadarm-style) суставы на обоих концах одинаково мощные (~10–25 Н·м), поэтому S3 может шагать «консольно» прямо на суставах. Схемы S1 и S2 специально используют **Aux Latch**, чтобы сохранить **лёгкий дистальный конец** (согласно `placement-policy.md`).
+
+---
+
+### 3. Нужно ли менять таблицы Joint List и Summary table в ADR-0003?
+
+**Поднимать значения крутящего момента моторов запястья (Joint List / ADR-0003) НЕ НУЖНО.**
+
+1. **Почему не нужно менять цифры:**
+Если поднять моторы запястья в S1/S2 до ~10–15 Н·м, мы уничтожим главное преимущество S1/S2 — малый момент инерции на дистальном конце, низкую массу рабочего органа и концепцию каскадного привода/DFAA. Схема S1/S2 просто превратится в S3.
+2. **Какое уточнение стоит внести:**
+В самих таблицах цифры ~1–3 Н·м (или ~1–5 Н·м) для дистальных осей абсолютно верны для выполнения рабочих операций (N3: 0.5 kg payload).
+Достаточно убедиться, что в примечаниях к таблице Joint List или в блоке K5.2 указано:
+> *"Дистальные оси J4–J6 (~1–3 N·m) рассчитаны на полезную нагрузку N3 (0.5 kg) и не участвуют в передаче консольного момента от массы всей руки при шаге; релокация S1/S2 осуществляется через силовой конструктивный зацеп Aux Base Latch."*
+
+Это полностью соответствует правилу из `docs/tasks/0004-placement-policy.md`:
+
+> *"A weak wrist must not be the sole structural support for a full-arm cantilever during dock-to-dock walk..."*
+
+Таким образом, механика полностью состоятельна, а предложенная схема понятна и не требует искусственного утяжеления моторов.
+
+---

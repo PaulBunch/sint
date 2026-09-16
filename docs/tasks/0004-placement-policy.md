@@ -58,7 +58,7 @@ Aligned with ADR-0003 **N3 / N5**:
 **Rules**
 
 - Bias: **proximal-heavy, light distal**.
-- A weak wrist must **not** be the sole structural support for a full-arm cantilever during dock-to-dock walk unless a separate scheme (stronger base-end, dual-latch dock, or temporary support) is explicitly chosen in K4–K5.
+- A weak wrist must **not** be the sole structural support for a full-arm cantilever during dock-to-dock walk unless a separate scheme (stronger base-end, dual-latch dock, or temporary support) is explicitly chosen in K4–K5. Distal joints are not sized for climb/pull-up re-basing in Phase 1; walk loads use base-end / aux latch / dual-ended proximal ends per scheme.
 - Link lengths remain constrained by printable envelope (**≤ ~175–180 mm** major pieces) and reach **0.5–0.8 m**.
 
 ---

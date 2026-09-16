@@ -9,6 +9,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 **Parent task:** `docs/tasks/0004-kinematic-and-mechanical-scheme.md`  
 **Normative inputs:** `docs/decisions/0003-core-numerical-characteristics.md`, `docs/decisions/0004-kinematic-survey-patterns.md`, `docs/tasks/0004-kinematic-constraints.md`, `docs/tasks/0004-placement-policy.md`
 
+## MVP Docking Assumptions (Shared across S1/S2/S3)
+Docks share a single coplanar work plane (table/rail cluster: printer + table + tool bay). Wall/ceiling/non-coplanar re-basing, biped-style climbing, and "pull-up" body-weight-class load cases are deferred and explicitly out of scope for Phase-1 scheme selection; they are not required for these schemes' Phase-1 validity. All single-step walking spacing must remain ≤ the achievable dual-dock span in a valid approach/latch pose (accounting for bent wrist/base ends and latch thickness).
+
 ---
 
 ## 1. Scheme S1 — Serial 6-DoF Modular In-Joint
@@ -51,7 +54,7 @@ graph TD
 
 ### 1.6 Workspace Coverage (A1-mini + Table + Tool-Bay)
 - **Reach:** Nominal arm length ~0.65 m (Upper Arm 0.30 m + Forearm 0.30 m + Wrist 0.05 m; stretch ≤ 0.80 m). Evaluated strictly against nominal 0.5–0.8 m band.
-- **Dock Spacing:** 2 docks spaced ~0.7 m apart. Dock A services the Bambu Lab A1 mini bed and filament bay. Dock B services the assembly table and tool-bay cluster. Single-step reach covers both stations cleanly. Each major link (Link 2, Link 3) is split into 2 printable segments (N=2 per link ≤ 175 mm print bed limit).
+- **Dock Spacing:** 2 docks spaced ~0.5–0.6 m apart (order-of-magnitude single-step planar spacing, ≤ achievable dual-dock span in approach pose). Dock A services the Bambu Lab A1 mini bed and filament bay. Dock B services the assembly table and tool-bay cluster. Single-step reach covers both stations cleanly. Each major link (Link 2, Link 3) is split into 2 printable segments (N=2 per link ≤ 175 mm print bed limit).
 
 ### 1.7 Gate Checks & Constraint Verification
 - **K1 Vetoes Passed:** V1–V8 passed. Modular pod boundaries allow individual joint swapping (DFAA). No proprietary sealed pods assumed (pattern-only quiet BLDC + FOC).
@@ -141,7 +144,7 @@ graph TD
 
 ### 2.6 Workspace Coverage (A1-mini + Table + Tool-Bay)
 - **Reach:** Nominal 0.70 m (Link 2: 0.32 m, Link 3: 0.30 m, Wrist: 0.08 m; stretch ≤ 0.85 m). Evaluated strictly against nominal 0.5–0.8 m band.
-- **Dock Spacing:** ~0.8 m center-to-center between Dock A (Printer service zone) and Dock B (Table & Tool Bay). Low forearm inertia allows fast scanning and assembly pick-and-place cycles across both zones. All link shells segmented into 2 printable sub-blocks per link (N=2 per link ≤ 175 mm print bed limit).
+- **Dock Spacing:** ~0.5–0.6 m center-to-center between Dock A (Printer service zone) and Dock B (Table & Tool Bay), which is within the achievable dual-dock span in a valid approach/latch pose. Low forearm inertia allows fast scanning and assembly pick-and-place cycles across both zones. All link shells segmented into 2 printable sub-blocks per link (N=2 per link ≤ 175 mm print bed limit).
 
 ### 2.7 Gate Checks & Constraint Verification
 - **K1 Vetoes Passed:** V1–V8 passed. V5 specifically addressed: all timing belts and idlers run inside external snap-cover channels, allowing inspection, retensioning, and replacement by the agent without disassembling link structures.
@@ -230,7 +233,7 @@ graph TD
 
 ### 3.6 Workspace Coverage (A1-mini + Table + Tool-Bay)
 - **Reach:** Nominal 0.80 m (Link 1: 0.35 m, Link 2: 0.35 m, End clusters: 0.10 m total; stretch ≤ 1.0 m). Scorecard evaluation uses the nominal 0.5–0.8 m range.
-- **Dock Spacing:** ~0.8–1.0 m between Dock A and Dock B. The extended reach and symmetric walking logic allow traversing longer distances between print beds, storage tables, and tool stations. Printable link shells are split into 2–3 segments per link (N=2–3 per link ≤ 175 mm print bed limit).
+- **Dock Spacing:** ~0.6–0.7 m single-step planar spacing (≤ achievable dual-dock span in approach/latch pose). Extended spacing (~0.8–1.0 m) is qualified as requiring a fully stretched pose or multi-step walking across intermediate coplanar docks. Printable link shells are split into 2–3 segments per link (N=2–3 per link ≤ 175 mm print bed limit).
 
 ### 3.7 Gate Checks & Constraint Verification
 - **K1 Vetoes Passed:** V1–V8 passed. Satisfies R2 (relocatable base) natively without secondary support fixtures.

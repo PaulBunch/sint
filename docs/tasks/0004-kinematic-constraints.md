@@ -21,7 +21,7 @@ It is not a kinematic design and does not freeze joint SKUs or CAD.
 | ID | Requirement | Scheme implication |
 |----|-------------|-------------------|
 | R1 | Articulated manipulator, **≥ 6 DoF** | Topology provides at least 6 controlled axes suitable for 3D assembly (not planar-only primary) |
-| R2 | **Relocatable base** | Scheme includes a credible story: undock → move → dock on **≥ 2** fixed docks without human carrying the base |
+| R2 | **Relocatable base** | Scheme includes a credible story: undock → move → dock on **≥ 2** fixed docks without human carrying the base (MVP assumes coplanar docks sharing one work plane; non-coplanar/vertical re-basing is a future requirement, not a Phase-1 veto basis) |
 | R3 | **Universal quick-change EE** | At least one end has a standardized mechanical + power + data EE interface path |
 | R4 | Tactile / force path (High) | Scheme must not preclude wrist/EE F/T or tactile sensing (space, wiring, stiffness) |
 | R5 | Vision + audio (Critical) | Places exist for camera and mics; motion concept compatible with usable audio (see R7 / N6) |
@@ -61,6 +61,7 @@ Scheme must be plausible for a **single cluster**:
 - Bambu Lab **A1 mini**-class printer service (filament, start/monitor, part removal)
 - Table buffer + **tool bay** for assembly of the next revision
 - Locomotion between **≥ 2 docks** covering that cluster
+- **Coplanar Assumption:** Docks must share one work plane (table/rail cluster); non-coplanar, vertical wall/ceiling re-basing or pull-up body-weight load cases are deferred and explicitly not a current veto basis.
 
 ### E. Success milestones the scheme must enable (not implement yet)
 

@@ -43,7 +43,7 @@ Full kinematic synthesis, exact SKUs, and power-scenario ADR remain out of scope
 | N2 | Printable part envelope | ≤ **~175–180** per major printed piece | mm | Fits A1 mini-class bed; larger structures are segmented (DFAA) |
 | N2 | Reach (one arm / base pose) | **0.5–0.8** (stretch ≤ **1.0**) | m | Covers printer + table + tool bay cluster; GLUON-class order |
 | N2 | Dock count (MVP) | **≥ 2** | — | Minimum to demonstrate relocatable base |
-| N2 | Dock spacing (centres) | **~0.6–1.2** | m | Matched to reach so one “step” can move between stations |
+| N2 | Dock spacing (centres) | **~0.6–1.2** | m | Research band; typical single-step planar spacing is **~0.5–0.7** m (single-step spacing must stay ≤ achievable dual-dock span in approach pose; upper values require multi-step or extended link stretch) |
 | N3 | Payload without EE | **0.5** continuous; **~1.0** peak | kg | Printed modules, light tools, COTS hardware; not industrial |
 | N4 | DC bus | **24** (research band 12–48) | V | Common maker / BLDC FOC / tool ecosystem |
 | N4 | System power | **100–200** continuous; **~300–500** short peak | W | Arm + compute headroom; quiet FOC stack |
@@ -64,6 +64,7 @@ Full kinematic synthesis, exact SKUs, and power-scenario ADR remain out of scope
 - Industrial harmonic drives as default on every axis  
 - Hard dB(A) legal-style limit without a lab procedure  
 - Including the 3D printer itself in robot BOM  
+- Non-coplanar (wall/ceiling) docking or body-weight climb load cases (MVP assumes coplanar docks on a single work plane)  
 
 ## Options considered
 
@@ -86,7 +87,7 @@ Full kinematic synthesis, exact SKUs, and power-scenario ADR remain out of scope
 2. **Tendon / remote drive serviceability** — DFAA must cover tensioning, wear, calibration  
 3. **Integration kit cost** — 2 docks + EE + AV may push past $1000 unless actuators stay cheap  
 4. **Scenario A vs B** — battery mass reduces payload margin; B demands mirrored high-current interfaces early  
-5. **Reach × dock spacing × A1 mini layout** — needs one top-down workspace sketch before locking link lengths  
+5. **Reach × dock spacing × A1 mini layout** — single-step dock spacing center-to-center must stay within achievable dual-dock span in a valid approach/latch pose (~0.5–0.7 m planar order-of-magnitude); upper band (~0.8–1.2 m) implies multi-step relocation or extended link stretch.  
 6. **Torque table** — refine after real arm mass and transmission choice (in-joint vs remote)  
 
 ### Neutral
