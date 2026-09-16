@@ -3,27 +3,33 @@ SPDX-FileCopyrightText: 2026 sint project contributors
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# Handoff — 2026-09-13
+# Handoff — 2026-09-17
 
 ## Summary of Changes
-- **CAD Infrastructure Testing (S1, S2 & S3):**
-  - **S1 (Parametric Plate):** Script `hardware/s1_parametric_plate.py`, successful export to STEP/STL. (Test files removed after validation)
-  - **S2 (Joint Module):** Script `hardware/s2_joint_module.py`. Complex elements handled (boss, bolt circle, fillets). (Test files removed after validation)
-  - **S3 (Mini Assembly):** Script `hardware/s3_mini_assembly.py`. Multi-body `Compound` export verified. Resolved `anytree.TreeError` caused by duplicate global CAD variables. (Test files removed after validation)
-  - Identified and fixed fragility of face selectors after `fillet()` — adopted recommendation to use `Plane` for positioning.
-- **Guidelines & Infrastructure:**
-  - Added rules to `docs/build123d-guidelines.md`: use `#!/usr/bin/env python3`, `_` prefix for intermediate variables, and prefer `Plane` over complex selectors.
-  - Confirmed use of `/home/bunch/.venv/cad/bin/python` for stable execution.
-- **Documentation Updates:**
-  - Updated `docs/current-state.md` and checklist `docs/tasks/0002-test-llm-cad-infrastructure.md`.
-  - All discussion details in `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md`.
+- **Kinematic & Mechanical Scheme (Task 0004):**
+  - **Constraint Definition:** Created `0004-kinematic-constraints.md` with explicit DFAA veto rules (V1–V8).
+  - **Survey & Patterns:** Completed review of analogues (PAROL6, GLUON, AR4, AMBIDEX, Canadarm2/ERA). Retained patterns documented in `ADR-0004`.
+  - **Placement Policy:** Formulated `0004-placement-policy.md` focusing on proximal mass bias and Scenario A power default.
+  - **Candidate Schemes:** Drafted three schemes (S1, S2, S3) in `0004-candidate-schemes.md` covering modular in-joint, cascaded belt-drive, and symmetric dual-ended walking topologies.
+- **Documentation:**
+  - Updated `docs/current-state.md` to reflect the completion of K1–K4 subtasks of Task 0004.
+  - Linked all new task-specific documents into the `docs/tasks/` hierarchy.
 
 ## Current Working Tree
-- `docs/conversations/2026-09-13--test-llm-cad-infrastructure.md`
-- `docs/tasks/0002-test-llm-cad-infrastructure.md` — All scenarios (S1, S2, S3) completed.
-- `docs/build123d-guidelines.md` — Updated based on test results (duplicate variable avoidance, Plane preference).
-- `hardware/` — Test files (`s1_...`, `s2_...`, `s3_...`) removed after validation.
+- `docs/tasks/0004-kinematic-and-mechanical-scheme.md` — Subtasks K1–K4 marked complete.
+- `docs/tasks/0004-kinematic-constraints.md`
+- `docs/tasks/0004-kinematic-survey-scope.md`
+- `docs/tasks/0004-placement-policy.md`
+- `docs/tasks/0004-candidate-schemes.md`
+- `docs/decisions/0004-kinematic-survey-patterns.md`
+- `docs/conversations/2026-09-14--kinematic-mechanical-scheme.md` — Record of the development process.
 
 ## Next Recommended Actions (Phase 1)
-1. **Simulation / Validation:** Try importing `s2_joint_module.step` or `s3_mini_assembly.step` into any external viewer or simulator for final geometry verification.
-2. **Infrastructure Ready:** The CAD infrastructure (build123d + headless export + pure scripts) is fully validated. Proceed with regular agent CAD design tasks.
+1. **Execute Down-selection (K5):**
+   - Create `docs/tasks/0004-scheme-downselect.md`.
+   - Score S1, S2, and S3 against K1 criteria.
+   - Perform order-of-magnitude calculations (torque vs lever arm, print segmentation count).
+2. **Formalize Decision (K6):**
+   - Draft and accept `ADR-0005` (Kinematic and Mechanical Scheme).
+3. **Move to Components (Phase 1):**
+   - Based on the selected scheme, start Task 0005: "Define COTS component composition".

@@ -5,45 +5,37 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Project Current State — sint
 
-**Last Updated:** 2026-09-13  
-**Status:** Bootstrapping / Specification Phase — Phase 1 (Foundation & Planning)
+**Last Updated:** 2026-09-17  
+**Status:** Phase 1 (Foundation & Planning) — Kinematic & Mechanical Scheme Selection
 
 ---
 
 ## Recent Progress
 
-- Established comprehensive `README.md` with project overview, core principles, directory structure, autonomous memory architecture summary, etymology, and licensing breakdown.
-- Created and populated canonical specification document `docs/spec.md` in English.
-- Separated high-level requirements from specific technical solutions:
-    - `docs/spec.md` now focuses strictly on requirements and constraints.
-    - `docs/implementation-concepts.md` captures candidate technical solutions (BLDC+FOC, gearboxes, docking mechanisms).
-- Defined core strategic requirements:
-    - **Relocatable Mobility** for expanded reach.
-    - **Acoustic Transparency** for diagnostic sensing.
-    - **DFAA** (Design for Autonomous Assembly).
-    - **100% COTS** and consumer-grade fabrication.
-- Established licensing: CERN-OHL-S v2 (Hardware), GNU AGPLv3 (Software), CC-BY-SA-4.0 (Documentation).
-- Created `docs/ROADMAP.md` with phased plan (Phase 1–5) including initial steps discussion, CAD/tool selection, research of multiple options per key requirement, and justified selection criteria.
-- Integrated `ROADMAP.md` into critical document hierarchy (`AGENTS.md`, `docs/long-term-memory.md`).
-- **CAD Strategy (2026-09-06):** Adopted ADR-0001. Decided on Code-CAD (scripting) with mandatory headless execution and STEP as the source of truth for engineering data.
-- **CAD Infrastructure Testing (2026-09-13):** Completed S1–S3 (parametric plate, joint module, mini assembly). Key fixes: `_` prefix for intermediate/duplicate variables (prevents `anytree.TreeError`), `Plane` for robust positioning, headless export (`cad-export.py`) preferred over `cad-show.py` due to sandbox limits. Guidelines updated (`docs/build123d-guidelines.md`). Test artifacts (`hardware/s1_*`, `s2_*`, `s3_*`) removed after validation.
-- Added conversation record (`docs/conversations/2026-09-04--roadmap.md`) on ROADMAP integration and simulation tool evaluation (MuJoCo vs Isaac Sim).
-- Added conversation record (`docs/conversations/2026-09-06--CAD-selection.md`) and ADR-0001 regarding CAD tooling.
-- **Core numerical characteristics (2026-09-13):** ADR-0003 accepted.
-  Working targets: payload 0.5 kg continuous (~1 kg peak); reach 0.5–0.8 m; ≥2 docks; 24 V / ~100–200 W continuous; proximal torque ~10–25 N·m; acoustic = no masking of speech/clicks at 0.5–1 m; node BOM < $1000 (integration kit target ≤ $1000, stretch documented).
-  Details: `docs/decisions/0003-core-numerical-characteristics.md`.
+- **Kinematic & Mechanical Scheme (Task 0004):**
+    - Established **Kinematic Constraints (K1)** including DFAA veto rules and ADR-0003 alignment (`docs/tasks/0004-kinematic-constraints.md`).
+    - Completed **Analogue Survey (K2)**: Curated source list (PAROL6, GLUON, AR4 MK5, AMBIDEX, Canadarm2/ERA) and extracted takeaways (`docs/tasks/0004-kinematic-survey-scope.md`, `docs/decisions/0004-kinematic-survey-patterns.md`).
+    - Defined **Placement Policy (K3)**: Defaulting to cascaded/proximal mass bias for distal axes to minimize inertia; power scenario A/B roles defined (`docs/tasks/0004-placement-policy.md`).
+    - Developed **Candidate Schemes (K4)**:
+        - **S1**: Serial 6-DoF Modular In-Joint (classic, pods).
+        - **S2**: Serial 6-DoF Cascaded Mass Bias (belt-driven distal axes, default policy).
+        - **S3**: Symmetric 7-DoF Dual-Ended Walking Manipulator (inchworm logic).
+        - Documentation: `docs/tasks/0004-candidate-schemes.md`.
+- **Numerical Targets (ADR-0003):** Consensus reached on N1–N7 targets (0.5 kg payload, 0.5–0.8 m reach, <$1000 BOM). Recorded in `docs/spec.md` and `docs/decisions/0003-core-numerical-characteristics.md`.
+- **CAD Infrastructure:** ADR-0001/0002 accepted (build123d). Tool-chain validated via S1–S3 tests (parametric plate, joint module, mini assembly). Guidelines updated (`docs/build123d-guidelines.md`).
+- **Core Strategy:** Defined requirements for Relocatable Mobility, Acoustic Transparency, and DFAA (Design for Autonomous Assembly) in `docs/spec.md`.
+- **Documentation & Management:** Initialized `ROADMAP.md`, `long-term-memory.md`, and atomic task structure in `docs/tasks/`.
 
 ---
 
 ## Active Specification & Focus
 
-1. **`docs/spec.md`**: Completed initial draft capturing core vision, design principles, high-level requirements table, non-goals, open questions, and early success criteria.
-2. **CAD Selection & Testing (Phase 1)**: ADR-0001 accepted; primary CAD = build123d (ADR-0002). Tool-chain (`build123d` + headless `cad-export.py` + `STEP` as SoT) fully validated (S1–S3). Task 0001 (`docs/tasks/0001-select-cad-software.md`) closed (C4, C5, F1–F4 completed). `docs/build123d-guidelines.md` updated.
-3. **Next Steps (Phase 1 — Foundation & Planning)**:
-   - Develop kinematic and mechanical scheme (topology, DoF, relocatable base).
-   - Define COTS component composition (motors, drivers, sensors, compute, connectors).
-   - Compile preliminary assembly operations and required external tools (constrains DFAA).
-   - Determine minimum mandatory end-effectors and workspace/docking grid concept.
-   - Evaluate simulation tools (MuJoCo / Isaac Sim) for kinematic validation.
-   - Conduct research and make justified selection of primary options for key requirements; formalize ADRs.
-   - Refine roadmap based on outcomes.
+1. **Kinematic Down-selection (Phase 1 — K5/K6):**
+   - Conduct scorecard comparison of S1, S2, S3 against K1 constraints (Task K5.1).
+   - Perform order-of-magnitude checks (torque vs payload, print segments) (Task K5.2).
+   - Select primary scheme and formalize via ADR-0005 (Task K6).
+2. **Next Steps (Phase 1):**
+   - Define COTS component composition (motors, drivers, sensors) for the selected scheme.
+   - Compile preliminary assembly operations and required external tools.
+   - Evaluate simulation tools (MuJoCo / Isaac Sim) for kinematic validation using the selected scheme.
+   - Refine roadmap based on the chosen mechanical topology.
