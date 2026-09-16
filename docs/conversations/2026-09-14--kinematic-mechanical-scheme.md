@@ -1556,3 +1556,81 @@ $$M_{\text{гравитация}} = m \cdot g \cdot L_{\text{CoM}} \approx 2.0\t
 Таким образом, механика полностью состоятельна, а предложенная схема понятна и не требует искусственного утяжеления моторов.
 
 ---
+**Bunch**
+
+Вот документ подготовленный агетом с испольованием LLM Gemini:
+https://github.com/PaulBunch/sint/blob/main/docs/tasks/0004-scheme-downselect.md
+
+Есть ли у тебя замечания? Есть ли в документе голословные выводы и субъективные оценки агента?
+
+Принимаем документ или отправляем на доработку?
+
+---
+**Grok 4.5 Fast**
+
+### Вердикт: **принять с лёгкой доработкой**, не переписывать с нуля
+
+Документ по структуре закрывает K5.1–K5.3, assumptions (coplanar, dual-dock span) верные, ranking **S2 > S1 > S3** согласуется с policy и опросом.  
+Проблема не в выборе, а в том, что часть **баллов и фраз выдана за факт**, хотя это **оценки/гипотезы** без измерений.
+
+---
+
+### Что сделано хорошо
+
+- Единые assumptions: planar docks, dual-dock span, без climb  
+- Scorecard по нужным осям  
+- Явный m·g·L-скелет и мысль «S3 тяжелее на дистале»  
+- Spacing **0.45–0.70 m**, а не «больше длины руки»  
+- S2 как default policy; S1 fallback; S3 deferred по BOM/массе — разумно  
+
+---
+
+### Голословность и субъективизм
+
+| Место | Проблема | Как смягчить |
+|--------|-----------|--------------|
+| **Баллы 1–5** | Любая scorecard субъективна; ок, если не звучит как измерение | Добавить: *scores are relative judgment, not lab data* |
+| **S2 DFAA 3 vs S1 4** | Спорно: belts = больше service steps, но policy как раз требует accessible belts. Можно было 4/4 | Одна фраза: *belt maintenance is accepted trade for inertia* |
+| **S3 BOM 2 / «exceeds $1000»** | **Нет сметы** — только риск | Заменить на *high risk of exceeding N7*, не *exceeds* |
+| **S3 payload &lt; 0.5 kg** | Из грубой модели масс, не из прототипа | *may erode continuous payload margin under assumed masses* |
+| **Массы звеньев 0.8 / 0.6 kg…** | Произвольны (ок для OOM), но поданы уверенно | Пометить *illustrative assumptions* |
+| **S2: GT2 2 mm / 6 mm, 3:1 belt** | Уже **component-level**, не K5 | Убрать размеры ремня или пометить *example only* |
+| **NEMA 11-size equivalent** | То же — SKU-намёк | *small distal class* без NEMA |
+| **PA-CF обязателен для S3** | Не доказано | *may need higher-stiffness print strategy* |
+| **«Absolute best compromise»** | Риторика | *recommended primary under Phase-1 criteria* |
+| **Status: Completed (Authoritative for ADR-0005)** | Пока нет human accept | *Draft recommendation pending maintainer acceptance* |
+| **TOTAL 28 vs 27** | Разница в пределах шума scorecard | Не делать вид математической точности; важен **rank**, не 28 |
+
+Расчёт T_static ~10 N·m → ×1.5–2 ≈ 15–20 N·m для S1/S2 — **приемлемый order-of-magnitude**.  
+Для S3 «≥25–30 N·m и violation N7» — **правдоподобный risk**, но формулировку смягчить.
+
+---
+
+### Принимаем или на доработку?
+
+**Принимаем ranking и assumptions.**  
+**Доработка — редакционная (30–60 мин агента или вручную), не новый анализ.**
+
+Минимальный patch:
+
+1. Status → *Draft recommendation (K5); pending ADR-0005 / human accept*  
+2. Preface: *Numeric scores are comparative judgments; masses/torques are illustrative OOM.*  
+3. S3: *high BOM/payload **risk*** — убрать утверждение, что лимит уже сорван  
+4. Убрать или пометить *example only*: GT2 размеры, NEMA 11, обязательный PA-CF  
+5. Финал: *Recommend S2 as primary…* вместо звучащего как уже принятый ADR  
+
+После этого — **да, база для ADR-0005**.
+
+---
+
+### Для ADR-0005 (когда будете писать)
+
+- Primary: **S2**  
+- Fallback: **S1** (если cascade/belts на практике провалятся по DFAA/N6)  
+- S3: **deferred** (R2 purity vs BOM/mass)  
+- Coplanar docks; single-step spacing ~0.5–0.6 m class  
+- OOM masses from downselect = assumptions, refine at joint prototype  
+
+**Итог:** документ **не отклонять**; ranking здравый; убрать ложную точность и «exceeds $1000» без BOM — и можно опираться в ADR.
+
+---
