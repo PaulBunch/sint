@@ -14,6 +14,7 @@ related:
   - docs/tasks/0004-kinematic-survey-scope.md
   - docs/decisions/0004-kinematic-survey-patterns.md
   - docs/tasks/0004-placement-policy.md
+  - docs/tasks/0004-candidate-schemes.md
 ---
 
 # 
