@@ -1635,3 +1635,109 @@ https://github.com/PaulBunch/sint/blob/main/docs/tasks/0004-scheme-downselect.md
 **Итог:** документ **не отклонять**; ranking здравый; убрать ложную точность и «exceeds $1000» без BOM — и можно опираться в ADR.
 
 ---
+**2026-09-17**
+---
+
+---
+**Bunch**
+
+1. Для окончательного закрытия задачи 0004 нужно ли нам перенсти yaml схему S2 из docs/tasks/0004-candidate-schemes.md в `hardware/<scheme>.yaml` или `hardware/kinematics/<scheme>.yaml`?
+2. Также у нас в задаче есть раздел K7:
+```md
+### K7. Handoff to next work
+- [ ] K7.1 List follow-ups: first joint module geometry, dock interface sketch, optional sim skeleton
+- [ ] K7.2 Note what must be revalidated after first hardware prototype
+```
+Как будем его закрывать?
+3. Проверь все ли критерии закрытия соблюдены?
+```md
+## Done when
+
+- [ ] Survey takeaways exist (conversation ± table); sources cited by URL only
+- [ ] Placement policy for motors/electronics is written at principle level
+- [ ] 2–3 candidate schemes documented with stick-level diagrams and joint lists
+- [ ] One scheme selected with explicit trade-off rationale
+- [ ] ADR accepted; ROADMAP item and `docs/current-state.md` updated
+- [ ] Open risks / “revisit after first prototype” listed in ADR
+```
+
+---
+**Grok 4.5 Fast**
+
+### 1. Нужно ли сейчас переносить YAML S2 в `hardware/`?
+
+**Нет — не как условие закрытия 0004.**
+
+| Сейчас | Позже |
+|--------|--------|
+| YAML в `0004-candidate-schemes.md` = описание кандидата | SoT кинематики для FK/IK/sim |
+| ADR-0005 уже фиксирует **семейство S2**, не мм DH | `hardware/kinematics/s2.yaml` (или `sint_s2.yaml`) когда появятся согласованные длины/лимиты |
+
+Перенос «как есть» из candidate-schemes даст ложное ощущение, что длины/роли уже engineering-baseline. Лучше:
+
+- **Закрыть 0004** без обязательного файла в `hardware/`.
+- В **K7.1** явно: *create `hardware/kinematics/s2.yaml` (or equivalent) as first kinematics SoT after ADR-0005*.
+- Первый contents — расширенный YAML из ADR/S2 + placeholder `a_i` / limits «TBD until link CAD».
+
+Итого: **опциональный follow-up, не blocker.**
+
+---
+
+### 2. Как закрыть K7
+
+K7 — **handoff**, не новый research. Достаточно короткого раздела в task 0004 или в конце ADR (у вас risks уже частично в ADR-0005).
+
+**K7.1 Follow-ups (готовые bullets):**
+
+```markdown
+### K7.1 Follow-ups
+- [ ] Joint module geometry (proximal FOC pod + cascade belt span) under S2
+- [ ] Dock interface sketch: main base latch + auxiliary base latch / dual-contact for planar walk
+- [ ] EE quick-change + reserved air path (electrical first)
+- [ ] Optional: `hardware/kinematics/s2.yaml` (+ later URDF) for FK reach / dual-dock span checks
+- [ ] Component composition ROADMAP item (motors, drivers, gearboxes, sensors, compute, connectors)
+```
+
+**K7.2 Revalidate after first hardware prototype:**
+
+```markdown
+### K7.2 Revalidate after first prototype
+- Cascade belt/tendon: accessibility (DFAA), preload stability, acoustic contribution (N6)
+- Real link + actuator masses vs illustrative OOM in down-select → N5 margins
+- Planar dual-dock step at ~0.5–0.6 m class spacing; aux-latch load path
+- Whether S1 fallback is triggered (belt slip, service time, noise)
+- Pneumatic route still justified vs electrical-only MVP
+```
+
+Закрытие K7: вписать эти два списка в `0004-kinematic-and-mechanical-scheme.md` (или `0004-handoff.md`), чекбоксы K7.1/K7.2 → `[x]` как *listed* (не как «уже сделано в железе»).
+
+---
+
+### 3. Done when — проверка
+
+| Критерий | Статус | Где |
+|----------|--------|-----|
+| Survey takeaways; sources by URL | **Да** | conversation + ADR-0004 + survey-scope |
+| Placement policy at principle level | **Да** | `0004-placement-policy.md` |
+| 2–3 candidate schemes + stick + joint lists | **Да** | `0004-candidate-schemes.md` |
+| One scheme selected + trade-off rationale | **Да** | downselect + **ADR-0005 (S2)** |
+| ADR accepted; ROADMAP + current-state | **Проверить коммит** | ADR-0005 + ваши обновления ссылок |
+| Open risks / revisit after prototype | **Да** | ADR-0005 Consequences / Implementation; усилить K7.2 |
+
+**Пробелы только процедурные:**
+
+1. Убедиться, что **ROADMAP** и **current-state** реально обновлены.  
+2. Явно закрыть **K7** списком follow-ups (выше).  
+3. YAML в `hardware/` — **не** обязателен для Done when.
+
+---
+
+### Итог
+
+| Вопрос | Ответ |
+|--------|--------|
+| YAML → `hardware/kinematics/` сейчас? | **Не обязательно** для закрытия 0004; follow-up в K7.1 |
+| K7 | Короткий handoff-список + revalidate; отметить выполненным как *documented* |
+| Done when | По сути **соблюдены**, если ADR/ROADMAP/current-state закоммичены; добить K7 текстом |
+
+После K7.1/K7.2 в task-файле задачу **0004 можно считать закрытой** и переходить к component composition / joint module / dock sketch.

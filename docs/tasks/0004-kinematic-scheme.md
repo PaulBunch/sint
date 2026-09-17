@@ -86,8 +86,8 @@ Out of scope for this task:
 → [docs/decisions/0005-kinematic-scheme.md](docs/decisions/0005-kinematic-scheme.md)
 
 ### K7. Handoff to next work
-- [ ] K7.1 List follow-ups: first joint module geometry, dock interface sketch, optional sim skeleton
-- [ ] K7.2 Note what must be revalidated after first hardware prototype
+- [x] K7.1 List follow-ups: first joint module geometry, dock interface sketch, optional sim skeleton
+- [x] K7.2 Note what must be revalidated after first hardware prototype
 
 ---
 
@@ -103,12 +103,12 @@ Hybrids allowed if scoring wins.
 
 ## Done when
 
-- [ ] Survey takeaways exist (conversation ± table); sources cited by URL only
-- [ ] Placement policy for motors/electronics is written at principle level
-- [ ] 2–3 candidate schemes documented with stick-level diagrams and joint lists
-- [ ] One scheme selected with explicit trade-off rationale
-- [ ] ADR accepted; ROADMAP item and `docs/current-state.md` updated
-- [ ] Open risks / “revisit after first prototype” listed in ADR
+- [x] Survey takeaways exist (conversation ± table); sources cited by URL only
+- [x] Placement policy for motors/electronics is written at principle level
+- [x] 2–3 candidate schemes documented with stick-level diagrams and joint lists
+- [x] One scheme selected with explicit trade-off rationale
+- [x] ADR accepted; ROADMAP item and `docs/current-state.md` updated
+- [x] Open risks / “revisit after first prototype” listed in ADR
 
 ---
 

@@ -112,6 +112,24 @@ Scorecard totals in the down-select note are **comparative judgments**, not labo
 4. First prototypes should exercise: cascade belt access (DFAA), quiet motion (N6), planar dual-dock step at ~0.5–0.6 m class spacing.  
 5. If cascade is abandoned for S1, record the trigger (noise, slip, service time) in a short ADR amendment or superseding note.
 
+### Handoff & Next Steps
+
+Based on the S2 selection, the following follow-up tasks and revalidation points are identified:
+
+#### Follow-ups
+- **Joint module geometry:** Design proximal FOC pod and cascade belt span under S2 constraints.
+- **Dock interface:** Sketch main base latch + auxiliary base latch / dual-contact mechanism for stable planar walk.
+- **End Effector (EE):** Design quick-change interface with electrical contacts and reserved air path.
+- **Kinematic Model:** (Optional) Create `hardware/kinematics/s2.yaml` (or URDF) for FK reach and dual-dock span verification.
+- **Component Selection:** Execute ROADMAP item for motors, drivers, gearboxes, sensors, and compute.
+
+#### Revalidation (Post-Prototype)
+- **Cascade transmission:** Evaluate DFAA accessibility, preload stability, and acoustic contribution (N6).
+- **Mass budget:** Re-check real link/actuator masses against the illustrative OOM model to confirm N5 margins.
+- **Relocatable base:** Test planar dual-dock step at ~0.5–0.6 m spacing and auxiliary latch load paths.
+- **Architecture trigger:** Confirm if S1 fallback is needed due to belt slip, service complexity, or noise.
+- **Pneumatics:** Re-evaluate if the reserved pneumatic route is justified vs. electrical-only MVP.
+
 ## References
 
 - `docs/tasks/0004-scheme-downselect.md` — K5 scorecard and OOM analysis  
