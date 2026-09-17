@@ -13,6 +13,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 ## Recent Progress
 
 - **Kinematic Scheme (Task 0004):**
+    - ADR-0005 accepted (2026-09-17). Primary **S2** (serial 6-DoF, cascaded mass bias, asymmetric ends, power scenario A, coplanar ≥2 docks, base aux-latch walk; wrist not sole cantilever). Fallback **S1** (in-joint). **S3** dual-ended deferred (BOM/mass risk). Details: `docs/decisions/0005-kinematic-scheme.md`. Task 0004 closed.
     - Established **Kinematic Constraints (K1)** including DFAA veto rules and ADR-0003 alignment (`docs/tasks/0004-kinematic-constraints.md`).
     - Completed **Analogue Survey (K2)**: Curated source list (PAROL6, GLUON, AR4 MK5, AMBIDEX, Canadarm2/ERA) and extracted takeaways (`docs/tasks/0004-kinematic-survey-scope.md`, `docs/decisions/0004-kinematic-survey-patterns.md`).
     - Defined **Placement Policy (K3)**: Defaulting to cascaded/proximal mass bias for distal axes to minimize inertia; power scenario A/B roles defined (`docs/tasks/0004-placement-policy.md`).
