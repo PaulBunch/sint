@@ -8,13 +8,14 @@ closed_reason:
 language: ru
 tags: []
 related:
-  - docs/tasks/0004-kinematic-and-mechanical-scheme.md
+  - docs/tasks/0004-kinematic-scheme.md
   - docs/conversations/2026-09-14--kinematic-survey-notebooklm.md
   - docs/tasks/0004-kinematic-constraints.md
   - docs/tasks/0004-kinematic-survey-scope.md
   - docs/decisions/0004-kinematic-survey-patterns.md
   - docs/tasks/0004-placement-policy.md
   - docs/tasks/0004-candidate-schemes.md
+  - docs/decisions/0005-kinematic-scheme.md
 ---
 
 # 
@@ -33,12 +34,12 @@ related:
 
 Оцени важность задачи:
 ```md
-- [ ] Develop kinematic and mechanical scheme of the interface (topology, DoF layout, relocatable base concept)
+- [ ] Develop kinematic scheme of the interface (topology, DoF layout, relocatable base concept)
 ```
 
 Переходим к:
 ```
-- [ ] Develop kinematic and mechanical scheme of the interface (topology, DoF layout, relocatable base concept)
+- [ ] Develop kinematic scheme of the interface (topology, DoF layout, relocatable base concept)
 ```
 Является ли эта задача более трудоёмкой? Нужно ли:
 - произвести обзорно‐исследовательские работы имеющихся решений, которые дошли до реализации?
@@ -234,7 +235,7 @@ K1 constraints
 
 ---
 
-### 3. Черновик `docs/tasks/0004-kinematic-and-mechanical-scheme.md`
+### 3. Черновик `docs/tasks/0004-kinematic-scheme.md`
 
 ---
 
@@ -327,7 +328,7 @@ docs/tasks/0004-kinematic-constraints.md
 ### Что сделать в репо
 
 1. Сохранить как `docs/tasks/0004-kinematic-constraints.md` (или имя на ваш вкус).  
-2. В `0004-kinematic-and-mechanical-scheme.md`:
+2. В `0004-kinematic-scheme.md`:
 
 ```markdown
 ### K1. Constraint sheet
@@ -519,7 +520,7 @@ Deprioritize or exclude from *primary* list if:
 
 1. Я опечатался, я имел ввиду проект PAROL6 от Source Robotics: https://github.com/Source-Robotics/PAROL6-Desktop-robot-arm
    Этот проект имеет для меня больший приоритет, чем дрожащая рука SO-ARM. Как минимум в этом проекте можно изучить пневматическую силовую систему. У меня есть мысли, что нам нужно будет прокидвать пневматический канал от dock до энд-эффектора. Для пневматических типов эндэффекторов. 
-2. Насчёт расширения task-0004. Если мы принимаем решени фиксировать резульат выполнения K2.1 – K2.3 в tasks, то это нужно делать в отдельном документе, а не в уже имещющихся: 0004-kinematic-and-mechanical-scheme и 0004-kinematic-constraints.
+2. Насчёт расширения task-0004. Если мы принимаем решени фиксировать резульат выполнения K2.1 – K2.3 в tasks, то это нужно делать в отдельном документе, а не в уже имещющихся: 0004-kinematic-scheme и 0004-kinematic-constraints.
 3. Реализуй K2.1 и K2.2. После этого перейдём к подбору источников информации для обзора.
 
 ---
@@ -529,7 +530,7 @@ Deprioritize or exclude from *primary* list if:
 
 **PAROL6 (Source Robotics)** — да, логичнее SO-ARM: открытый desktop arm, железо + репо, плюс у вас явный интерес к **пневматике до EE**. Имеет смысл **primary** в survey, с отдельной строкой takeaway: «нужен ли air pass-through dock→EE». Это не ломает K1, но расширяет R3 (интерфейс EE) на возможный **пневмоканал** — зафиксировать как *open design question*, не как требование ADR-0003.
 
-**Куда писать K2.1–K2.3:** согласен — **отдельный документ**, не раздувать `0004-kinematic-and-mechanical-scheme.md` и не смешивать с constraint sheet.
+**Куда писать K2.1–K2.3:** согласен — **отдельный документ**, не раздувать `0004-kinematic-scheme.md` и не смешивать с constraint sheet.
 
 Рекомендуемый файл:
 
@@ -999,7 +1000,7 @@ Read and obey:
 - docs/decisions/0004-kinematic-survey-patterns.md
 - docs/tasks/0004-kinematic-constraints.md
 - docs/tasks/0004-placement-policy.md
-- docs/tasks/0004-kinematic-and-mechanical-scheme.md (§ K4)
+- docs/tasks/0004-kinematic-scheme.md (§ K4)
 
 Task: produce exactly three candidate schemes S1, S2, S3 at stick level only.
 

@@ -6,13 +6,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 # Project Current State — sint
 
 **Last Updated:** 2026-09-17  
-**Status:** Phase 1 (Foundation & Planning) — Kinematic & Mechanical Scheme Selection
+**Status:** Phase 1 (Foundation & Planning) — Kinematic Scheme Selection
 
 ---
 
 ## Recent Progress
 
-- **Kinematic & Mechanical Scheme (Task 0004):**
+- **Kinematic Scheme (Task 0004):**
     - Established **Kinematic Constraints (K1)** including DFAA veto rules and ADR-0003 alignment (`docs/tasks/0004-kinematic-constraints.md`).
     - Completed **Analogue Survey (K2)**: Curated source list (PAROL6, GLUON, AR4 MK5, AMBIDEX, Canadarm2/ERA) and extracted takeaways (`docs/tasks/0004-kinematic-survey-scope.md`, `docs/decisions/0004-kinematic-survey-patterns.md`).
     - Defined **Placement Policy (K3)**: Defaulting to cascaded/proximal mass bias for distal axes to minimize inertia; power scenario A/B roles defined (`docs/tasks/0004-placement-policy.md`).

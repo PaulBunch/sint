@@ -3,18 +3,18 @@ SPDX-FileCopyrightText: 2026 sint project contributors
 SPDX-License-Identifier: CC-BY-SA-4.0
 -->
 
-# Task: Develop kinematic and mechanical scheme of the interface
+# Task: Develop kinematic scheme of the interface
 
-**Status:** open  
+**Status:** closed  
 **Related:**
-- ROADMAP Phase 1 — “Develop kinematic and mechanical scheme…”
+- ROADMAP Phase 1 — “Develop kinematic scheme…”
 - `docs/spec.md` (R1–R3, R7, DFAA, relocatable base)
 - `docs/decisions/0003-core-numerical-characteristics.md`
 - `docs/implementation-concepts.md` (§1)
-- Conversation (to create): `docs/conversations/2026-09-14--kinematic-mechanical-scheme.md`
+- Conversation (to create): `docs/conversations/2026-09-14--kinematic-scheme.md`
 - Optional survey notes: `docs/conversations/2026-09-14--kinematic-survey-notebooklm.md`
 
-**Goal:** Select and document a Phase 1 kinematic + mechanical scheme (topology, DoF layout, relocatable-base concept, actuator/electronics placement *policy*) that respects ADR-0003 numbers and DFAA — without full detailed CAD or final motor SKUs.
+**Goal:** Select and document a Phase 1 kinematic scheme (topology, DoF layout, relocatable-base concept, actuator/electronics placement *policy*) that respects ADR-0003 numbers and DFAA — without full detailed CAD or final motor SKUs.
 
 ---
 
@@ -79,9 +79,11 @@ Out of scope for this task:
 → [0004-scheme-downselect.md](0004-scheme-downselect.md)
 
 ### K6. Decision record
-- [ ] K6.1 Draft ADR (kinematic & mechanical scheme): topology, DoF layout, relocatable concept, placement policy, open issues
-- [ ] K6.2 Accept ADR; link from current-state and ROADMAP
-- [ ] K6.3 Close this task
+- [x] K6.1 Draft ADR (kinematic scheme): topology, DoF layout, relocatable concept, placement policy, open issues
+- [x] K6.2 Accept ADR; link from current-state and ROADMAP
+- [x] K6.3 Close this task
+
+→ [docs/decisions/0005-kinematic-scheme.md](docs/decisions/0005-kinematic-scheme.md)
 
 ### K7. Handoff to next work
 - [ ] K7.1 List follow-ups: first joint module geometry, dock interface sketch, optional sim skeleton

@@ -1,5 +1,5 @@
 ---
-title: Исследование кинематических и механических схем (NotebookLM)
+title: Исследование кинематических схем (NotebookLM)
 date_created: 2026-09-14
 date_updated: 2026-09-15
 participants: [Bunch, Gemini]
@@ -8,14 +8,14 @@ closed_reason: Обзор завершен, выводы сформулиров�
 language: ru
 tags: [kinematics, research, mechanical-design, survey]
 related:
-  - docs/tasks/0004-kinematic-and-mechanical-scheme.md
-  - docs/conversations/2026-09-14--kinematic-mechanical-scheme.md
+  - docs/tasks/0004-kinematic-scheme.md
+  - docs/conversations/2026-09-14--kinematic-scheme.md
   - docs/tasks/0004-kinematic-constraints.md
   - docs/tasks/0004-kinematic-survey-scope.md
   - docs/decisions/0004-kinematic-survey-patterns.md
 ---
 
-# Исследование кинематических и механических схем (NotebookLM)
+# Исследование кинематических схем (NotebookLM)
 
 ## Summary
 В ходе обсуждения проведен сравнительный анализ существующих роботизированных систем (PAROL6, AR4-MK5, INNFOS GLUON, LIMS2-AMBIDEX, myCobot 280) и космических манипуляторов (Canadarm2, ERA). Сформулированы рекомендации для проекта `sint`:
@@ -48,7 +48,7 @@ related:
 - Выдели схему работы с переставляемым основанием или двусторонним захватом; не учитывай массу, стоимость и летное исполнение оборудования.
 - Размещение приводов (в суставе или удаленно) и тип передачи
 
-Подготовь таблицу решений (оставить/отклонить) по механическим схемам для синтеза (не рекомендации по конкретным продуктам).
+Подготовь таблицу решений (оставить/отклонить) по кинематическим схемам для синтеза (не рекомендации по конкретным продуктам).
 
 ---
 **Gemini**

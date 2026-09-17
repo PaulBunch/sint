@@ -7,7 +7,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 **Status:** active input to survey (K2) and scheme selection (K4–K6)  
 **Sources:** `docs/spec.md`, `docs/decisions/0003-core-numerical-characteristics.md`  
-**Parent task:** `docs/tasks/0004-kinematic-and-mechanical-scheme.md`
+**Parent task:** `docs/tasks/0004-kinematic-scheme.md`
 
 This note is the **filter** for analogue survey and candidate topologies.  
 It is not a kinematic design and does not freeze joint SKUs or CAD.

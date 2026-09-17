@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 # Task 0004 — Placement policy (motors & electronics)
 
 **Status:** accepted (principles only — Phase 1)  
-**Parent:** `docs/tasks/0004-kinematic-and-mechanical-scheme.md`  
+**Parent:** `docs/tasks/0004-kinematic-scheme.md`  
 **Related:**
 - `docs/decisions/0003-core-numerical-characteristics.md`
 - `docs/decisions/0004-kinematic-survey-patterns.md`

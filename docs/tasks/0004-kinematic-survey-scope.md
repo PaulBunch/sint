@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Task 0004 — Survey scope & selection criteria (K2.1–K2.2)
 
-**Parent:** `docs/tasks/0004-kinematic-and-mechanical-scheme.md`  
+**Parent:** `docs/tasks/0004-kinematic-scheme.md`  
 **Constraints filter:** `docs/tasks/0004-kinematic-constraints.md`  
 **Status:** K2.1–K2.3 draft complete
 
@@ -148,7 +148,7 @@ Full-system **P** sources should be plausible under project constraints *in spir
 
 ---
 
-## K2.3 — Curated source list (kinematics & mechanical schemes)
+## K2.3 — Curated source list (kinematics schemes)
 
 **Rule:** URLs only in git. Do not commit PDFs, videos, or full scraped corpora.  
 For NotebookLM: upload *selected* public pages / papers the user legally obtains; keep this table as the index.

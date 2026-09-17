@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 # Candidate Kinematic Schemes — S1, S2, S3 (Task 0004 / K4)
 
 **Status:** Draft candidate proposals for down-selection (K5)  
-**Parent task:** `docs/tasks/0004-kinematic-and-mechanical-scheme.md`  
+**Parent task:** `docs/tasks/0004-kinematic-scheme.md`  
 **Normative inputs:** `docs/decisions/0003-core-numerical-characteristics.md`, `docs/decisions/0004-kinematic-survey-patterns.md`, `docs/tasks/0004-kinematic-constraints.md`, `docs/tasks/0004-placement-policy.md`
 
 ## MVP Docking Assumptions (Shared across S1/S2/S3)

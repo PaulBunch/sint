@@ -11,7 +11,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - **Related:**
   - `docs/spec.md` (R1–R3, R7–R8, DFAA, relocatable base)
   - `docs/decisions/0003-core-numerical-characteristics.md`
-  - `docs/tasks/0004-kinematic-and-mechanical-scheme.md`
+  - `docs/tasks/0004-kinematic-scheme.md`
   - `docs/tasks/0004-kinematic-constraints.md`
   - `docs/tasks/0004-kinematic-survey-scope.md`
   - `docs/conversations/2026-09-14--kinematic-survey-notebooklm.md`

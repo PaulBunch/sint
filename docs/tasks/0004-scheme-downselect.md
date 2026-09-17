@@ -6,7 +6,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 # Kinematic Scheme Selection — Down-select (Task 0004 / K5)
 
 **Status:** Draft recommendation pending maintainer acceptance / ADR-0005  
-**Parent task:** `docs/tasks/0004-kinematic-and-mechanical-scheme.md`  
+**Parent task:** `docs/tasks/0004-kinematic-scheme.md`  
 **Normative inputs:** `docs/decisions/0003-core-numerical-characteristics.md`, `docs/decisions/0004-kinematic-survey-patterns.md`, `docs/tasks/0004-kinematic-constraints.md`, `docs/tasks/0004-placement-policy.md`, `docs/tasks/0004-candidate-schemes.md`
 
 ---
