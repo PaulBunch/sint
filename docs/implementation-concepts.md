@@ -24,9 +24,10 @@ This document captures specific technical solutions, candidate architectures, an
   - **3D-printed cycloidal**: High reduction in a compact volume; sensitive to print tolerance.
   - **Planetary (incl. helical)**: Easier to print and assemble; typically more backlash than cycloidal/strain-wave.
   - **Strain wave (harmonic)**: High precision; hard to implement as pure COTS / fully printable for MVP.
+  - **Belt-stage reduction**: competitive for printed prototypes on backlash/noise/assembly in some comparisons; larger envelope than cycloidal/planetary for the same ratio — relevant to cascade packs.
 - **Actuator packaging**:
   - Prefer modular joint modules that an agent can assemble (DFAA).
-  - Evaluate both (a) integrated joint actuators and (b) remote/base-mounted motors with tendon or belt transmission (see §1.4).
+  - Evaluate both (a) integrated joint actuators and (b) remote/proximal motors with **short** tendon or belt transmission (see §1.4). Prefer inspectable runs over opaque full-arm cable packs.
 
 ### 1.3. Reference: quiet modular desktop arm (INNFOS GLUON)
 **Why it matters for sint:** demonstrates that a small 6-DoF arm built from a small set of repeated smart actuators can be **smooth and notably quiet**, with a payload class suitable for light assembly rather than industrial handling.
@@ -44,22 +45,40 @@ Public / review-oriented figures (order of magnitude, not a procurement commitme
 
 Sources: INNFOS GLUON Kickstarter / product materials; third-party reviews (e.g. Skyentific).
 
-### 1.4. Reference: remote actuation & load distribution (IRIM Lab / LIMS2-AMBIDEX)
-**Why it matters for sint:** tendon / cable-driven architectures (IRIM Lab KOREATECH, LIMS / LIMS2-AMBIDEX line) show how to **keep heavy motors off the distal joints**, reduce moving inertia, and improve payload for a given motor size by placing actuators closer to the base/shoulder and transmitting torque via cables, pulleys, and tension-amplification mechanisms.
+### 1.4. Reference: remote actuation & load distribution (IRIM Lab / LIMS family)
+**Why it matters for sint:** the LIMS line (IRIM Lab KOREATECH and related public demos — LIMS2, **LIMS3-AMBIDEX**, **LIMS-EX**) shows how **cable / tendon remote drive** can keep heavy actuators off the distal structure, cut moving inertia, and raise payload-to-distal-mass ratio without putting large gearboxes in every wrist joint.
 
-Design ideas to evaluate (not adopt blindly):
-- **Motor placement**: concentrate mass near the base or proximal links; drive elbow/wrist through tendons or equivalent low-mass transmission.
-- **Tension amplification**: mechanisms that increase torque/stiffness at the joint without putting a large gearbox in the joint itself.
-- **Mass distribution**: lighter distal links improve acceleration, safety in contact, and effective payload at reach.
+**Detailed figures and source URLs:** [`docs/references/lims-family-notes.md`](references/lims-family-notes.md) (living extract; extend as new public material appears). This section only keeps **design bias** for agents and ADRs.
+
+**Order-of-magnitude public scale (not sint targets):**
+
+| Item | LIMS-class (public) | sint Phase 1 (normative elsewhere) |
+|------|---------------------|-------------------------------------|
+| Workspace payload | ~**5 kg** (LIMS3 / LIMS-EX, as stated) | **~0.5 kg** continuous (ADR-0003) |
+| Arm span | ~**1 m** | **0.5–0.8 m** reach class |
+| Mass below shoulder / moving structure | ~**3.6–4.5 kg** (LIMS2/3) | Much lighter MVP structure expected |
+| Distal masses (LIMS3 examples) | Elbow ~268 g, forearm ~949 g, wrist ~174 g | Aim for **light wrist**; exact budget in composition/CAD |
+| Shoulder continuous torque | LIMS3 **42 N·m**; LIMS-EX shoulder up to **~72–93 N·m** joint | Proximal band **~10–25 N·m** (ADR-0003) |
+| Elbow / wrist continuous (LIMS-EX joints) | Elbow **63 N·m**; wrist **~8–27 N·m** | Distal band **~1–5 N·m** (ADR-0003) |
+
+**Design ideas to evaluate (not adopt blindly):**
+- **Motor placement:** concentrate mass at base / proximal links; drive elbow and wrist through **cables or short belts** with inspectable runs.
+- **Tension management:** LIMS-EX advertises a **single shared pretension** across cables — elegant, but must pass a **DFAA** service story before imitation; sint default remains **per-span accessible tensioners**.
+- **Mass distribution:** sub-kilogram distal segments at ~1 m class arms prove remote drive can unload the tip; useful when justifying cascade (S2) over all in-joint distal motors.
+- **Sensing:** LIMS3 stresses **absolute encoders on motors and joints** — strong reference for feedback class selection.
+- **Utilities:** large hollow distal path for power / signal / pneumatics aligns with reserved air + harness pass-through.
+- **Mechanism detail (LIMS3):** elbow cable diameters cited **3.2 mm / 1.6 mm**; wrist quaternion joint + cable bevel yaw; six wrist cables through elbow “without coupling” (as claimed). Treat as inspiration for routing studies, not a freeze.
 
 **Trade-offs for sint / DFAA / COTS:**
-- Routing, pretension, wear, and inspection of cables must be agent-serviceable (or replaced by belts/alternative transmissions with clearer DFAA procedures).
-- Calibration and stretch/compliance of the transmission become part of the control problem.
-- Still compatible with the long-term relocatable / dual-ended interface concept if power/data and mechanical paths are designed deliberately.
+- Long multi-cable trees and lab pretension schemes risk **opaque service** (survey pattern: full LIMS-style pack = not Phase 1 default).
+- Prefer **short cascade spans** with **belt (DFAA-friendly) or short tendon** and agent-reachable idlers (placement policy / S2).
+- Cable stretch, wear, and calibration become control problems; plan for them if tendons are chosen over belts.
+- **Do not size sint motors by linear payload ratio** (e.g. 5 kg → 0.5 kg ⇒ ÷10). Self-weight and \(m g L\) dominate; use ADR-0003 N5 plus estimated arm mass. LIMS joint torques are an **upper reference scale**, not a SKU list.
+- Peak speeds of hundreds–1000+ °/s are demonstration-class; sint remains assembly-first and **acoustically quiet** (N6).
 
-**Intent:** use these principles when choosing **where** actuators live along the kinematic chain, especially if numerical targets demand higher payload without simply scaling joint motors at every axis.
+**Intent:** keep LIMS as the **primary external orientation** for proximal mass bias and remote transmission *principles*. Normative topology remains the accepted kinematic scheme (S2 cascade serial, asymmetric ends, planar docks). Full tables live only in `lims-family-notes.md`.
 
-Sources: IRIM Lab KOREATECH public demos and design videos (LIMS / LIMS2-AMBIDEX); related NAVER Labs Ambidex materials.
+**Sources:** see source index in `docs/references/lims-family-notes.md` (LIMS3 demo; LIMS-EX design video); earlier LIMS2 survey notes; related NAVER Labs Ambidex materials where public.
 
 ### 1.5. Reference: printable modular BLDC actuators (DIY cobot / open hardware)
 **Why it matters for sint:** open, largely 3D-printable BLDC servo actuators align with **100% consumer fabrication** and agent-participatory hardware iteration.
@@ -80,13 +99,14 @@ Example class (DIY modular BLDC servo actuator, public build videos / printable 
 Source example: public DIY series “3D printable BLDC servo actuator” (5010 + planetary, modular path to higher reduction), e.g. [YouTube build overview](https://www.youtube.com/watch?v=7SZQPEjpaMo).
 
 ### 1.6. Synthesis for sint (working design bias)
-Until ADRs freeze choices, prefer concepts that jointly support:
-1. **Quiet FOC BLDC motion** (GLUON-class lesson)
-2. **Favourable mass distribution** — avoid unnecessary motor mass at every distal joint when tendons/belts/remote drives are workable (LIMS-class lesson)
-3. **Printable or hybrid modular actuators** that the agent can assemble and replace (DIY printable actuator lesson)
-4. **Symmetric / relocatable kinematics** still as the mobility frame (§1.1)
+With kinematic scheme **S2** accepted (cascaded serial 6-DoF) and numerical targets in ADR-0003, prefer concepts that jointly support:
+1. **Quiet FOC BLDC motion** (GLUON-class lesson; N6).
+2. **Favourable mass distribution** — proximal-heavy, light distal; short **belt or tendon** cascade with agent-accessible tensioning (LIMS-class *principle*, not full cable-tree copy).
+3. **Printable or hybrid modular actuators** the agent can assemble and replace (DIY printable actuator lesson; DFAA).
+4. **Relocatable base** via **coplanar docks** and scaled walking logic; dual-ended symmetric (Canadarm-class) remains a deferred pattern, not Phase 1 default (§1.1 still relevant as long-term idea).
+5. **No naive torque scaling from LIMS payload** — size drives from ADR-0003 bands + arm mass estimates; use LIMS figures only as orientation (`lims-family-notes.md`).
 
-These biases feed the numerical-characteristics work (payload, torque, noise, BOM) and later motor/transmission ADRs.
+These biases feed component composition (task 0005), joint-module CAD, and later motor/transmission ADRs.
 
 ---
 
@@ -132,5 +152,5 @@ These biases feed the numerical-characteristics work (payload, torque, noise, BO
 
 ## References (design inspirations)
 - INNFOS GLUON — modular desktop arm / integrated quiet actuators (Kickstarter & reviews)
-- IRIM Lab KOREATECH — LIMS / LIMS2-AMBIDEX tendon-driven low-inertia arms
+- IRIM Lab KOREATECH — **LIMS family** (LIMS2 / LIMS3-AMBIDEX / LIMS-EX); detailed notes: [`docs/references/lims-family-notes.md`](references/lims-family-notes.md)
 - DIY open-hardware 3D-printed BLDC servo actuators (e.g. 5010 + planetary → higher reduction modular stack)

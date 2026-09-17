@@ -45,9 +45,11 @@ Out of scope for this task:
 - [x] C0.2 Link this task from ROADMAP item
 
 ### C1. Bill of classes (what must exist on S2)
-- [ ] C1.1 List functional classes: motors, gearboxes/reductions, drivers/FOC, encoders/sensors, joint/link MCU, central compute, power (dock + optional battery), connectors/harness, belt/pulley/tensioner (cascade), dock power-data (+ reserved air fitting class)
-- [ ] C1.2 Map each class → joint region: proximal (J1–J2/J3 span) vs distal (J4–J6) vs base-end vs EE
-- [ ] C1.3 Mark which classes are **required for MVP smoke test** vs **Phase 1 complete arm**
+- [x] C1.1 List functional classes: motors, gearboxes/reductions, drivers/FOC, encoders/sensors, joint/link MCU, central compute, power (dock + optional battery), connectors/harness, belt/pulley/tensioner (cascade), dock power-data (+ reserved air fitting class)
+- [x] C1.2 Map each class → joint region: proximal (J1–J2/J3 span) vs distal (J4–J6) vs base-end vs EE
+- [x] C1.3 Mark which classes are **required for MVP smoke test** vs **Phase 1 complete arm**
+
+→ [0005-bill-of-classes.md](0005-bill-of-classes.md)
 
 ### C2. Requirements per class (from ADR, not from vendor gloss)
 - [ ] C2.1 Proximal drive: continuous torque band, speed order-of-magnitude, voltage, bus, noise intent, DFAA boundary
