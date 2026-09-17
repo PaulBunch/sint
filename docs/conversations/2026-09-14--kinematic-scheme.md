@@ -1,12 +1,12 @@
 ---
-title: 
+title: Выбор кинематической схемы Этапа 1
 date_created: 2026-09-14
-date_updated: 2026-09-14
+date_updated: 2026-09-17
 participants: [Bunch, Grok, Gemini]
-status: open
-closed_reason: 
+status: closed
+closed_reason: ADR-0005 accepted
 language: ru
-tags: []
+tags: [kinematics, design, dock]
 related:
   - docs/tasks/0004-kinematic-scheme.md
   - docs/conversations/2026-09-14--kinematic-survey-notebooklm.md
@@ -18,10 +18,17 @@ related:
   - docs/decisions/0005-kinematic-scheme.md
 ---
 
-# 
+# Выбор кинематической схемы Этапа 1
 
 ## Summary
 
+В ходе обсуждения была проработана методология выбора кинематической схемы для Фазы 1 проекта sint. Основные результаты:
+1. **Методология:** Принят двухэтапный процесс: сначала широкий обзор (Survey) с использованием NotebookLM, затем детальная проработка 2-3 кандидатов и финальный выбор (Down-select).
+2. **Placement Policy:** Сформулированы принципы размещения приводов и электроники (каскадное смещение масс к основанию, распределенный compute «звеньев», Scenario A как дефолт).
+3. **Кандидаты:** Рассмотрены схемы S1 (модульная in-joint), S2 (каскадная 6-DoF) и S3 (симметричная 7-DoF).
+4. **Решение:** Выбрана схема **S2 (serial 6-DoF, cascaded mass bias)** как основная. Она обеспечивает лучший баланс между динамикой (N5), доступностью для обслуживания (DFAA) и сложностью реализации. Схема S1 оставлена как fallback.
+5. **Relocatable Base:** Уточнена концепция перемещения между доками на одной плоскости (planar walk) с использованием вспомогательного захвата для разгрузки кисти.
+6. **Итог:** Результаты закреплены в **ADR-0005**, задача **0004-kinematic-scheme** закрыта.
 
 ## Discussion
 
