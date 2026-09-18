@@ -122,6 +122,7 @@ Based on the S2 selection, the following follow-up tasks and revalidation points
 - **End Effector (EE):** Design quick-change interface with electrical contacts and reserved air path.
 - **Kinematic Model:** (Optional) Create `hardware/kinematics/s2.yaml` (or URDF) for FK reach and dual-dock span verification.
 - **Component Selection:** Execute ROADMAP item for motors, drivers, gearboxes, sensors, and compute.
+- **LIMS-class (ADR-0006):** performance aspiration and parallel **S4** study; S2 remains baseline until an explicit S2 vs S4 gate amends this ADR.
 
 #### Revalidation (Post-Prototype)
 - **Cascade transmission:** Evaluate DFAA accessibility, preload stability, and acoustic contribution (N6).
@@ -132,8 +133,8 @@ Based on the S2 selection, the following follow-up tasks and revalidation points
 
 ## References
 
-- `docs/tasks/0004-scheme-downselect.md` — K5 scorecard and OOM analysis  
-- `docs/tasks/0004-candidate-schemes.md` — S1/S2/S3 definitions  
-- `docs/tasks/0004-placement-policy.md`  
-- ADR-0003, ADR-0004  
+- `docs/tasks/0004-scheme-downselect.md` — K5 scorecard and OOM analysis
+- `docs/tasks/0004-candidate-schemes.md` — S1/S2/S3 definitions
+- `docs/tasks/0004-placement-policy.md`
+- ADR-0003, ADR-0004, ADR-0006
 - `docs/spec.md` — R1, R2, R3, R7, R8, DFAA

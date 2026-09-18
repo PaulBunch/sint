@@ -521,3 +521,234 @@ T \sim \bigl(m_{\mathrm{payload}} + m_{\mathrm{ee}}\bigr) g L + \sum m_{\mathrm{
 Если нужно, могу сразу набросать компактный блок для `implementation-concepts` §1.4 (LIMS3 + LIMS-EX, 15–20 строк) под вставку в репо.
 
 ---
+**2026-09-18**
+---
+
+---
+**Bunch**
+
+1. Я переспал обдумывая достигнутые характеристики, а также кинематическую и конструктивную схемы LIMS-EX. Кроме того я провёл когнитивное сравнение LIMS-EX с другими широкраспространёнными вариантами манипуляторов. И пришёл к выводу, что мы должны повысить статус проекта LIMS-EX до эталоннго, к которому нужно стремиться. Во-первых меня впечатляют динамические характеристики манипулятора: точность и безынерционность движений, доступный дипазон точек в пространстве внутри сферы радиусом с длинну манипулятора, в которые может попасть EE, а также скоростью и бесшумностью движений. Например, гибкость этого манипулятора позволяет без труда обслужить dock‐точку, в которую он установлен. Кроме того, будучи закреплённый на краю стола, его запястье может без труда опуститься ниже горизонтальной плоскости, на которой зафиксирована dock-точка. Многие серёзные проекты используеющие «классические» типы редуторов и моторов в суставвах похожи на очень медлительных больных Паркинсоном (постоянное дребизжание и дрожание) с очень ограниченным дипазаоном мобильности. Во‐вторых неоходимо отметить невероятное соотношение массы полезной нагрузки к массе манипулятора, которое составляет 1 к 2. В‐третьих я считаю, что мы просто обязаны постараться внедрить лучшие конструктивные решения, которые нам позволит бюджет и DFAA ограничение. А именно: мне нравится симетричное расположение звеньев относительно суставов, что не создаёт празитных боковых ломающих моментов на сустав; все силовые приводы расположены в плече, предплечье остаётся невероятно лёгким; двухосевой локоть, который как раз и позволяет сохранить коллинеарность центральных осей плеча и предплечья при сохранении невероятной гибкости звеньев: предплечье можно положить на плечо, просто согнув локоть полностью. Именно двухосевой локоть позволяет обслужить практически все точки по периметру dock-точки.
+
+Из этих умозаключений, я делаю вывод что нам нужно осуществить поиск доступных публикаций LIMS-EX, чтобы извлечь из них максимум информации, а не только из 3-х минутного видео. Изучить схему N+1-to-2N с целью попытки её внедрения уже на этапе MVP. А также нужн внести соответствующие изменения во все ключевые документы проекта, включая ADR. Не маловажным будет поискать открытые проекты, которые возможно уже попытались реализовать схему LIMS.
+
+Если на данном этапе мы отложим эту задачу до лучших времён, то можем потерять от месяце до нескольких лет пытаясь решить проблемы «классических» манипуляторов вродбе (PAROL6, AR4-MK5, INNFOS GLUON и т.п.). Разработчики LIMS уже прошли колосальный путь и нам нужно научиться на их опыте, адаптировав его под потребительский open source.
+
+Интересно узнать твоё мнение по этому вопросу.
+
+2. Также пришла идея снабдить акселерометрами основные суставы манипулятора (запятье, локоть, плечо), чтобы всегда знать их ориентацию в пространстве. Думаю, это немаловажно для шагающего манипулятора. Конечно, это не такой принципиальный вопрос как предыдущй, и, я не уверен, насколько это необходимо реализовывать в MVP‐версии. Но я также хочу знать твоё мнение.
+
+---
+**Grok 4.5 Fast**
+
+### 1. LIMS-EX как эталон — мнение
+
+Ваше сравнение с «классическими» руками (PAROL6 / AR4 / GLUON-класс) по сути верное: у LIMS-линейки другой **класс динамики** — низкая дистальная инерция, backdrivability, большой полезный workspace вокруг базы, отношение payload/arm mass порядка **~1:2** (5 kg при ~9–10 kg руки). «Дрожащие» serial arms с тяжёлыми редукторами в каждом суставе — реальная боль open-source desktop-класса. Учиться у IRIM **обязательно**.
+
+Но важно разделить три уровня, иначе легко сжечь месяцы/годы **не на той** петле:
+
+| Уровень | Содержание | Когда |
+|--------|------------|--------|
+| **A. Эталон поведения** | Тишина, плавность, лёгкий дистал, рабочая сфера у dock, возможность «сложить» руку и обслужить периметр базы | **Сейчас** — поднять статус в docs |
+| **B. Конструктивные принципы** | Симметрия звеньев (меньше паразитных моментов), моторы проксимально, collinear «кость», **двухосевой / rolling elbow** для decoupling и reach around dock | **Сейчас исследовать**; частично влезает в эволюцию S2 |
+| **C. Полный LIMS-EX stack** | N+1-to-2N, single shared pretension, quaternion wrist, custom frameless BLDC, толстые тросы, lab-grade калибровка | **Не MVP default** без отдельного feasibility gate |
+
+**Почему не «немедленно переписать все ADR под полный LIMS-EX MVP»**
+
+1. **DFAA.** Лаборатория сама пишет про сложность thick cables, pulley/cable diameter ratio, friction. Shared pretension и длинные multi-cable трассы — антипаттерн для агента без оснастки. ADR-0004 уже ставил full LIMS pack в pattern-only / не default именно поэтому.
+
+2. **Открытость знаний.** По LIMS3 lab указывала papers в основном на **более ранние** версии; по **LIMS-EX** в публичном поле пока в основном видео. Комментарии зрителей («where are the papers?») это подтверждают. «Выжать максимум из публикаций» — правильный шаг, но **не гарантирует** полный BOM/CAD уровня EX.
+
+3. **Кастомные моторы.** IRIM: frameless BLDC, низкая reflected inertia, низкий gear ratio. Это не «взял 5010 с AliExpress». Потребительский open-source путь ближе к **аппроксимации** (COTS BLDC + belt/short cable + доступный tensioner), не к клону их motor shop.
+
+4. **S2 уже на полпути к B, не к «больному Паркинсону».** Cascade, light wrist, proximal bias — это как раз анти-GLUON-distal-mass. Слабое место S2 — не идея, а **elbow/wrist kinematics** (один pitch elbow vs dual-axis/rolling decoupling) и качество передачи. Усиление эталона LIMS должно **давить на эти дыры**, а не обязательно выкидывать serial 6-DoF family.
+
+5. **Риск потерять годы** реален в **обе стороны**: годы на классике с плохой динамикой *или* годы на невоспроизводимом cable architecture без DFAA/BOM. Стратегия: **эталон A+B зафиксировать сейчас**, C — через research track с hard exit criteria.
+
+**Что я бы сделал (рекомендация)**
+
+1. **Поиск публикаций и open attempts** — отдельный мини-трек (не блокировать весь 0005 навечно, но **вставить в ROADMAP / 0005 parallel**):
+   - IEEE/ Scopus: LIMS, AMBIDEX, IRIM, cable-driven, tension amplification, quaternion joint (ранние LIMS papers lab уже светила в комментариях).
+   - Hobby: e.g. printed LIMS2-style joint (Thingiverse и аналоги) — урок «что воспроизводится в FDM».
+   - Явно искать разбор **N+1-to-2N** и dual-axis elbow.
+
+2. **Документы — эволюция, не революция в один коммит:**
+   - `lims-family-notes.md` / `implementation-concepts` — **LIMS-EX = primary performance reference**.
+   - **Не** silent-rewrite ADR-0005 «S2 cancelled». Лучше: **ADR amendment или ADR-0006** *Design aspiration: LIMS-class dynamics* + список принципов (collinear links, proximal pack, dual-axis elbow candidate, remote drive) и **DFAA veto** на opaque pretension.
+   - Kinematic scheme: рассмотреть **S2′ / S4 candidate** — «LIMS-inspired»: dual-axis elbow + all distal via short accessible cables/belts; N+1-to-2N только после понятой кинематики приводов.
+
+3. **MVP dual-track (чтобы не потерять время):**
+   - **Track 1 (learn):** paper extract, stick diagram dual-elbow, 1-DoF cable joint bench, pretension DFAA experiment.
+   - **Track 2 (ship signal):** один quiet FOC axis + простая cascade (уже в 0005 smoke test) — не «ещё один AR4», а проверка N6/DFAA **пока** Track 1 копает EX.
+
+Итого: **да, повысить статус LIMS-EX до эталона динамики и workspace** — согласен. **Нет** — немедленно объявить MVP = полный N+1-to-2N LIMS-EX без papers/DFAA gate. Иначе вы рискуете годами именно на **непереносимой** части, а не на обучении у них.
+
+---
+
+### 2. Акселерометры / IMU на плече, локте, запястье
+
+**Идея здравая для шагающего / multi-dock робота**, но для MVP — **опциональный слой**, не условие первого движения.
+
+| Зачем | |
+|--------|--|
+| Ориентация звеньев в мире при смене базы (dock A → B) | Полезно, когда «кто теперь base» |
+| Грубый sanity-check кинематики / проскальзывание троса | Дополнение к энкодерам |
+| Удары, свободное падение, safety | Полезно |
+
+| Оговорки | |
+|----------|--|
+| Для servo-loop ** suffices joint encoders** (LIMS3 как раз давит на ABS motor+joint) | IMU не заменяет θ |
+| На каждом суставе 6-axis IMU — шум, калибровка mag/accel, drift, шина, BOM | Избыточно на MVP |
+| Один **proximal IMU** (base link) + joint encoders часто закрывает 80% «где я в мире» при известной dock frame | Практичнее |
+| Walking: важнее **надёжный dock latch sense + encoder FK**, чем полный IMU skeleton | |
+
+**Рекомендация:** в composition (класс S) заложить **«optional link IMU: start with 1× base; expand to elbow/wrist if walk calibration needs it»**. В MVP smoke test — **не** требовать. Для relocatable prototype v1 — base IMU + end-effector optional.
+
+---
+
+### Практичный next step (если согласны с рамкой)
+
+1. Задача **«LIMS-EX deep dive»**: papers + open recreations + one-page N+1-to-2N / dual-elbow notes → в `lims-family-notes.md`.  
+2. Короткий **ADR-0006 (aspiration)** или amendment: performance reference = LIMS-class; Phase 1 still DFAA-gated; dual-axis elbow = high-priority study.  
+3. Task 0005 **не отменять** — shortlist FOC/COTS нужен и LIMS-inspired руке.  
+4. IMU — строка в C1/C2 as optional.
+
+Если хотите, следующим сообщением набросаю текст ADR-aspiration и чеклист deep-dive по публикациям — без ломания уже принятого S2 до появления фактов из papers.
+
+---
+**Bunch**
+
+Да, давай элегантно впишем LIMS-class в проект без переписывания уже сущетвующих ADR. Я согласен, что нам нужно дополнить ROADMAP и/или task-0005 внедрив туда ветку LIMS-class с последующим сравнением S2 vs S4, пока мы не перешли к подбору комплектующих.
+
+Перечитай текущее состояние нужных документов и покажи, что нужно исправить (конкретные вставки и замены текста). Если хватит контекстного окна ответа, можешь сразу реализвовать ADR-0006 или уже на следующем шаге.
+
+---
+**Grok 4.5 Fast**
+
+Ниже — конкретные правки **без отмены ADR-0003/0004/0005**, плюс полный текст **ADR-0006**. S2 остаётся primary baseline; LIMS-class → эталон динамики + параллельная ветка **S4** с сравнением до жёсткого freeze COTS.
+
+---
+
+### ADR-0006 (новый файл)
+
+**Путь:** `docs/decisions/0006-lims-class-performance-aspiration.md`
+
+---
+
+### ROADMAP.md — вставки
+
+**После строки component composition** (или сразу перед ней):
+
+```markdown
+- [ ] LIMS-class deep dive & candidate **S4** (LIMS-inspired): papers / open recreations, dual-axis elbow & N+1-to-2N feasibility under DFAA; compare **S2 vs S4** before full-arm COTS freeze (ADR-0006) → [tasks-0005](tasks/0005-component-composition.md) §C1b / §C4b
+- [ ] Define component composition (motors, drivers, gearboxes, sensors, compute, connectors — COTS candidates); scheme-agnostic smoke stack OK early; full-arm freeze after S2 vs S4 gate → [tasks-0005](tasks/0005-component-composition.md)
+```
+
+**Refinement Notes** — добавить:
+
+```markdown
+- [ ] Revisit kinematic baseline (S2 vs S4 LIMS-inspired) after dual-elbow / cable-span study (ADR-0006)
+```
+
+---
+
+### `docs/tasks/0005-component-composition.md`
+
+**Related** — добавить:
+
+```markdown
+- `docs/decisions/0006-lims-class-performance-aspiration.md` (LIMS-class bar; S4 parallel; S2 still baseline)
+- `docs/references/lims-family-notes.md`
+```
+
+**Goal** — заменить первым абзацем:
+
+```markdown
+**Goal:** Document a **Phase 1 component composition baseline** for the arm: classes of parts, and **2–4 COTS/open candidates per class**, fit to torque/power/acoustic/BOM/DFAA. **Default mapping follows ADR-0005 S2.** Under ADR-0006, run a **parallel LIMS-class / S4 study** and an **S2 vs S4 gate before freezing full-arm COTS**. Scheme-agnostic **smoke-test** stacks (one FOC axis ± short cascade) may proceed without waiting for S4.
+```
+
+**Constraints** — добавить bullet:
+
+```markdown
+- **ADR-0006:** LIMS-class is the performance aspiration; opaque multi-cable packs remain DFAA-gated; no payload÷10 motor scaling from LIMS
+```
+
+**Новые подзадачи** (после C1):
+
+```markdown
+### C1b. LIMS-class / S4 parallel branch (before full-arm COTS freeze)
+- [ ] C1b.1 Curate publications + open recreations (URL only) into `docs/references/lims-family-notes.md`
+- [ ] C1b.2 One-pager: dual-axis / rolling elbow — kinematics intent, dock-perimeter reach, DFAA risks
+- [ ] C1b.3 One-pager: N+1-to-2N + pretension — what is known publicly; consumer-reproducible subset?
+- [ ] C1b.4 Draft **S4** stick-level description (LIMS-inspired, ADR-0003 bands, accessible transmissions only)
+- [ ] C1b.5 **S2 vs S4** scorecard: dock-neighbourhood workspace, distal inertia, DFAA, BOM risk, open reproducibility, N6 path
+- [ ] C1b.6 Gate decision note: keep S2 / prefer S4 / hybrid — **required before C6 full-arm composition ADR**
+```
+
+**C3.6** — уточнить:
+
+```markdown
+- [ ] C3.6 Cascade mechanical COTS: belt **and** short tendon/cable hardware, idlers, tensioners (examples only); flag long multi-cable packs as S4-research, not default shortlist
+```
+
+**C4** — добавить:
+
+```markdown
+- [ ] C4.2 Identify **one scheme-agnostic smoke-test joint** stack (proximal FOC ± short cascade)
+- [ ] C4.2b If S4 advances: list **delta** classes only (extra elbow DoF drive, cable set, pretension unit)
+```
+
+**Done when** — добавить:
+
+```markdown
+- [ ] S2 vs S4 gate note exists (or explicit deferral with date/owner) before full-arm composition ADR
+- [ ] LIMS-class aspiration cited (ADR-0006); smoke-test stack does not depend on unresolved S4
+```
+
+---
+
+### `docs/current-state.md`
+
+**Last Updated:** `2026-09-18`
+
+**Recent Progress** — добавить блок:
+
+```markdown
+- **LIMS-class aspiration (ADR-0006, 2026-09-18):** LIMS-family (esp. LIMS-EX / LIMS3) adopted as **primary external performance reference** (dynamics, distal lightness, dock-neighbourhood workspace). **Does not supersede ADR-0005 S2.** Parallel candidate **S4** (LIMS-inspired) + **S2 vs S4** gate before full-arm COTS freeze. Details: `docs/decisions/0006-lims-class-performance-aspiration.md`, `docs/references/lims-family-notes.md`.
+```
+
+**Active Specification & Focus** — заменить устаревший K5/K6 на:
+
+```markdown
+1. **Component composition (Task 0005)** under ADR-0005 S2 baseline, with **ADR-0006** parallel LIMS/S4 branch and S2 vs S4 gate before full-arm COTS ADR.
+2. Scheme-agnostic FOC smoke-test stack may proceed in parallel with S4 study.
+3. Continue assembly-ops list, workspace/dock grid, simulation tool evaluation.
+```
+
+---
+
+### Минимальные «якоря» в уже принятых ADR (не rewrite)
+
+**ADR-0005** — только в конец *Implementation notes* / *Follow-ups*:
+
+```markdown
+- **LIMS-class (ADR-0006):** performance aspiration and parallel **S4** study; S2 remains baseline until an explicit S2 vs S4 gate amends this ADR.
+```
+
+**ADR-0004** — не обязателен; при желании одна строка в Consequences/Neutral:
+
+```markdown
+- LIMS remote-drive patterns remain pattern-only for opaque packs; ADR-0006 elevates LIMS **performance** as aspiration while keeping DFAA gates.
+```
+
+---
+
+### Порядок коммитов
+
+1. ADR-0006  
+2. ROADMAP + current-state  
+3. task 0005 (C1b + goal/constraints)  
+4. Опционально: одна строка в ADR-0005 follow-ups  
+
+Так LIMS-class вписан **элегантно**: эталон и ветка S4 есть, S2 и task-0005 не ломаются, подбор комплектующих для smoke test не блокируется, полный freeze COTS — после сравнения S2 vs S4.
+
+---

@@ -5,13 +5,14 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # Project Current State — sint
 
-**Last Updated:** 2026-09-17  
+**Last Updated:** 2026-09-18
 **Status:** Phase 1 (Foundation & Planning) — Kinematic Scheme Selection
 
 ---
 
 ## Recent Progress
 
+- **LIMS-class aspiration (ADR-0006, 2026-09-18):** LIMS-family (esp. LIMS-EX / LIMS3) adopted as **primary external performance reference** (dynamics, distal lightness, dock-neighbourhood workspace). **Does not supersede ADR-0005 S2.** Parallel candidate **S4** (LIMS-inspired) + **S2 vs S4** gate before full-arm COTS freeze. Details: `docs/decisions/0006-lims-class-performance-aspiration.md`, `docs/references/lims-family-notes.md`.
 - **Kinematic Scheme (Task 0004):**
     - ADR-0005 accepted (2026-09-17). Primary **S2** (serial 6-DoF, cascaded mass bias, asymmetric ends, power scenario A, coplanar ≥2 docks, base aux-latch walk; wrist not sole cantilever). Fallback **S1** (in-joint). **S3** dual-ended deferred (BOM/mass risk). Details: `docs/decisions/0005-kinematic-scheme.md`. Task 0004 closed.
     - Established **Kinematic Constraints (K1)** including DFAA veto rules and ADR-0003 alignment (`docs/tasks/0004-kinematic-constraints.md`).
@@ -31,12 +32,6 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 ## Active Specification & Focus
 
-1. **Kinematic Down-selection (Phase 1 — K5/K6):**
-   - Conduct scorecard comparison of S1, S2, S3 against K1 constraints (Task K5.1).
-   - Perform order-of-magnitude checks (torque vs payload, print segments) (Task K5.2).
-   - Select primary scheme and formalize via ADR-0005 (Task K6).
-2. **Next Steps (Phase 1):**
-   - Define COTS component composition (motors, drivers, sensors) for the selected scheme.
-   - Compile preliminary assembly operations and required external tools.
-   - Evaluate simulation tools (MuJoCo / Isaac Sim) for kinematic validation using the selected scheme.
-   - Refine roadmap based on the chosen mechanical topology.
+1. **Component composition (Task 0005)** under ADR-0005 S2 baseline, with **ADR-0006** parallel LIMS/S4 branch and S2 vs S4 gate before full-arm COTS ADR.
+2. Scheme-agnostic FOC smoke-test stack may proceed in parallel with S4 study.
+3. Continue assembly-ops list, workspace/dock grid, simulation tool evaluation.

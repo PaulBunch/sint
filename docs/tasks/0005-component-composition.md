@@ -11,11 +11,13 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - `docs/spec.md` (R7 COTS/FDM, R8 onboard compute, DFAA, quiet motion)
 - `docs/decisions/0003-core-numerical-characteristics.md`
 - `docs/decisions/0005-kinematic-scheme.md` (S2 primary)
+- `docs/decisions/0006-lims-class-performance-aspiration.md` (LIMS-class bar; S4 parallel; S2 still baseline)
+- `docs/references/lims-family-notes.md`
 - `docs/tasks/0004-placement-policy.md`
 - `docs/implementation-concepts.md` (§1, actuators / FOC)
 - Conversation: `docs/conversations/2026-09-17--component-composition.md`
 
-**Goal:** Document a **Phase 1 component composition baseline**: which *classes* of parts the S2 arm needs, and **2–4 COTS (or open-hardware) candidates per class**, with fit to torque/power/acoustic/BOM/DFAA — without freezing a single vendor forever or designing full PCBs/CAD.
+**Goal:** Document a **Phase 1 component composition baseline** for the arm: classes of parts, and **2–4 COTS/open candidates per class**, fit to torque/power/acoustic/BOM/DFAA. **Default mapping follows ADR-0005 S2.** Under ADR-0006, run a **parallel LIMS-class / S4 study** and an **S2 vs S4 gate before freezing full-arm COTS**. Scheme-agnostic **smoke-test** stacks (one FOC axis ± short cascade) may proceed without waiting for S4.
 
 ---
 
@@ -23,6 +25,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 Must respect:
 
+- **ADR-0006:** LIMS-class is the performance aspiration; opaque multi-cable packs remain DFAA-gated; no payload÷10 motor scaling from LIMS
 - **ADR-0005:** S2 serial 6-DoF, cascaded mass bias, asymmetric ends, power scenario A, coplanar docks, accessible belt/tendon where used
 - **ADR-0003:** payload ~0.5 kg, reach 0.5–0.8 m, proximal ~10–25 N·m / distal ~1–5 N·m continuous bands, 24 V class, acoustic intent, functional-node BOM ceiling
 - **DFAA:** agent-replaceable joint/drive module, tensioner, compute brick; no sealed proprietary-only repair path as default
@@ -51,6 +54,14 @@ Out of scope for this task:
 
 → [0005-bill-of-classes.md](0005-bill-of-classes.md)
 
+### C1b. LIMS-class / S4 parallel branch (before full-arm COTS freeze)
+- [ ] C1b.1 Curate publications + open recreations (URL only) into `docs/references/lims-family-notes.md`
+- [ ] C1b.2 One-pager: dual-axis / rolling elbow — kinematics intent, dock-perimeter reach, DFAA risks
+- [ ] C1b.3 One-pager: N+1-to-2N + pretension — what is known publicly; consumer-reproducible subset?
+- [ ] C1b.4 Draft **S4** stick-level description (LIMS-inspired, ADR-0003 bands, accessible transmissions only)
+- [ ] C1b.5 **S2 vs S4** scorecard: dock-neighbourhood workspace, distal inertia, DFAA, BOM risk, open reproducibility, N6 path
+- [ ] C1b.6 Gate decision note: keep S2 / prefer S4 / hybrid — **required before C6 full-arm composition ADR
+
 ### C2. Requirements per class (from ADR, not from vendor gloss)
 - [ ] C2.1 Proximal drive: continuous torque band, speed order-of-magnitude, voltage, bus, noise intent, DFAA boundary
 - [ ] C2.2 Distal / cascade-driven axes: lower torque, mass budget, belt-side loads
@@ -64,12 +75,13 @@ Out of scope for this task:
 - [ ] C3.3 Encoders / feedback
 - [ ] C3.4 Central compute module candidates (SBC / MCU-SoM class)
 - [ ] C3.5 Connectors & power path (24 V class, dock contact *type* not final metal design)
-- [ ] C3.6 Cascade mechanical COTS: belt pitch family, idlers, tensioners (dimensions as *examples*, not ADR-frozen)
+- [ ] C3.6 Cascade mechanical COTS: belt **and** short tendon/cable hardware, idlers, tensioners (examples only); flag long multi-cable packs as S4-research, not default shortlist
 - [ ] C3.7 Explicit **reject / avoid** list: sealed non-serviceable pods as only path; industrial-only pricing; patterns that fail V3/V5
 
 ### C4. Integration matrix
 - [ ] C4.1 Table: class × S2 placement × candidate × notes (mass, torque, bus, DFAA, acoustic, rough unit cost band)
-- [ ] C4.2 Identify **one “smoke-test joint” stack** (minimum parts to spin one proximal + one cascaded axis)
+- [ ] C4.2 Identify **one scheme-agnostic smoke-test joint** stack (proximal FOC ± short cascade)
+- [ ] C4.2b If S4 advances: list **delta** classes only (extra elbow DoF drive, cable set, pretension unit)
 - [ ] C4.3 Note power scenario A implications (dock feed, optional proximal battery chemistry class only)
 
 ### C5. BOM risk (order-of-magnitude, not quote)
@@ -90,6 +102,8 @@ Out of scope for this task:
 
 ## Done when
 
+- [ ] S2 vs S4 gate note exists (or explicit deferral with date/owner) before full-arm composition ADR
+- [ ] LIMS-class aspiration cited (ADR-0006); smoke-test stack does not depend on unresolved S4
 - [ ] Component **class list** exists and maps to S2 regions
 - [ ] Per major class: **≥2 COTS/open candidates** with URL citations (no copyrighted PDFs in git)
 - [ ] Integration matrix + smoke-test joint stack documented
