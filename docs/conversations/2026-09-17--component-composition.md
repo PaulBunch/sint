@@ -1694,3 +1694,5 @@ For makers, researchers, and open-hardware developers looking for commercially a
 | **C1b.1** | Publications + open recreations → notes | **Выполнено (100%)** | Все публикации (P1–P5), патенты (PT1), открытые репликации (R1–R3), пометка о статусе LIMS-EX и единый индекс источников систематизированы. |
 
 Теперь база знаний полностью готова для проведения формального сравнения и закрытия задач **C1b.2–C1b.6**.
+
+---
