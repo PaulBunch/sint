@@ -55,7 +55,7 @@ Out of scope for this task:
 → [0005-bill-of-classes.md](0005-bill-of-classes.md)
 
 ### C1b. LIMS-class / S4 parallel branch (before full-arm COTS freeze)
-- [ ] C1b.1 Curate publications + open recreations (URL only) into `docs/references/lims-family-notes.md`
+- [x] C1b.1 Curate publications + open recreations (URL only) into `docs/references/lims-family-notes.md`
 - [ ] C1b.2 One-pager: dual-axis / rolling elbow — kinematics intent, dock-perimeter reach, DFAA risks
 - [ ] C1b.3 One-pager: N+1-to-2N + pretension — what is known publicly; consumer-reproducible subset?
 - [ ] C1b.4 Draft **S4** stick-level description (LIMS-inspired, ADR-0003 bands, accessible transmissions only)

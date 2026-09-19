@@ -329,12 +329,26 @@ Useful for sint lab practice; not part of arm BOM.
 
 ## 5. Source index (URL only)
 
-| ID | Topic | URL |
-|----|--------|-----|
-| S1 | LIMS3-AMBIDEX performance demo | https://www.youtube.com/watch?v=7INPj1hdnyA |
-| S2 | LIMS-EX mechanical design & preliminary testing | https://www.youtube.com/watch?v=cjIVU-O5PHo |
+Prefer official lab channels, DOI/IEEE, and stable demo URLs. Do not commit third-party PDFs to git.
 
-*Add rows as new public sources are curated. Prefer official lab channels and peer-visible demos.*
+| ID | Kind | Topic | URL |
+|----|------|--------|-----|
+| S1 | Video | LIMS3-AMBIDEX performance | https://www.youtube.com/watch?v=7INPj1hdnyA |
+| S2 | Video | LIMS-EX design & preliminary testing | https://www.youtube.com/watch?v=cjIVU-O5PHo |
+| S3 | Channel | IRIM LAB KOREATECH | https://www.youtube.com/@IRIMLAB |
+| P1 | Paper | LIMS1 tension amplification (IROS 2015) | https://www.cs.cmu.edu/~cga/c/0749.pdf |
+| P2 | Paper | LIMS full arm (IEEE T-RO 2017) | https://ieeexplore.ieee.org/document/8016639 |
+| P3 | Paper | LIMS2 foldable-objects arm (IROS 2018) | https://ieeexplore.ieee.org/document/8594005 |
+| P4 | Paper | Quaternion joint wrist (IROS 2018) | https://ieeexplore.ieee.org/document/8594301 |
+| P5 | Paper | AMBIDEX hybrid dynamic / tendon model (Mechatronics 2020) | https://www.sciencedirect.com/science/article/abs/pii/S0957415820300787 |
+| PT1 | Patent | Planetary gear actuator (NAVER / KOREATECH) | https://patents.google.com/patent/US20220074468A1/en · granted https://patents.google.com/patent/US11703109B2/en |
+| R1 | Recreation | LIMS2-style joint (Thingiverse + demo) | https://www.thingiverse.com/thing:4101834 · https://www.youtube.com/watch?v=RXhtcWz5GBg |
+| R2 | Recreation | Printed double rolling joint | https://www.youtube.com/watch?v=6QEgNbaDCjw |
+
+**LIMS-EX:** peer-reviewed write-up of N+1-to-2N / single pretension may lag; structural notes in §3 remain video reconstruction.
+
+*Optional Appendix A:* expanded author/venue metadata for P1–P5, PT1.  
+*Optional Appendix B:* recreations only (R1–R2); non-LIMS printable reducers live elsewhere.
 
 ---
 
