@@ -132,7 +132,8 @@ Public LIMS3 material cited here gives **shoulder** continuous/peak torque and *
 
 ## 3. LIMS-EX
 
-**Primary source:** [YouTube — LIMS-EX: Mechanical Design and Preliminary Testing](https://www.youtube.com/watch?v=cjIVU-O5PHo) (description / material dated 2026-02-16 in contributor capture)
+**Primary source:** [YouTube — LIMS-EX: Mechanical Design and Preliminary Testing](https://www.youtube.com/watch?v=cjIVU-O5PHo) (IRIM Lab KOREATECH; public description 2026-02-16).  
+**Supplementary:** frame-by-frame reconstruction and discussion notes (project conversation: `docs/conversations/2026-09-17--component-composition.md` 2026-09-19). Figures below mix **stated on-screen / description** values with **engineering interpretation of CAD slides** — treat mechanism details as *best-effort public reconstruction*, not an official IRIM datasheet.
 
 ### 3.1 Stated key features
 
@@ -142,16 +143,18 @@ Public LIMS3 material cited here gives **shoulder** continuous/peak torque and *
 - Arm span **> 1 m**  
 - High backdrivability with lightweight distal links  
 
-### 3.2 Headline specifications
+### 3.2 Headline specifications (as published)
 
 | Parameter | Value |
-|-----------|--------|
-| Structure | 6-DoF arm + 1-DoF gripper |
+|-----------|-------|
+| Structure | 6-DoF arm + 1-DoF gripper (7 actuators class overall) |
 | Mass | 9.7 kg |
-| Arm span | 1 m |
-| Payload | 5 kg continuous force capability in entire workspace (as stated) |
+| Arm span / reach class | ~1 m (span exceeding 1 m in narrative) |
+| Payload | 5 kg continuous capability in entire workspace (as stated) |
+| Backdriving force (qualitative) | < 10 N (high backdrivability / compliance narrative) |
+| Environment framing | “Tougher environments”; **fully enclosed** cable/mechanism paths |
 
-### 3.3 Continuous joint torque
+**Continuous joint torque [N·m]** (from video description):
 
 | Joint | Continuous torque [N·m] |
 |-------|-------------------------|
@@ -162,9 +165,7 @@ Public LIMS3 material cited here gives **shoulder** continuous/peak torque and *
 | Wrist roll | 8 |
 | Wrist yaw | 19 |
 
-*These are **joint-level** continuous torques as published in the source description, not necessarily motor-shaft ratings.*
-
-### 3.4 Max speed
+**Max speed [°/s]:** shoulder & elbow 450; wrist axes 570 (as stated):
 
 | Joint | Max speed [°/s] |
 |-------|-----------------|
@@ -175,11 +176,140 @@ Public LIMS3 material cited here gives **shoulder** continuous/peak torque and *
 | Wrist roll | 570 |
 | Wrist yaw | 570 |
 
-### 3.5 Notes for sint
+### 3.3 Kinematic layout (interpreted)
 
-- Joint torque table is the clearest **numeric scale** in the family notes so far (still ~10× sint ADR bands on several axes).  
-- Shared single pretension is elegant but must be judged against **DFAA** (agent access, failure modes) before any imitation.  
-- N+1-to-2N actuation is a research pattern — document only; no Phase 1 adoption.
+| Region | DoF (arm proper) | Notes from public CAD / narrative |
+|--------|------------------|-----------------------------------|
+| Shoulder / base | 2 DoF (base yaw + shoulder pitch class) | Heavy actuators at base fork |
+| Elbow | **1 DoF effective**, implemented as **dual-hinge / dual-disk node** with 1:1 synchronization | “Decoupled elbow”; large fold range; smoother cable path than single sharp bend |
+| Wrist | **3 DoF** | Differential **bevel-gear** wrist, cable-driven from upper arm |
+| Gripper | 1 DoF | Compact actuator in forearm structure (out of scope for detailed notes below) |
+
+**Design intent (public):** proximal mass centering; lightweight distal links; mechanical decoupling so elbow motion does not parasitic-drive the wrist cables.
+
+### 3.4 Actuator placement (proximal mass)
+
+Interpreted from CAD labels and renders (“3 actuators for the elbow and shoulder”, “3 actuators for the wrist”):
+
+| Group | Count | Location (interpretation) |
+|-------|-------|---------------------------|
+| Base yaw | 1 | Lowest joint / mount flange area |
+| Shoulder pitch | 1 | On rotating shoulder fork, at pitch axis |
+| Elbow drive | 1 | On opposite side of shoulder fork — **not** at the elbow joint itself; drives elbow via linkage |
+| Wrist set | 3 | On **upper-arm link** (between shoulder and elbow), including drive pair + pretension/yaw-related actuator |
+| Gripper | 1 | In forearm (not detailed here) |
+
+Forearm remains largely free of wrist motor mass; wrist torque arrives via cables through the elbow.
+
+### 3.5 Elbow: dual-axis node + rigid “bone” linkage
+
+**A. Dual-hinge elbow (1 DoF output)**  
+CAD shows two parallel disk/pulley bodies in the elbow region. Interpretation:
+
+- Axis 1: upper arm ↔ intermediate elbow body  
+- Axis 2: intermediate body ↔ forearm  
+- **1:1 coupling** (gear or equivalent sync) so commanded elbow angle folds both hinges together  
+
+**Why it matters:** larger fold (forearm can lie close along upper arm); wrist cables wrap **two radii** instead of one tight bend → less friction/wear; still commanded as **one** elbow DoF.
+
+**B. Elbow actuation from shoulder base**  
+Elbow motor at the **shoulder fork** does not sit in the elbow. Motion is transmitted by a **rigid spatial link / push-pull “bone”** (highlighted pink on CAD; visible on physical half-bent arm and on the passive **leader/master arm**).
+
+- Motor turns a crank/lever at the proximal end  
+- Link pushes/pulls the elbow structure → elbow flexion/extension  
+
+**Leader-arm evidence:** the same longitudinal link exists on the passive teaching arm (no wrist motors/cables) → primary role is **elbow angle transmission** to a base-mounted encoder/motor axis, not “cables only.”
+
+**C. Relation to pretension (open but constrained interpretation)**  
+Project discussion conclusion:
+
+- Pink link = **primarily elbow drive linkage**  
+- Its motion is a natural **kinematic signal** for **passive path-length compensation** of wrist cables when elbow angle changes (slider carriage shifts with elbow geometry)  
+- Whether the pink member is *literally* the same part as the “Single Pretension Mechanism” callout, or a **coupled** parallel path, is **not fully settled** from video alone  
+
+### 3.6 Wrist: hybrid N+1-to-2N cable architecture (reconstruction)
+
+Public narrative contrasts:
+
+| Scheme | Motors | Cables (typical story) | Pretension |
+|--------|--------|----------------------|------------|
+| Classical N+1 | 4 | 4 | Per-cable or complex active control |
+| Classical 2N | 3 | 6 | Three independent pretension units |
+| **LIMS-EX hybrid N+1-to-2N** | **3** (wrist group) | **5 cables / 3 actuation paths / 1 continuous loop** in reconstruction | **Single pretension** propagates to all wrist cables |
+
+#### 3.6.1 Preferred cable-loop interpretation
+
+For convenience, one complex **continuous** wrist loop can be arbitrarily divided into two or four paths. One **continuous** wrist loops or four independent dead-ended cables at the bevel gears and motor drums:
+
+1. **Upper path (e.g. blue↔red):** one continuous cable from **right** motor drum → right slider → elbow rollers → wrist roller → around **upper** bevel-associated pulley → return left side → **left** motor drum.  
+2. **Lower path (e.g. violet↔green):** second continuous cable sharing the same **left/right motor drums** (co-wound or co-anchored) → opposite vertical path through elbow → **lower** bevel pulley → return.
+
+**Decoupled elbow routing:** four elbow roller channels (two sides × upper/lower paths). Cable centerline passes so that **elbow pitch does not change net cable length** (roll about elbow axis) — mechanical decoupling of elbow angle from wrist cable stroke.
+
+**Component count (wrist path, reconstruction):**
+
+| Element | Count (interpreted) |
+|---------|---------------------|
+| Wrist drive motors (left/right) | 2 |
+| Pretension / yaw-related motor | 1 |
+| Continuous wrist cable loops | 1 |
+| Wrist cable loop attachment points | 4 or 2 |
+| Moving sliders | 2 |
+| Rollers on sliders | 4 (2 per slider) |
+| Elbow rollers (upper-arm side) | 4 |
+| Elbow rollers (forearm side) | 4 |
+| Wrist pitch axis rollers | 4 |
+| Bevel gears | 3 (2 transverse + 1 output) |
+
+#### 3.6.2 Wrist DoF mapping (working model from discussion)
+
+*Subject to revision if official papers differ.*
+
+| Motion | Motor combination (working hypothesis) |
+|--------|----------------------------------------|
+| **Pitch** (wrist up/down) | Left & right motors **in phase**, same speed — upper vs lower loop differential stroke |
+| **Roll** (forearm-axis rotation) | Left & right motors **opposite** phase — upper/lower bevels counter-rotate → output gear spin |
+| **Yaw** | Dominated by **third (pretension/slider) actuator** shifting left vs right path lengths so both bevels rotate the same way → frame yaw |
+| Combined pitch+roll | Speed/direction mismatch of the two side motors |
+
+Capstan friction wraps and/or local clamps on drums and wrist pulleys are assumed; exact clamp vs pure friction is not proven from frames alone.
+
+#### 3.6.3 Single pretension idea
+
+- One actuation/geometry change at the **slider pair** takes slack out of **both** loops together (“propagates to all cables”).  
+- Elbow-angle compensation may be **passive** via linkage geometry (see §3.5C) so wrist motors do not fight elbow-induced length change.  
+- This is the core claimed advantage vs three separate pretensioners (2N) or heavy active tension control (classic N+1).
+
+### 3.7 Enclosure and utilities
+
+- Fully enclosed structural shells: cables and gears inside (debris / “tough world” narrative).  
+- Hollow distal paths for EE services remain a family theme (see LIMS3 notes); confirm EX specifics when drawings appear.
+
+### 3.8 Test-stand equipment (non-arm, from lab footage)
+
+Interpretive only:
+
+| Item | Likely role |
+|------|-------------|
+| Large black wheeled/handled unit under table | High-current DC supply and/or battery buffer (regen absorption) |
+| Perforated metal DIN supply at table side | AC→DC SMPS (e.g. 24–48 V class rail) |
+| Two large red buttons | E-stop (dual-channel / hard kill vs STO-style) |
+| Long black block on table | Power distribution / terminal block |
+
+Useful for sint lab practice; not part of arm BOM.
+
+### 3.9 Gaps and caution
+
+- No full official LIMS-EX paper in our index yet — mechanism sections are **video-derived**.  
+- Exact motor continuous torque at shaft vs joint table unknown.  
+- Pink link = elbow drive **with** pretension coupling is the best current story; pure pretension-only is weaker given the leader arm.  
+- Wrist pitch/roll/yaw motor matrix is a **working hypothesis** for S4 study, not certified kinematics.
+
+### 3.10 Relevance to sint (pointer only)
+
+- Strong support for **proximal packs**, **decoupled elbow cable routing**, **light forearm**, **single accessible pretension philosophy** — under **DFAA** (must remain serviceable; no opaque full-arm cable tree as default).  
+- Numeric scale remains **reference upper bound**; sint stays on ADR-0003 bands.  
+- Feeds ADR-0006 / candidate **S4** study; does **not** by itself amend ADR-0005 S2.
 
 ---
 
@@ -191,6 +321,9 @@ Public LIMS3 material cited here gives **shoulder** continuous/peak torque and *
 4. **Utilities:** hollow distal path for power/data/air aligns with reserved pneumatic / harness classes.  
 5. **Acoustics / compliance:** quiet smooth motion and backdrivability are design goals to emulate qualitatively under N6 — not by copying their peak speeds.  
 6. **DFAA filter:** long multi-cable packs and single shared pretension need explicit service stories; default sint remains **accessible short belt or short tendon**, not opaque full-arm cable trees.
+7. **LIMS-EX wrist:** hybrid cable loops + single pretension + elbow length decoupling is the concrete mechanism behind the “N+1-to-2N” slogan in public material — primary study object for S4.
+8. **Dual-hinge elbow + base-mounted elbow motor via rigid link:** explains fold range and why distal mass stays low; leader arm confirms the link is not “cables only.”
+9. **Reconstruction confidence:** high on proximal placement and dual-elbow intent; medium on exact wrist motor→DoF matrix and pretension hardware identity — update when papers or clearer stills appear.
 
 ---
 
@@ -210,3 +343,4 @@ Public LIMS3 material cited here gives **shoulder** continuous/peak torque and *
 | Date | Change |
 |------|--------|
 | 2026-09-17 | Initial file: LIMS3 extract from S1; LIMS-EX specs from S2 description; sint usage notes |
+| 2026-09-19 | Expanded §3 LIMS-EX: kinematic/mechanical reconstruction from video frames (wrist loops, decoupled elbow, proximal actuators, pretension/linkage discussion); test-stand notes; explicit uncertainty flags |
