@@ -10,8 +10,9 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - ROADMAP Phase 1 — “Define component composition (motors, drivers, gearboxes, sensors, compute, connectors — COTS candidates)”
 - `docs/spec.md` (R7 COTS/FDM, R8 onboard compute, DFAA, quiet motion)
 - `docs/decisions/0003-core-numerical-characteristics.md`
-- `docs/decisions/0005-kinematic-scheme.md` (S2 primary)
-- `docs/decisions/0006-lims-class-performance-aspiration.md` (LIMS-class bar; S4 parallel; S2 still baseline)
+- `docs/decisions/0005-kinematic-scheme.md` (amended: **S4 MVP primary**, S2 fallback)
+- `docs/decisions/0006-lims-class-performance-aspiration.md`
+- `docs/tasks/0005-s2-s4-gate.md`
 - `docs/references/lims-family-notes.md`
 - `docs/tasks/0004-placement-policy.md`
 - `docs/implementation-concepts.md` (§1, actuators / FOC)
@@ -48,12 +49,12 @@ Out of scope for this task:
 - [x] C0.1 Create conversation file for this workstream
 - [x] C0.2 Link this task from ROADMAP item
 
-### C1. Bill of classes (what must exist on S2)
+### C1. Bill of classes (inventory; written under S2, still valid as class list)
 - [x] C1.1 List functional classes: motors, gearboxes/reductions, drivers/FOC, encoders/sensors, joint/link MCU, central compute, power (dock + optional battery), connectors/harness, belt/pulley/tensioner (cascade), dock power-data (+ reserved air fitting class)
 - [x] C1.2 Map each class → joint region: proximal (J1–J2/J3 span) vs distal (J4–J6) vs base-end vs EE
 - [x] C1.3 Mark which classes are **required for MVP smoke test** vs **Phase 1 complete arm**
 
-→ [0005-bill-of-classes.md](0005-bill-of-classes.md)
+→ [0005-bill-of-classes.md](0005-bill-of-classes.md) — apply **S4 region delta** when using for C2–C4
 
 ### C1b. LIMS-class / S4 parallel branch (before full-arm COTS freeze)
 - [x] C1b.1 Curate publications + open recreations (URL only) into `docs/references/lims-family-notes.md`
@@ -64,26 +65,30 @@ Out of scope for this task:
 - [x] C1b.6 Gate decision note: keep S2 / prefer S4 / hybrid — **required before C6 full-arm composition ADR → [0005-s2-s4-gate.md](0005-s2-s4-gate.md)
 
 ### C2. Requirements per class (from ADR, not from vendor gloss)
-- [ ] C2.1 Proximal drive: continuous torque band, speed order-of-magnitude, voltage, bus, noise intent, DFAA boundary
-- [ ] C2.2 Distal / cascade-driven axes: lower torque, mass budget, belt-side loads
-- [ ] C2.3 Sensors: absolute vs incremental minimum; joint limit / temp as optional
-- [ ] C2.4 Compute: local real-time vs central agent; CAN (or chosen bus) assumption
-- [ ] C2.5 Connectors: dock vs inter-link vs EE; preference for tool-side serviceability
+- [ ] C2.1 Proximal drives (J1 base, J2/J3 on yoke): continuous torque, speed OOM, voltage, bus, N6, DFAA module boundary
+- [ ] C2.2 Distal wrist axes (motors on **L2**, load at bevel wrist via through-elbow media): lower torque, **L2 pack mass budget**, belt/cable side loads, decoupling assumption
+- [ ] C2.3 Elbow path: dual-hinge + **rigid link** (loads, bearings, DFAA cartridge); not only “cascade belt”
+- [ ] C2.4 Sensors: absolute vs incremental minimum; joint output preferred long-term
+- [ ] C2.5 Compute / battery: **on L2 upper arm** (not dock interface block); local RT vs central agent; bus
+- [ ] C2.6 Connectors: dock vs inter-link vs EE; tool-side serviceability
+- [ ] C2.7 **S2 fallback delta** (one short subsection): what changes if wrist pack returns to forearm + short belts (requirements that shrink/drop)
 
 ### C3. COTS / open-hardware shortlist (URLs only in git)
-- [ ] C3.1 Motors + gearboxes: 2–4 candidates proximal, 2–4 distal (or integrated pod candidates scored against DFAA)
+- [ ] C3.1 Motors + gearboxes: proximal (J1–J3) and distal (wrist pack on L2) — 2–4 each
 - [ ] C3.2 Drivers / FOC stacks (e.g. SimpleFOC-class, ODrive-class, vendor FOC boards) — open or documented protocols preferred
 - [ ] C3.3 Encoders / feedback
-- [ ] C3.4 Central compute module candidates (SBC / MCU-SoM class)
+- [ ] C3.4 Central compute module candidates (SBC / MCU-SoM class) — sized for **L2** mount
 - [ ] C3.5 Connectors & power path (24 V class, dock contact *type* not final metal design)
-- [ ] C3.6 Cascade mechanical COTS: belt **and** short tendon/cable hardware, idlers, tensioners (examples only); flag long multi-cable packs as S4-research, not default shortlist
-- [ ] C3.7 Explicit **reject / avoid** list: sealed non-serviceable pods as only path; industrial-only pricing; patterns that fail V3/V5
+- [ ] C3.6 Transmission COTS: through-elbow **belt and/or short cable**, idlers, rollers, **pretension options** (examples); dual-hinge bearings/fasteners class; bevel or printable gear options for wrist
+- [ ] C3.7 Reject/avoid list (sealed-only pods, industrial-only, V3/V5 fails)
+- [ ] C3.8 Optional: one paragraph **S2 fallback** shortlist reuse (same motors/drivers; different X/T layout)
 
 ### C4. Integration matrix
-- [ ] C4.1 Table: class × S2 placement × candidate × notes (mass, torque, bus, DFAA, acoustic, rough unit cost band)
-- [ ] C4.2 Identify **one scheme-agnostic smoke-test joint** stack (proximal FOC ± short cascade)
-- [ ] C4.2b If S4 advances: list **delta** classes only (extra elbow DoF drive, cable set, pretension unit)
-- [ ] C4.3 Note power scenario A implications (dock feed, optional proximal battery chemistry class only)
+- [ ] C4.1 Table: class × **S4 placement** × candidate × notes (mass, torque, bus, DFAA, acoustic, cost band)
+- [ ] C4.2 One **scheme-agnostic smoke-test** stack (proximal FOC ± short cascade / single axis)
+- [ ] C4.3 **S4-specific** delta classes: dual-hinge elbow set, rigid link, through-elbow media, bevel wrist, pretension option
+- [ ] C4.4 Compact **S2 fallback** column or footnote (not a second full matrix)
+- [ ] C4.5 Power scenario A: dock feed; optional battery on **L2**
 
 ### C5. BOM risk (order-of-magnitude, not quote)
 - [ ] C5.1 Roll-up rough cost bands for: 6-axis arm electromechanics + 2 docks electrical + one EE interface (exclude printer)
@@ -103,14 +108,12 @@ Out of scope for this task:
 
 ## Done when
 
-- [ ] S2 vs S4 gate note exists (or explicit deferral with date/owner) before full-arm composition ADR
-- [ ] LIMS-class aspiration cited (ADR-0006); smoke-test stack does not depend on unresolved S4
-- [ ] Component **class list** exists and maps to S2 regions
-- [ ] Per major class: **≥2 COTS/open candidates** with URL citations (no copyrighted PDFs in git)
-- [ ] Integration matrix + smoke-test joint stack documented
-- [ ] Rough BOM risk narrative vs ADR-0003 N7 (assumptions explicit)
+- [x] S2 vs S4 gate exists (`0005-s2-s4-gate.md`)
+- [ ] Class list exists; **regions interpreted for S4** (bill + delta)
+- [ ] Per major class ≥2 candidates with URLs
+- [ ] Integration matrix **S4-primary** + smoke-test stack
+- [ ] Rough BOM risk narrative vs ADR-0003 N7 (assumptions explicit; S4 default)
 - [ ] ADR accepted; ROADMAP + current-state updated
-- [ ] Open issues / revalidate-after-prototype listed
 
 ---
 

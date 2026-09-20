@@ -2227,3 +2227,129 @@ Do not treat “S4 has bevels / elbow gears” as unique cost sin until S2 wrist
 После коммита ветка C1b закрыта по схеме; можно продолжать **C2+** composition уже с опорой на S4.
 
 ---
+**Bunch**
+
+Пречитай документы:
+docs/tasks/0005-component-composition.md
+docs/tasks/0005-bill-of-classes.md
+
+Нужно ли вносить в них какие-то изменения в соответствии с принятым решением использовать схему S4, как основную для MVP? 
+
+По 0005-component-composition.md интересует формулировки и последовательность задач C2+. 
+
+Докмует 0005-bill-of-classes.md создавался, когда схема S2 было основной. Влияет ли на него смена схемы на S4 или документ имеет универсальный характер?
+
+---
+**Grok 4.5 Fast**
+
+### Краткий ответ
+
+| Документ | Нужны ли правки? | Насколько |
+|----------|------------------|-----------|
+| **`0005-component-composition.md`** | **Да** | Goal/Constraints уже про S4; **Related**, заголовок C1, **C2–C4**, **Done when** ещё S2-centric |
+| **`0005-bill-of-classes.md`** | **Да, точечно** | Классы **M…W в основном универсальны**; **карта регионов (C1.2)** и шапка — под S2. Не переписывать с нуля: **amendment / S4 column**, не второй bill |
+
+---
+
+### 1. `0005-component-composition.md`
+
+**Уже ок:** Goal, Constraints (S4 primary / S2 fallback).
+
+**Поправить:**
+
+**Related (L13–14):**
+```markdown
+- `docs/decisions/0005-kinematic-scheme.md` (amended: **S4 MVP primary**, S2 fallback)
+- `docs/decisions/0006-lims-class-performance-aspiration.md`
+- `docs/tasks/0005-s2-s4-gate.md`
+```
+
+**C1 заголовок (исторический, не переоткрывать):**
+```markdown
+### C1. Bill of classes (inventory; written under S2, still valid as class list)
+…
+→ [0005-bill-of-classes.md](0005-bill-of-classes.md) — apply **S4 region delta** when using for C2–C4
+```
+
+**C2+ — формулировки и порядок (рекомендуемая последовательность):**
+
+Порядок **C2 → C3 → C4 → C5 → C6** оставить. Смысл сдвинуть на **S4 default**:
+
+```markdown
+### C2. Requirements per class (from ADR, not vendor gloss)
+*внесено в документ*
+
+### C3. COTS / open shortlist (URLs only)
+*внесено в документ*
+
+### C4. Integration matrix
+*внесено в документ*
+
+### C5–C7
+(без смены порядка; в C5 roll-up считать **S4 primary** BOM; S2 как alt risk note)
+```
+
+**Done when — заменить S2-only:**
+```markdown
+- [x] S2 vs S4 gate exists (`0005-s2-s4-gate.md`)
+- [ ] Class list exists; **regions interpreted for S4** (bill + delta)
+- [ ] Per major class ≥2 candidates with URLs
+- [ ] Integration matrix **S4-primary** + smoke-test stack
+- [ ] Rough BOM risk vs N7 (assumptions explicit; S4 default)
+- [ ] ADR accepted; ROADMAP + current-state updated
+```
+
+Старый пункт C4.2b «if S4 advances» — **убрать**: S4 уже primary; delta = обязательные S4-механизмы, а не «если».
+
+---
+
+### 2. `0005-bill-of-classes.md`
+
+**Характер:** список **классов (C1.1)** почти **универсален** (M, G, X, T, D, E, …).  
+**Не универсальна** без правки: **C1.2 region map** и шапка «Scheme: S2».
+
+**Минимальный путь (рекомендую):** не форкать новый bill — **amendment в том же файле**.
+
+**Шапка:**
+```markdown
+# Task 0005 — C1 Bill of classes
+
+**Status:** done (principles / inventory) — **region map amended for S4 primary 2026-09-20**  
+**Schemes:** **S4** = MVP primary (ADR-0005 amended); **S2** = fallback (original C1.2 narrative)  
+**Scope:** *what classes exist* and *where* — not SKU freeze.
+```
+
+**C1.1:** в Notes для **C**, **B**, **X**:
+- **C / B:** preferred on **upper arm (L2)** for walking layouts (S4 mandatory; S2 should match — doc debt).  
+- **X:** S4 = through-elbow + optional short J3 rigid-link path (link is **L**-class structure, not only belt); S2 = short belts on J3 and J4–J6.
+
+**Новый краткий § после C1.2:**
+
+```markdown
+## C1.2b S4 region delta (MVP primary)
+
+| Class | S4 placement vs original S2 map |
+|-------|----------------------------------|
+| **M/G** J3 | Motor on **shoulder yoke**, not “in L2 belt pack only” |
+| **M/G** J4–J6 | Pack on **L2 upper arm**, not proximal forearm |
+| **X/T** | Through-elbow open media + pretension option; elbow **rigid link** (structural, with **L**) |
+| **C, B** | **L2 upper arm** — not dock/base interface block |
+| **L** | Dual-hinge elbow cartridge + bevel wrist bearings |
+| Forearm column | **Light structure only** (no wrist motor pack) |
+
+Original C1.2 table remains the **S2 fallback** map.
+```
+
+**C1.3 smoke test** — **оставить scheme-agnostic** (уже ок). Phase 1 complete arm: «all six axes» + при S4 «dual-hinge + through-elbow serviceable».
+
+---
+
+### 3. Практический вывод
+
+1. **composition.md** — да: Related, C1 label, **C2–C4 text**, Done when; порядок задач не ломать.  
+2. **bill-of-classes.md** — не «выбросить»; **классы те же**, **география S4 — delta**.  
+3. Дальше **C2** писать уже **под S4** (yoke / L2 pack / dual-hinge / through-elbow), с коротким **S2 fallback** подразделом.
+
+Могу в следующем сообщении выписать готовый патч целиком для C2-блока или полный amended C1.2b, если нужно вставить в репо одним куском.
+
+---
