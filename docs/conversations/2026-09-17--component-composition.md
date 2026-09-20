@@ -1696,3 +1696,240 @@ For makers, researchers, and open-hardware developers looking for commercially a
 Теперь база знаний полностью готова для проведения формального сравнения и закрытия задач **C1b.2–C1b.6**.
 
 ---
+**2026-09-20**
+---
+
+---
+**Bunch**
+
+По аналогии со схемами из `docs/tasks/0004-candidate-schemes.md` подготовь черновик документа для S4.
+
+---
+**Grok 4.5 Fast**
+
+Черновик **S4** в том же формате, что S1–S3. Файл: `docs/tasks/0005-candidate-scheme-s4.md` (или секция в task 0005).
+
+Кратко: **S4** = serial 6-DoF, LIMS-принципы, dual-hinge J3, wrist pack на upper arm, открытые передачи, Scenario A, те же docks, что S2; без клона EX. После коммита логично **C1b.5** (S2 vs S4).
+
+---
+**Bunch**
+
+У меня только один вопрос по предложенной схеме. Что означает `Link 1: Base / Compute / optional battery`, которое ты разместил между `J1` и `вилкой плеча`. Я правильно поинмаю, на этом звене ты предлагаешь разместить вычислительный модуль и батарею? Или так ты обозначил линии комуникации? 
+Вот как я это вижу: 
+- в самом «низу» на звене 1 манипулятора находится соединительный блок (жёсткий силовой зацеп манипулятора за dock + интерфейсные разъёмы: электропитание, шина данных, опциональная для MVP пневматика)
+- чуть выше на звене 1 установлен мотор, который вращает плечо J1
+- на ротор мотора J1 установлена плечевая вилка
+- на плечевой вилке установлены моторы плеча J2 и мотор локтя J3
+- на роторе мотора плеча J2 закреплено звено плеча
+- на звене плеча закреплены все остальные основные компоненты: вычислительный модуль, опциональная для MVP батарея, моторы запястья и так далее
+- ...
+
+Также в этои конфигурации есть вопрос наименования. Что называть link 1, а что base — это одно и тоже или разные сущности? Плечевая вилка — это link 1, или link 2, или она вообще идёт как J1? От этого завист последующая цепочка именования звеньев.
+
+Теперь ответы на открытые вопросы в конце документа. Решение:
+1. Использовать конисеские передачи в запястье
+2. Жёсткая тяга для передачи вращения от мотора локтя к суставу локтя
+3. Внедрения трёх степеней свободы запястья на этапе MVP
+4. Вопрос реализации преднатяга оставляем открытым до этапа прописовки механики в CAD
+5. Для первого грубого приближения для оценки инерции можно считать, что масса приводов запястья, заложенная в S2 переезжает с локтевой части звена предплечья в локтевую часть звена плечо в S4. Для более точной оценки можно увеличить эту массу на гипотетический множитель, который учитывает подвижные блоки и механизм преднатяжения (хотя все эти элементы возможно нужны и в схеме S2)
+
+Надеюсь, после учёта этой информации в `0005-candidate-scheme-s4.md` мы сможем закрыть задачу C1b.4.
+
+---
+**Grok 4.5 Fast**
+
+Да: **compute и battery — это физические модули на конструкции**, не «линии связи». Ниже — уточнённая номенклатура под вашу компоновку и обновлённые фрагменты для закрытия **C1b.4**.
+
+---
+
+### Base vs Link 1 vs вилка
+
+| Имя | Что это | Вращается относительно чего |
+|-----|---------|-----------------------------|
+| **Base / dock interface** | Жёсткий стык с dock: силовая защёлка + power/data/(air) | Неподвижен, пока захвачен dock |
+| **J1** | Ось **base yaw** — мотор на base-стороне | Ротор J1 задаёт азимут всей «вилки» |
+| **Shoulder yoke (вилка)** | Вилка на роторе J1; на ней моторы **J2** и **J3** | Вместе с выходом J1 |
+| **J2** | Shoulder pitch — мотор на вилке | Ротор J2 несёт **upper arm** |
+| **Upper arm (L2)** | Звено плеча: pack запястья, compute, optional battery, трассы | Качается с J2 |
+| **J3** | Elbow (dual-hinge), мотор на вилке → **жёсткая тяга** | Сгибает dual-elbow |
+| **Forearm (L3)** | Лёгкое предплечье | После локтя |
+| **Wrist J4–J6** | 3 DoF, bevel; привод с upper arm | Через тросы/ремни в локте |
+
+**Именование (рекомендация для YAML/доков):**
+
+- **`base`** — только dock-facing structure + J1 stator side (не «link с compute»).  
+- **`yoke` / `shoulder_yoke`** — вилка на роторе J1 (не отдельный длинный link с батареей).  
+- **`L2` / `upper_arm`** — первое **длинное** звено (после J2): **здесь** compute, battery, wrist pack.  
+- **`L3` / `forearm`** — лёгкое звено после dual-elbow.  
+
+То, что в черновике было подписано `Link 1: Base / Compute / optional battery` между J1 и вилкой — **неудачная подпись**. Compute/battery **не** между J1 и вилкой, а на **upper arm (L2)**, как вы описали.
+
+Ваша цепочка верная:
+
+```text
+[Dock interface / base]
+    → J1 motor (stator on base)
+    → shoulder yoke (on J1 rotor) + J2 motor + J3 motor
+    → upper arm L2 (on J2 rotor): compute, optional battery, wrist pack, cable routes
+    → dual-hinge elbow J3 (driven by rigid link from J3 motor on yoke)
+    → light forearm L3
+    → bevel wrist J4–J6
+    → EE
+```
+
+---
+
+### Правки в `0005-candidate-scheme-s4.md`
+
+Замените §4.1 (фраза про ends), §4.2–4.3, open issues и YAML так:
+
+**Short description — добавить:**
+
+```markdown
+**Structural stack (Phase 1 naming):**
+- **base** — dock latch + connectors only (no main compute/battery here).
+- **J1** — yaw actuator between base and **shoulder yoke**.
+- **shoulder yoke** — carries **J2** (pitch) and **J3** (elbow) motors.
+- **upper arm (L2)** — on J2 output: **central compute**, **optional transit battery**, **wrist motor pack**, open transmission runs toward elbow.
+- **dual-hinge elbow (J3)** — driven from yoke-mounted J3 motor via **rigid push-pull link**.
+- **forearm (L3)** — light structure only (no wrist motors).
+- **wrist** — **3-DoF bevel differential**, cable/belt from upper-arm pack through decoupled elbow path.
+```
+
+**Joint list — уточнить Placement:**
+
+```markdown
+| Joint ID | DoF axis role | Placement | Torque class | Continuous torque (N·m) |
+|----------|---------------|-----------|--------------|-------------------------|
+| **J1** | Base yaw | `in_joint` on **base** → drives **yoke** | `proximal` | ~10–25 |
+| **J2** | Shoulder pitch | `in_joint` on **yoke** → drives **L2** | `proximal` | ~10–25 |
+| **J3** | Elbow pitch (dual-hinge, 1 DoF) | motor on **yoke**; output via **rigid link** to dual-hinge | `proximal` | ~5–15 |
+| **J4** | Wrist axis A (bevel set) | motors on **L2** (upper arm); through-elbow media | `distal` | ~1–5 |
+| **J5** | Wrist pitch | same pack on **L2** | `distal` | ~1–5 |
+| **J6** | Wrist roll | same pack on **L2** | `distal` | ~1–5 |
+```
+
+**Stick diagram (замена):**
+
+```mermaid
+graph TD
+    DockA[Dock Base A] ==>|Latch + Power/Data| Base[base: dock interface]
+    Base --- J1[J1: Base Yaw motor]
+    J1 --- Yoke[shoulder yoke]
+    subgraph YokeMount [Yoke-mounted actuators]
+        J2[J2: Shoulder Pitch motor]
+        M_J3[J3: Elbow motor]
+        Yoke --- J2
+        Yoke --- M_J3
+    end
+    J2 --- L2[L2 upper arm]
+    subgraph UpperArm [L2 hosts]
+        Compute[Central compute]
+        Batt[Optional transit battery]
+        WPack[J4–J6 wrist pack]
+        L2 --- Compute
+        L2 --- Batt
+        L2 --- WPack
+    end
+    M_J3 -.->|Rigid link| J3[J3 dual-hinge elbow]
+    L2 --- J3
+    WPack -.->|Open loops through elbow| J3
+    J3 --- L3[L3 light forearm]
+    L3 --- Wrist[Bevel wrist J4 J5 J6]
+    Wrist ==>|Quick-Change| EE[EE]
+```
+
+**§4.5 Power — уточнение:**
+
+```markdown
+- Optional transit battery and central compute live on **upper arm (L2)**, not on the dock base block.
+- Base carries only dock power/data path into the arm; distribution continues across J1 slip/routing as designed later.
+```
+
+**§4.9 Open issues → Decisions (C1b.4 freeze):**
+
+```markdown
+### 4.9 Decisions locked for this candidate (C1b.4)
+
+1. **Wrist mechanism:** bevel-gear differential (3 DoF) at wrist; driven from L2 pack.
+2. **Elbow drive:** rigid push-pull link from yoke-mounted J3 motor to dual-hinge elbow.
+3. **Wrist DoF in MVP scope for S4 study:** full **3 DoF** (not deferred to 2 DoF).
+4. **Pretension:** implementation **open until CAD** (manual turnbuckle vs slider vs elbow-coupled compensation — choose in detailed design).
+5. **Inertia OOM vs S2:** move S2 forearm wrist-pack mass onto **L2 (upper arm)** near elbow; optional factor **~1.1–1.3×** for sliders/pretension hardware if present. Same class of hardware may appear in refined S2 cascade — flag in C1b.5, do not double-count ideology.
+
+### 4.9b Still open (not blocking C1b.4)
+
+- Exact bevel sizing and cable vs belt media
+- J1 power/data routing detail (slip ring vs cable coil vs limited yaw)
+- Print split of yoke vs L2 shells
+```
+
+**YAML — ключевые поля:**
+
+```yaml
+scheme_id: S4
+dof: 6
+family: serial_lims_inspired
+structure:
+  base: dock_interface_only
+  yoke: on_J1_rotor   # carries J2, J3 motors
+  L2_upper_arm: on_J2_output  # compute, optional battery, wrist pack
+  L3_forearm: light
+  wrist: bevel_3dof
+joints:
+  - id: J1
+    role: base_yaw
+    placement: in_joint_on_base
+    drives: shoulder_yoke
+    torque_class: proximal
+  - id: J2
+    role: shoulder_pitch
+    placement: in_joint_on_yoke
+    drives: L2_upper_arm
+    torque_class: proximal
+  - id: J3
+    role: elbow_pitch_dual_hinge
+    placement: motor_on_yoke_rigid_link
+    mechanism: dual_hinge_1to1_sync
+    torque_class: proximal
+  - id: J4
+    role: wrist_bevel_a
+    placement: pack_on_L2_through_elbow
+    torque_class: distal
+  - id: J5
+    role: wrist_pitch
+    placement: pack_on_L2_through_elbow
+    torque_class: distal
+  - id: J6
+    role: wrist_roll
+    placement: pack_on_L2_through_elbow
+    torque_class: distal
+transmission:
+  elbow_drive: rigid_link
+  wrist_media: open_cable_or_belt_via_decoupled_elbow
+  wrist_mechanism: bevel_differential_3dof
+  pretension: TBD_at_CAD
+mass_oom_note: "S2 wrist-pack mass relocates L3→L2; optional ×1.1–1.3 for pretension hardware"
+reach_m: [0.5, 0.8]
+payload_kg: 0.5
+power_scenario: A
+relocatable: true
+ends: asymmetric
+walk: base_aux_latch_planar
+compute_location: L2_upper_arm
+battery_location: L2_upper_arm_optional
+```
+
+---
+
+### Ответ прямо на вопрос
+
+| Вопрос | Ответ |
+|--------|--------|
+| Compute + battery между J1 и вилкой? | **Нет.** В исправленной схеме — на **upper arm (L2)** после J2. |
+| «Link 1» в старом черновике | Путаница имени; **base ≠ L2**. Вилка — **yoke на J1**, не отдельный «батарейный link». |
+| C1b.4 после этих правок | **Можно закрывать** draft S4 и идти в **C1b.5** (scorecard). |
+
+Имеет смысл в шапке файла написать: *Revised 2026-09-20 — structure naming per maintainer stack (base / yoke / L2 / L3).*
+
+---

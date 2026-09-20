@@ -58,7 +58,7 @@ Out of scope for this task:
 - [x] C1b.1 Curate publications + open recreations (URL only) into `docs/references/lims-family-notes.md`
 - [x] C1b.2 One-pager: dual-axis / rolling elbow — kinematics intent, dock-perimeter reach, DFAA risks → [0005-lims-elbow-onepager.md](0005-lims-elbow-onepager.md)
 - [x] C1b.3 One-pager: N+1-to-2N + pretension — what is known publicly; consumer-reproducible subset? → [0005-lims-n1-to-2n-onepager.md](0005-lims-n1-to-2n-onepager.md)
-- [ ] C1b.4 Draft **S4** stick-level description (LIMS-inspired, ADR-0003 bands, accessible transmissions only)
+- [x] C1b.4 Draft **S4** stick-level description (LIMS-inspired, ADR-0003 bands, accessible transmissions only) → [0005-candidate-scheme-s4.md](0005-candidate-scheme-s4.md)
 - [ ] C1b.5 **S2 vs S4** scorecard: dock-neighbourhood workspace, distal inertia, DFAA, BOM risk, open reproducibility, N6 path
 - [ ] C1b.6 Gate decision note: keep S2 / prefer S4 / hybrid — **required before C6 full-arm composition ADR
 
