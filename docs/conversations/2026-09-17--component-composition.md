@@ -1933,3 +1933,158 @@ battery_location: L2_upper_arm_optional
 Имеет смысл в шапке файла написать: *Revised 2026-09-20 — structure naming per maintainer stack (base / yoke / L2 / L3).*
 
 ---
+**Bunch**
+
+Я обновил репо, теперь ты можешь произвести аккуратное сравнение S2 и S4 из:
+S2: `docs/tasks/0004-candidate-schemes.md`
+S4: `docs/tasks/0005-candidate-scheme-s4.md`
+
+И закрыть задачу `- [ ] C1b.5 **S2 vs S4** scorecard: dock-neighbourhood workspace, distal inertia, DFAA, BOM risk, open reproducibility, N6 path`
+
+---
+**Grok 4.5 Fast**
+
+Готовый артефакт для `docs/tasks/0005-s2-vs-s4-scorecard.md` (закрытие **C1b.5**).
+
+### Краткий вывод
+
+|  |  |
+|--|--|
+| **S2** | Проще, дешевле в риске, быстрее к железу, уже baseline |
+| **S4** | Лучше дистальная инерция и работа у dock; дороже по механике и неопределённости |
+| **C1b.5** | Закрыт этим scorecard |
+| **C1b.6** | Отдельное решение keep / prefer / hybrid |
+
+В task 0005: `- [x] C1b.5 → [0005-s2-vs-s4-scorecard.md](0005-s2-vs-s4-scorecard.md)`.
+
+---
+**Bunch**
+
+Уточнения к документу:
+
+1. Насчёст сравнения механизма запястья: необходимо отметить, что на данном этапе механизм S4 продуман намного детальнее, чем механизм S2. Поэтому их тяжело сравнивать объективно.
+2. Касательно вычислительного модуля и батареи: в S2 сейчас таже ошибка, что была при подготовке S4. И компьютер и батарею в «шагающей» схеме манипулятора в S2 логично разместить на звене плеча, а не в базе, где расположен сложный интерфейсный узел зацепления.
+3. Так же в документе ты делаешь упор, что в S4 больше мехнических элементов и они сложнее. Например, наличие зубчатых колёс в локте и конические шестерни в запястье. Отсылая к первому пункту, механизм S2 продуман хуже, там тоже могут быть подобные детали. Но в качестве конкретного решения для S4 мы можем постараться найти эти элементы в продаже или напечатать эти механизмы на 3D-принтере. Да, печатные шестерни из пластика не такие долговечные как из металла, но для проверки механики на этапе MVP, думаю, этого будет достаточно.
+4. Касательно, твоего предложения: попробовать напечатать критические элементы на 3D‐принтере для принятия окончательного решения. Думаю, на данном этапе мы не будем открывать эту ветку с отдельной разработкой CAD для этой задачи. Но мы обязательно заложем проверку всех критических элементов в MVP, чтобы можно было совершить fallback.
+
+Если ты согласен с моими уточнениями, давай внесём соответствующие корректировки в `0005-s2-vs-s4-scorecard.md`. После этого перейдём к обсуждению S2 и S4 и выбору окончательного решения.
+
+---
+**Grok 4.5 Fast**
+
+Согласен со всеми четырьмя пунктами. Ниже — конкретные правки для `0005-s2-vs-s4-scorecard.md` (без переписывания всего файла).
+
+---
+
+### 1. Шапка / method note (после Scoring legend)
+
+```markdown
+**Comparability note:** At this stage the **S4 wrist/elbow path is specified in more mechanical detail** (bevel wrist, dual-hinge, rigid link, through-elbow media) than the **S2 cascade wrist**, which remains a higher-level “short accessible belts/tendons” sketch. Scores that touch wrist internals are therefore **asymmetric in maturity**, not a proof that S2 is inherently simpler in every physical realization. Where S2 is underspecified, assume it may later need comparable discrete parts (idlers, gears, covers) once CAD exists.
+```
+
+---
+
+### 2. Snapshot table — compute / battery
+
+Заменить строки про compute/battery:
+
+```markdown
+| Compute / optional transit battery | **On upper arm (shoulder link)** in a walking-capable layout — not inside the dense dock interface block | **On L2 upper arm** (same rational placement) |
+```
+
+В §1 после таблицы добавить:
+
+```markdown
+**Placement alignment:** Both schemes should keep **central compute and optional transit battery on the upper-arm link**, away from the dock latch/connector cluster. Older S2 wording that put compute on “Link 1 / base” is treated as a **documentation debt** for this scorecard; it is not scored as an S2 advantage.
+```
+
+---
+
+### 3. Scorecard rows — DFAA, BOM, complexity
+
+Обновить notes (и при желании чуть смягчить разрыв баллов):
+
+```markdown
+| **DFAA / serviceability** | High | **4** | **3–4** | Both require open covers and replaceable packs. S4 names more mechanisms *today*; S2 may grow similar part counts in CAD. S4 residual risk = pretension TBD + through-elbow routing until proven |
+| **BOM risk (N7)** | High | **4** | **3–4** | Motor/driver count similar. S4 lists dual-hinge + bevel + rollers explicitly; S2 underspecified. MVP may use **printed gears/rollers** for mechanism validation; expect shorter life than metal — acceptable for MVP with planned fallback |
+| **Control / calibration complexity** | Med | **4** | **3** | S4 differential wrist + elbow decoupling is structurally more coupled; magnitude depends on final S2 wrist CAD |
+| **Time-to-first-smoke-test** | Med | **5** | **3** | Scheme-agnostic FOC smoke test is unchanged. Full-arm first article: S2 still fewer *named* novel subassemblies; not a claim S2 has zero gears |
+```
+
+В §3.3 DFAA заменить абзац:
+
+```markdown
+### 3.3 DFAA
+Both schemes commit to agent-accessible transmissions (V5). S4’s dual-hinge, rigid link, and through-elbow paths are **called out now**; S2’s cascade is **less detailed**, so a lower “parts complexity” score for S2 would be unfair. Fair residual: S4 still carries **open pretension choice** and multi-path elbow routing that must stay serviceable. Printed plastic gears/rollers are allowed for **MVP mechanism checks**; durability limits are accepted with an explicit hardware fallback path (see §4).
+```
+
+В §3.4 BOM:
+
+```markdown
+### 3.4 BOM risk
+Do not treat “S4 has bevels / elbow gears” as unique cost sin until S2 wrist CAD exists. Prefer: similar actuator electronics; mechanical BOM uncertainty **higher on S4 only where geometry is already fixed**. Printed prototypes reduce early cash risk at the expense of wear life.
+```
+
+---
+
+### 4. Новый §4 (риски / MVP) — заменить блок Risks
+
+```markdown
+## 4. Risks, MVP validation, and fallback (no separate CAD branch now)
+
+**No parallel “print critical parts to decide the gate” program** at this stage. Critical mechanisms are validated **inside the normal MVP build**, not a side CAD contest before C1b.6.
+
+| Item | Approach |
+|------|----------|
+| Dual-hinge elbow, bevel wrist, through-elbow media (if S4 or hybrid) | Exercise in MVP; allow **printed** gears/rollers for first units |
+| S2 cascade belts/idlers | Same MVP discipline once detailed |
+| Wear of printed mesh | Expected; **not** a reason to block scheme choice |
+| Fallback | Pre-declare triggers (binding, untunable pretension, N6 failure, DFAA service time) → simplify wrist media, single-hinge elbow, or S1-style in-joint distal — recorded at gate / ADR amendment |
+
+**S2-specific doc fix (follow-up, not scored):** move compute/battery language to upper-arm link for consistency with walking + dock interface reality.
+```
+
+---
+
+### 5. Weighted reading (§2 конец) — смягчить
+
+```markdown
+**Weighted reading (informal, maturity-aware):**
+- **S2** still advantaged on *time-to-integrate* and *known cascade story*, not on proven thinner BOM.
+- **S4** advantaged on **distal inertia** and **dock-neighbourhood fold**, with mechanics specified further ahead.
+- **N6, planar walk, ADR-0003:** still shared.
+- Wrist complexity comparison is **provisional** until S2 is detailed to a similar depth.
+```
+
+---
+
+### 6. §5 Implications — одна строка
+
+```markdown
+| **S2 documentation** | Correct compute/battery placement to **upper arm** (parity with S4 stack) in candidate-schemes or ADR follow-up |
+```
+
+---
+
+### 7. Document control
+
+```markdown
+| Revised | 2026-09-20 — maturity asymmetry S2/S4 wrist; compute on upper arm both schemes; printed MVP gears OK; no pre-gate CAD branch; fallback in MVP |
+| Closes | C1b.5 (revised) |
+| Next | Discussion → C1b.6 gate (keep S2 / prefer S4 / hybrid) |
+```
+
+---
+
+После внесения правок логичный следующий шаг — **обсуждение для C1b.6**: keep S2 / prefer S4 / hybrid, с явным fallback в MVP и без отдельной «печатной» ветки до решения. Могу сразу предложить черновик gate-note, когда будете готовы.
+
+---
+**Bunch**
+
+Моё мнение насчёт сложности S4. Я согласен с твоей оценкой, которая старается быть объективной, S2 действительно представляется более простой в технологическом плане схемой. Тем не менее если бы задача была сделать максимально простую систему, тогда нужно было бы выбираь путь INNFOS GLUON с моторами одинакого класса, установленными в суставах, с минимум уникальных конструктивных деталей. Одна из наших задач решить основные болячки классических манипуляторов, чтобы на оптимальной дистанции создать рабочий продукт, а не выграть время в кроткосрочном периоде. Корейский IRIM решал эту задачу минимум десятилетие и сейчас лидеры, развивающие проект LIMS создали робота ALLEX. В плане манипуляторов и EE я не видел ничего неподобного, это просто фантастика. Никакие манипуляторы роботов от Boston Dynamics, Tesla или многочисленных китайских компаний не сравнятся с этим результатом (ты в этом плане обладаешь более широким взглядом на существующие решения, можешь поправить меня в ответе). Мой вывод заключается в следующем: можно выйграть дни на создании MVP и проиграть десятилетия на доводку классических типов манипуляторов, которых уже предостаточно в open source пространстве. Или можно по максимуму перенять десятилетний опыт LIMS, чтобы создать интерфейс-манипулятор, который действительно может осуществлять сложнейшие комплексные сборочные операции, не оставаясь при этом очередным промышленным роботом, который может только жёстко позиционировать своё положение в пространстве (см. станки ЧПУ, промышленные сварочные роботы, картеки 3D‐принтеров и прочее).
+
+Предлагаю для MVP выбраь схему S4 с fallback к S2 в случае реализации обозначенных рисков или при появлении «чёрных лебедей».
+
+Какоё у тебя мнение по этому вопросу?
+
+---
