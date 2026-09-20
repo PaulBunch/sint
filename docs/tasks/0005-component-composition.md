@@ -65,13 +65,15 @@ Out of scope for this task:
 - [x] C1b.6 Gate decision note: keep S2 / prefer S4 / hybrid — **required before C6 full-arm composition ADR → [0005-s2-s4-gate.md](0005-s2-s4-gate.md)
 
 ### C2. Requirements per class (from ADR, not from vendor gloss)
-- [ ] C2.1 Proximal drives (J1 base, J2/J3 on yoke): continuous torque, speed OOM, voltage, bus, N6, DFAA module boundary
-- [ ] C2.2 Distal wrist axes (motors on **L2**, load at bevel wrist via through-elbow media): lower torque, **L2 pack mass budget**, belt/cable side loads, decoupling assumption
+- [x] C2.1 Proximal drives (J1 base, J2/J3 on yoke): continuous torque, speed OOM, voltage, bus, N6, DFAA module boundary
+- [x] C2.2 Distal wrist axes (motors on **L2**, load at bevel wrist via through-elbow media): lower torque, **L2 pack mass budget**, belt/cable side loads, decoupling assumption
 - [ ] C2.3 Elbow path: dual-hinge + **rigid link** (loads, bearings, DFAA cartridge); not only “cascade belt”
 - [ ] C2.4 Sensors: absolute vs incremental minimum; joint output preferred long-term
 - [ ] C2.5 Compute / battery: **on L2 upper arm** (not dock interface block); local RT vs central agent; bus
 - [ ] C2.6 Connectors: dock vs inter-link vs EE; tool-side serviceability
-- [ ] C2.7 **S2 fallback delta** (one short subsection): what changes if wrist pack returns to forearm + short belts (requirements that shrink/drop)
+- [x] C2.7 **S2 fallback delta** (one short subsection): what changes if wrist pack returns to forearm + short belts (requirements that shrink/drop)
+
+→ [0005-class-requirements-motors.md](0005-class-requirements-motors.md) — drives/motors
 
 ### C3. COTS / open-hardware shortlist (URLs only in git)
 - [ ] C3.1 Motors + gearboxes: proximal (J1–J3) and distal (wrist pack on L2) — 2–4 each
