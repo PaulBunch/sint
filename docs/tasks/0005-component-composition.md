@@ -17,7 +17,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - `docs/implementation-concepts.md` (§1, actuators / FOC)
 - Conversation: `docs/conversations/2026-09-17--component-composition.md`
 
-**Goal:** Document a **Phase 1 component composition baseline** for the arm: classes of parts, and **2–4 COTS/open candidates per class**, fit to torque/power/acoustic/BOM/DFAA. **Default mapping follows ADR-0005 S2.** Under ADR-0006, run a **parallel LIMS-class / S4 study** and an **S2 vs S4 gate before freezing full-arm COTS**. Scheme-agnostic **smoke-test** stacks (one FOC axis ± short cascade) may proceed without waiting for S4.
+**Goal:** Document a **Phase 1 component composition baseline** for the arm: classes of parts, and **2–4 COTS/open candidates per class**, fit to torque/power/acoustic/BOM/DFAA. **Default mapping follows S4** (ADR-0005 as amended 2026-09-20: LIMS-inspired serial 6-DoF). **Retain S2 class deltas** so fallback remains executable without redoing the whole shortlist. **Scheme-agnostic smoke-test** stacks (one FOC axis ± short cascade / single joint) may proceed in parallel and do not depend on full S4 wrist/elbow bring-up.
 
 ---
 
@@ -25,19 +25,20 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 Must respect:
 
-- **ADR-0006:** LIMS-class is the performance aspiration; opaque multi-cable packs remain DFAA-gated; no payload÷10 motor scaling from LIMS
-- **ADR-0005:** S2 serial 6-DoF, cascaded mass bias, asymmetric ends, power scenario A, coplanar docks, accessible belt/tendon where used
-- **ADR-0003:** payload ~0.5 kg, reach 0.5–0.8 m, proximal ~10–25 N·m / distal ~1–5 N·m continuous bands, 24 V class, acoustic intent, functional-node BOM ceiling
-- **DFAA:** agent-replaceable joint/drive module, tensioner, compute brick; no sealed proprietary-only repair path as default
-- **N6:** prefer FOC BLDC quiet path over loud steppers as default narrative (steppers only if justified and scored)
+- **ADR-0005 (amended 2026-09-20):** **MVP primary = S4** — base → J1 → shoulder yoke (J2/J3) → L2 upper arm (compute, optional battery, wrist pack) → dual-hinge elbow (rigid link) → light L3 → bevel 3-DoF wrist; open through-elbow media; asymmetric ends; power scenario A; coplanar docks; base aux-latch walk. **S2** = explicit cascade **fallback**; **S1** = last-resort distal if both transmission paths fail DFAA/N6. See `docs/tasks/0005-s2-s4-gate.md`.
+- **ADR-0006:** LIMS-class motion *direction* under DFAA/BOM; opaque multi-cable packs remain gated; no payload÷10 motor scaling from LIMS; relocatable/multi-dock walking remains a first-class direction (planar Phase 1).
+- **ADR-0003:** payload ~0.5 kg, reach 0.5–0.8 m, proximal ~10–25 N·m / distal ~1–5 N·m continuous bands, 24 V class, acoustic intent, functional-node BOM ceiling.
+- **DFAA:** agent-replaceable joint/drive module, tensioner, compute brick, elbow/wrist packs as applicable; no sealed proprietary-only repair path as default.
+- **N6:** prefer FOC BLDC quiet path over loud steppers as default narrative (steppers only if justified and scored).
 
 Out of scope for this task:
 
-- Full link CAD, belt channel detailed design
+- Full link CAD, belt/cable channel detailed design, pretension final mechanism (may list *options*)
 - Purchase orders / inventory
 - Custom PCB layout (may list *controller families* only)
 - MuJoCo asset pack as deliverable
 - Non-coplanar climb-rated actuators
+- Claiming parity with any external commercial arm
 
 ---
 
@@ -60,7 +61,7 @@ Out of scope for this task:
 - [x] C1b.3 One-pager: N+1-to-2N + pretension — what is known publicly; consumer-reproducible subset? → [0005-lims-n1-to-2n-onepager.md](0005-lims-n1-to-2n-onepager.md)
 - [x] C1b.4 Draft **S4** stick-level description (LIMS-inspired, ADR-0003 bands, accessible transmissions only) → [0005-candidate-scheme-s4.md](0005-candidate-scheme-s4.md)
 - [x] C1b.5 **S2 vs S4** scorecard: dock-neighbourhood workspace, distal inertia, DFAA, BOM risk, open reproducibility, N6 path → [0005-s2-vs-s4-scorecard.md](0005-s2-vs-s4-scorecard.md)
-- [ ] C1b.6 Gate decision note: keep S2 / prefer S4 / hybrid — **required before C6 full-arm composition ADR
+- [x] C1b.6 Gate decision note: keep S2 / prefer S4 / hybrid — **required before C6 full-arm composition ADR → [0005-s2-s4-gate.md](0005-s2-s4-gate.md)
 
 ### C2. Requirements per class (from ADR, not from vendor gloss)
 - [ ] C2.1 Proximal drive: continuous torque band, speed order-of-magnitude, voltage, bus, noise intent, DFAA boundary

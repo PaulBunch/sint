@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 # ADR-0005: Phase 1 Kinematic Scheme
 
-- **Status:** Accepted
+- **Status:** Accepted — **Amended 2026-09-20** (S4 MVP primary; S2 fallback)
 - **Date:** 2026-09-17
 - **Deciders:** Project maintainers / agents working on Phase 1
 - **Refines:** ADR-0003 (numerical targets), ADR-0004 (survey patterns), `docs/tasks/0004-placement-policy.md`
@@ -70,6 +70,28 @@ MVP workspace is a **coplanar** desk cluster (A1-mini-class printer, table buffe
 - Whether later evolution adopts partial S3-like symmetry  
 - Spherical-gear multi-DoF joints (remain out of Phase 1 default)
 
+## Amendment 2026-09-20 — MVP primary scheme role (S4 / S2)
+
+**Context:** Task 0005 C1b (LIMS-class parallel branch), scorecard `docs/tasks/0005-s2-vs-s4-scorecard.md`, gate `docs/tasks/0005-s2-s4-gate.md`, ADR-0006.
+
+**Amendment (does not delete §§1–4 above):**
+
+1. **MVP implementation primary** is scheme **S4** (LIMS-inspired serial 6-DoF) as specified in `docs/tasks/0005-candidate-scheme-s4.md`: shoulder yoke with J2/J3 motors, upper-arm (L2) compute and optional battery and wrist pack, dual-hinge elbow with rigid link drive, light forearm, bevel 3-DoF wrist, open through-elbow transmission, Power Scenario A, asymmetric ends, planar relocatable walk with base aux-latch.
+
+2. Scheme **S2** (this ADR’s original primary) remains the **documented cascade baseline** and the **explicit fallback** if gate triggers in `docs/tasks/0005-s2-s4-gate.md` are met.
+
+3. **S1** remains last-resort fallback for distal actuation if both through-elbow and S2-style cascade fail DFAA or N6.
+
+4. **S3** remains deferred.
+
+5. **Numeric targets** stay ADR-0003. **DFAA and open serviceability** remain mandatory; opaque full-arm cable packs remain rejected as default.
+
+6. **Aspirations** (non-metric): move toward **LIMS-class motion characteristics** and robust **relocatable / multi-dock walking** behaviour under consumer fabrication constraints — without claiming parity with any external product.
+
+7. Component composition and first hardware articles **shall cite S4** unless a recorded fallback to S2/S1 has been declared.
+
+**Rationale:** Prefer addressing classic serial-arm limitations (distal mass, limited fold around docks) on the MVP path, with a pre-declared retreat to S2, rather than optimizing only for short-term mechanical simplicity.
+
 ## Options considered
 
 | Option | Outcome | Rationale |
@@ -112,6 +134,9 @@ Scorecard totals in the down-select note are **comparative judgments**, not labo
 4. First prototypes should exercise: cascade belt access (DFAA), quiet motion (N6), planar dual-dock step at ~0.5–0.6 m class spacing.  
 5. If cascade is abandoned for S1, record the trigger (noise, slip, service time) in a short ADR amendment or superseding note.
 
+- See amendment 2026-09-20: implement to **S4**; keep S2 designs as fallback reference.
+- First prototypes should still exercise planar dual-dock walk and quiet motion (N6); add dual-hinge and through-elbow service checks when building S4.
+
 ### Handoff & Next Steps
 
 Based on the S2 selection, the following follow-up tasks and revalidation points are identified:
@@ -138,3 +163,6 @@ Based on the S2 selection, the following follow-up tasks and revalidation points
 - `docs/tasks/0004-placement-policy.md`
 - ADR-0003, ADR-0004, ADR-0006
 - `docs/spec.md` — R1, R2, R3, R7, R8, DFAA
+- `docs/tasks/0005-s2-s4-gate.md` — C1b.6  
+- `docs/tasks/0005-candidate-scheme-s4.md`  
+- `docs/decisions/0006-lims-class-performance-aspiration.md`

@@ -12,6 +12,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 ## Recent Progress
 
+- **Scheme gate (2026-09-20):** MVP primary **S4** (LIMS-inspired); fallback **S2**; S1 last-resort distal. ADR-0005 amended. Gate: `docs/tasks/0005-s2-s4-gate.md`.
 - **LIMS-class aspiration (ADR-0006, 2026-09-18):** LIMS-family (esp. LIMS-EX / LIMS3) adopted as **primary external performance reference** (dynamics, distal lightness, dock-neighbourhood workspace). **Does not supersede ADR-0005 S2.** Parallel candidate **S4** (LIMS-inspired) + **S2 vs S4** gate before full-arm COTS freeze. Details: `docs/decisions/0006-lims-class-performance-aspiration.md`, `docs/references/lims-family-notes.md`.
 - **Kinematic Scheme (Task 0004):**
     - ADR-0005 accepted (2026-09-17). Primary **S2** (serial 6-DoF, cascaded mass bias, asymmetric ends, power scenario A, coplanar ≥2 docks, base aux-latch walk; wrist not sole cantilever). Fallback **S1** (in-joint). **S3** dual-ended deferred (BOM/mass risk). Details: `docs/decisions/0005-kinematic-scheme.md`. Task 0004 closed.

@@ -2088,3 +2088,142 @@ Do not treat “S4 has bevels / elbow gears” as unique cost sin until S2 wrist
 Какоё у тебя мнение по этому вопросу?
 
 ---
+**Grok 4.5 Fast**
+
+### Мнение
+
+Ваш стратегический аргумент **сильнее аргумента «S2 проще → бери S2»**, если цель sint — не ещё один open-source serial arm, а **интерфейс, способный на сложную сборку** (низкая дистальная инерция, складка у dock, податливость, работа не только в режиме «жёсткий CNC в воздухе»).
+
+Кратко по слоям:
+
+| Слой | Оценка |
+|------|--------|
+| **S2 технологически проще** | Да — это честно и полезно как **fallback**, не как единственная амбиция |
+| **GLUON / in-joint одинаковые модули** | Максимум повторяемости и скорости MVP; **минимум** ответа на «болячки» классики (дистальная масса, ограниченная складка, часто «позиционер», а не ловкий сборщик) |
+| **LIMS-класс как ориентир** | Согласен: десятилетие IRIM — редкий публичный путь именно в **low-inertia + tendon/remote + compliance**, а не только в грузоподъёмность и точность траектории |
+| **S4 на MVP + fallback S2** | **Разумный gate**, если fallback **заранее операционализирован** (триггеры, что именно откатываем) |
+
+Про сравнение с Boston Dynamics / Tesla / массовым CN: у меня нет основания утверждать, что ALLEX/LIMS **абсолютно лучшие манипуляторы в мире**. У BD/Tesla и промышленных линий другие критерии (локомоция всего тела, заводской takt, сертификация, closed stack). Зато в **нише «лёгкая рука + высокая обратная приводимость + вынесенные приводы»** линейка LIMS/AMBIDEX действительно выглядит **выдающейся и недооценённой** относительно типичного desktop/cobot open-source. Ваш вывод «не хотим ещё один классический позиционер» с этим согласуется; глобальный «никто не сравнится» лучше не фиксировать в ADR как факт — достаточно **performance aspiration** (как уже ADR-0006).
+
+**Итог по выбору:**  
+поддерживаю **MVP primary = S4**, **fallback = S2** (не S1, если только cascade/through-elbow не встанет — тогда уже ужесточение до in-joint distal).  
+Вы не «проигрываете простоту впустую»: вы **покупаете** дистальную инерцию и dock-neighbourhood ценой механики, с заранее объявленным отступлением.
+
+Риск, который нельзя игнорировать: S4 без дисциплины превратится в «вечный research». Смягчение — не возврат к GLUON-first, а:
+
+1. **Узкий MVP S4:** dual-hinge + through-elbow 3-DoF bevel path + open covers; pretension — простейший доступный вариант в CAD.  
+2. **Жёсткие fallback-триггеры** (ниже).  
+3. **Smoke FOC** параллельно, scheme-agnostic.  
+4. Не обещать в ADR «уровень ALLEX»; обещать **направление LIMS-class under DFAA/BOM**.
+
+---
+
+### Предлагаемая формулировка для C1b.6 (суть)
+
+- **Primary (MVP):** **S4** — LIMS-inspired (yoke J2/J3, L2 pack + compute/battery, dual-hinge elbow, rigid elbow link, bevel wrist 3-DoF, accessible through-elbow media).  
+- **Fallback:** **S2** cascade (wrist pack on forearm / short belts) if S4 hits declared triggers.  
+- **S1** — только если и S2-передача провалит DFAA/N6 (как в ADR-0005).  
+- **ADR-0005:** не молчаливый rewrite — **amendment** или короткий ADR: *S4 primary for MVP; S2 fallback; S2 remains documented baseline*.
+
+**Fallback triggers (примеры для gate-note):**
+
+| Триггер | Действие |
+|---------|----------|
+| Through-elbow binding / untunable pretension after N iterations | Упростить media или перенос wrist pack → S2-style на L3 |
+| Dual-hinge не собирается/не калибруется в DFAA-сроке | Single-hinge elbow, сохранить proximal packs |
+| N6 / износ printed mesh неприемлемы | Металл COTS или упрощение запястья |
+| BOM/time раздувается без прогресса по fold/inertia | Явный переход на S2 primary |
+
+Проверка критических узлов — **в составе MVP**, без отдельной pre-gate CAD-ветки (как вы и решили).
+
+---
+
+### Сверка с вашей мотивацией
+
+| Ваш тезис | Согласие |
+|-----------|----------|
+| Простота ≠ цель проекта | Да |
+| Классических open-source рук достаточно | В основном да |
+| Перенять опыт LIMS важнее, чем выиграть недели на MVP | Да, **если** fallback реален |
+| S4 MVP + S2 fallback | **Поддерживаю** как C1b.6 |
+
+Если ок — следующий шаг: текст **C1b.6 gate note** + 5–10 строк amendment к ADR-0005 / ссылка из current-state. Могу набросать сразу в следующем сообщении.
+
+----
+**Bunch**
+
+Я согласен с тем, что в ADR не нужно фиксировать и даже может быть вредным тезис `никто не сравнится с ALLEX...`. С моей стороны это был больше как эмоциональный окрас, «Вау‐эффект».
+
+Я согласен с твоми тезисами про узкий MVP S4, fallback‐триггеры  и т.п. Возможно в этот же список имеет смысл добавить не только `обещать направление LIMS-class under DFAA/BOM`, но и направление в сторону «шагающего» функционала.
+
+В целом я согласен с твоим предыдущем ответом. Подготовь решение по C1b.6 и amendment к ADR-0005.
+
+---
+**Grok 4.5 Fast**
+
+Ниже два артефакта: **C1b.6 gate note** и **amendment к ADR-0005**. Без сравнений «ALLEX лучше всех».
+
+---
+
+### 1. `docs/tasks/0005-s2-s4-gate.md` (C1b.6)
+
+---
+
+### 2. Amendment to ADR-0005
+
+Вставить в `docs/decisions/0005-kinematic-scheme.md` **после блока Decision** (или как § «Amendment 2026-09-20») и поправить Status:
+
+```markdown
+- **Status:** Accepted — **Amended 2026-09-20** (S4 MVP primary; S2 fallback)
+```
+
+```markdown
+## Amendment 2026-09-20 — MVP primary scheme role (S4 / S2)
+...
+```
+
+В **Consequences / Implementation notes** ADR-0005 добавить:
+
+```markdown
+- See amendment 2026-09-20: implement to **S4**; keep S2 designs as fallback reference.
+- First prototypes should still exercise planar dual-dock walk and quiet motion (N6); add dual-hinge and through-elbow service checks when building S4.
+```
+
+В **References**:
+
+```markdown
+- `docs/tasks/0005-s2-s4-gate.md` — C1b.6  
+- `docs/tasks/0005-candidate-scheme-s4.md`  
+- `docs/decisions/0006-lims-class-performance-aspiration.md`
+```
+
+---
+
+### 3. Минимальные якоря (по желанию в том же PR)
+
+**`docs/current-state.md`:**
+
+```markdown
+- **Scheme gate (2026-09-20):** MVP primary **S4** (LIMS-inspired); fallback **S2**; S1 last-resort distal. ADR-0005 amended. Gate: `docs/tasks/0005-s2-s4-gate.md`.
+```
+
+**`docs/tasks/0005-component-composition.md`:**
+
+```markdown
+- [x] C1b.6 Gate: S4 MVP primary, S2 fallback → [0005-s2-s4-gate.md](0005-s2-s4-gate.md)
+```
+
+**Goal / constraints:** *default mapping follows **S4** (amended ADR-0005); retain S2 class deltas for fallback.*
+
+---
+
+### Итог
+
+| Документ | Содержание |
+|----------|------------|
+| **C1b.6** | S4 primary, S2 fallback, narrow MVP, triggers, walking + LIMS-class *direction* |
+| **ADR-0005 amendment** | Роль primary перенесена на S4; текст S2 сохраняется как baseline/fallback |
+
+После коммита ветка C1b закрыта по схеме; можно продолжать **C2+** composition уже с опорой на S4.
+
+---
