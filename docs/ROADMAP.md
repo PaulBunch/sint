@@ -15,7 +15,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 - [x] Select CAD software (and other required tools) that LLM can interact with independently with minimal human assistance (ADR-0001 strategy, ADR-0002 primary = build123d; infrastructure validated in tasks/0001 + 0002) → [tasks-0001](tasks/0001-select-cad-software.md)
 - [x] Define core numerical characteristics (envelope dimensions, payload without EE, electrical power budget, joint torque/speed targets, acoustic noise limits, target BOM cost) (ADR-0003) → [tasks-0003](tasks/0003-define-core-numerical-characteristics.md)
 - [x] Develop kinematic scheme of the interface (topology, DoF layout, relocatable base concept) → [tasks-0004](tasks/0004-kinematic-scheme.md)
-- [ ] LIMS-class deep dive & candidate **S4** (LIMS-inspired): papers / open recreations, dual-axis elbow & N+1-to-2N feasibility under DFAA; compare **S2 vs S4** before full-arm COTS freeze (ADR-0006) → [tasks-0005](tasks/0005-component-composition.md) §C1b / §C4b
+- [x] LIMS-class deep dive & candidate **S4** (LIMS-inspired): papers / open recreations, dual-axis elbow & N+1-to-2N feasibility under DFAA; compare **S2 vs S4** before full-arm COTS freeze (ADR-0006) → [tasks-0005](tasks/0005-component-composition.md) §C1b / §C4b
 - [ ] Define component composition (motors, drivers, gearboxes, sensors, compute, connectors — COTS candidates); scheme-agnostic smoke stack OK early; full-arm freeze after S2 vs S4 gate → [tasks-0005](tasks/0005-component-composition.md)
 - [ ] Compile preliminary set of assembly operations and list of required external tools (screwdrivers, drivers, soldering equipment, etc.) — directly constrains DFAA design
 - [ ] Determine minimum set of mandatory end-effectors required for self-assembly

@@ -68,7 +68,7 @@ Out of scope for this task:
 - [x] C2.1 Proximal drives (J1 base, J2/J3 on yoke): continuous torque, speed OOM, voltage, bus, N6, DFAA module boundary → [0005-class-requirements-motors.md](0005-class-requirements-motors.md)
 - [x] C2.2 Distal wrist axes (motors on **L2**, load at bevel wrist via through-elbow media): lower torque, **L2 pack mass budget**, belt/cable side loads, decoupling assumption → same
 - [x] C2.3 Elbow path: dual-hinge + **rigid link** (loads, bearings, DFAA cartridge); not only “cascade belt” → [0005-class-requirements-elbow.md](0005-class-requirements-elbow.md)
-- [ ] C2.4 Sensors: absolute vs incremental minimum; joint output preferred long-term
+- [x] C2.4 Sensors: absolute vs incremental minimum; joint output preferred long-term → [0005-class-requirements-sensors.md](0005-class-requirements-sensors.md)
 - [ ] C2.5 Compute / battery: **on L2 upper arm** (not dock interface block); local RT vs central agent; bus
 - [ ] C2.6 Connectors: dock vs inter-link vs EE; tool-side serviceability
 - [x] C2.7 **S2 fallback delta** (one short subsection): what changes if wrist pack returns to forearm + short belts (requirements that shrink/drop) → fallback in all documents in this section
