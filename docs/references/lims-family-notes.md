@@ -313,7 +313,52 @@ Useful for sint lab practice; not part of arm BOM.
 
 ---
 
-## 4. Cross-cutting takeaways for sint (non-normative)
+## 4. Cable / tendon transmission (family reference)
+
+**Role:** Public LIMS-family practice for remote actuation — **calibration and pattern mining only**.  
+**Normative sint media rules:** `docs/tasks/0005-class-requirements-media.md` (belt *or* short cable; no mandatory LIMS diameters or n-wrap).
+
+### Construction patterns
+
+| Topic | LIMS-family practice (as reported in papers / notes) |
+|-------|-----------------------------------------------------|
+| Construction | Steel cord **7×19** common in LIMS1/2 descriptions |
+| Jacket | Nylon-coated wire on elbow/wrist circuits (LIMS1/2) |
+| Routing | **No Bowden**; free pulleys/rollers on ball bearings |
+| Capstan (shoulder, LIMS1-class) | Example wire **Ø ~1.59 mm**, break ~**1197 N**; drive/driven pulley examples ~30 mm / ~138 mm |
+| Elbow & wrist circuits (LIMS1/2) | Example coated wire **Ø ~0.762 mm**, break ~**312 N**; pulley examples ~**16 mm** |
+| LIMS3 (notes) | Example elbow-class **~3.2 mm**, distal-class **~1.6 mm** |
+| Example circuit lengths (LIMS1) | Capstan ~530 mm; wrist pitch/yaw ~980 mm; wrist roll ~620 mm; elbow ~1030 mm |
+| Pulley counts (LIMS1-class examples) | Order-of-magnitude: many idlers per circuit (e.g. ~7–9 on some wrist paths) — package-specific |
+
+### Stiffness, pretension, decoupling
+
+| Topic | Reported practice |
+|-------|-------------------|
+| Axial stiffness | High; example coated 0.762 mm class cited with large effective k per unit length in papers |
+| Pretension rule of thumb | ~**50% of tension at max working load** so peak load takes slack side near zero without derailing |
+| Tension amplification | Multi-wrap (block-and-tackle): joint stiffness scales ~**n²**; elbow examples n≈6, wrist bend n≈4 in LIMS1/2 narratives — **not** a sint Phase-1 default |
+| Measured joint stiffness (LIMS1-class, papers) | Elbow ~**1410–1440 N·m/rad**; wrist bend hundreds of N·m/rad — scale reference only |
+| Decoupling | Wrist cables routed at elbow so flexion does not change net wrist cable length (cross rollers / dual centers) |
+| Friction (LIMS3 notes) | Joint friction often **< 1 N·m** class on distal axes — supports current-based contact proxy |
+
+### Joint torque at media (scale only — do not copy into sint BOM)
+
+| Variant | Elbow (indicative) | Wrist (indicative) |
+|---------|--------------------|--------------------|
+| LIMS1 | Cont. ~11 N·m / peak ~49 N·m class | Cont. ~4 N·m / peak ~12 N·m class |
+| LIMS2 peaks (paper) | Peak elbow ~69 N·m class | Roll/pitch peak ~35 N·m; yaw peak ~25 N·m class |
+| LIMS-EX continuous (video notes) | Elbow ~63 N·m | Pitch ~27 / yaw ~19 / roll ~8 N·m |
+
+sint distal continuous target remains **~1–5 N·m** (ADR-0003); size media from that margin in C3/CAD, not by ÷10 from the table above.
+
+### LIMS-EX pretension (reconstruction)
+
+Public narrative: hybrid **N+1-to-2N** wrist with **shared pretension** (slider pair). Detail confidence: medium (video). sint may use a **simple accessible take-up** only; full EX clone is out of media musts.
+
+---
+
+## 5. Cross-cutting takeaways for sint (non-normative)
 
 1. **Mass distribution:** multi-kg moving arm with **hundreds of grams** at wrist is achievable with remote cable drive — supports cascade / proximal bias, not copy of 5 kg payload.  
 2. **Do not scale motors by payload ratio alone** (e.g. 5 kg → 0.5 kg ⇒ ÷10). Self-weight and \(m g L\) terms dominate; use ADR-0003 N5 + estimated arm mass.  
@@ -321,13 +366,14 @@ Useful for sint lab practice; not part of arm BOM.
 4. **Utilities:** hollow distal path for power/data/air aligns with reserved pneumatic / harness classes.  
 5. **Acoustics / compliance:** quiet smooth motion and backdrivability are design goals to emulate qualitatively under N6 — not by copying their peak speeds.  
 6. **DFAA filter:** long multi-cable packs and single shared pretension need explicit service stories; default sint remains **accessible short belt or short tendon**, not opaque full-arm cable trees.
+6b. **Media physics (from family cables, non-normative sizes):** prefer **no Bowden**; free **bearing-mounted** pulleys/rollers; **high axial stiffness / low stretch**; pretension on the order of **~half peak working tension** as a starting rule; **elbow length decoupling** when media cross the elbow. Concrete LIMS diameters, 7×19, and n-wrap stiffness tables stay in §4 — sint musts live in `docs/tasks/0005-class-requirements-media.md`.
 7. **LIMS-EX wrist:** hybrid cable loops + single pretension + elbow length decoupling is the concrete mechanism behind the “N+1-to-2N” slogan in public material — primary study object for S4.
 8. **Dual-hinge elbow + base-mounted elbow motor via rigid link:** explains fold range and why distal mass stays low; leader arm confirms the link is not “cables only.”
 9. **Reconstruction confidence:** high on proximal placement and dual-elbow intent; medium on exact wrist motor→DoF matrix and pretension hardware identity — update when papers or clearer stills appear.
 
 ---
 
-## 5. Source index (URL only)
+## 6. Source index (URL only)
 
 Prefer official lab channels, DOI/IEEE, and stable demo URLs. Do not commit third-party PDFs to git.
 
@@ -358,3 +404,4 @@ Prefer official lab channels, DOI/IEEE, and stable demo URLs. Do not commit thir
 |------|--------|
 | 2026-09-17 | Initial file: LIMS3 extract from S1; LIMS-EX specs from S2 description; sint usage notes |
 | 2026-09-19 | Expanded §3 LIMS-EX: kinematic/mechanical reconstruction from video frames (wrist loops, decoupled elbow, proximal actuators, pretension/linkage discussion); test-stand notes; explicit uncertainty flags |
+| 2026-09-21 | Added § Cable / tendon transmission (family reference); points to sint media requirements doc |

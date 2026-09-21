@@ -66,7 +66,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 |----|-------------|-----------|
 | D-M1 | Continuous torque at **wrist axes** **~1–5 N·m** after all stages | ADR-0003 distal band |
 | D-M2 | Motors **mounted on L2** (upper arm), not on light forearm/wrist shell | S4 |
-| D-M3 | Transmission **through dual-hinge elbow** with **open, serviceable** belt or short cable; elbow motion must not systematically reel media (decoupling geometry) | S4 + elbow one-pager |
+| D-M3 | Transmission **through dual-hinge elbow** with **open, serviceable** belt or short cable; elbow motion must not systematically reel media (decoupling geometry) | S4 + elbow one-pager. See also `0005-class-requirements-media.md` |
 | D-M4 | 24 V FOC BLDC class; same protocol family preference as proximal | N6, harness |
 | D-M5 | Pack is a **DFAA unit** (motors + stages + connectors); retension without destroying L2 | DFAA |
 | D-M6 | **L2 pack mass** treated as design budget: baseline = relocate S2 forearm pack mass to L2; allow **×1.0–1.3** if pretension/rollers added | S4 §4.9; inertia OOM |

@@ -17,7 +17,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 |----|-------------|-----------|
 | E-M1 | Elbow output is **one commanded DoF**; mechanism may be **dual-hinge with 1:1 sync** (two revolute stations) | S4 + elbow one-pager |
 | E-M2 | J3 motor on **shoulder yoke**; motion to elbow via **rigid push-pull link** (pins/joints accessible) | S4 locked decisions |
-| E-M3 | **Through-elbow** wrist media (belt or short cable): path geometry such that elbow flexion does **not** systematically change net media length (decoupling) | S4; avoid parasitic reel |
+| E-M3 | **Through-elbow** wrist media (belt or short cable): path geometry such that elbow flexion does **not** systematically change net media length (decoupling) | S4; avoid parasitic reel. See also `0005-class-requirements-media.md` |
 | E-M4 | **Open service access:** snap/screw **external covers** exposing hinges, sync, rollers/idlers, link ends — without destroying L2 or L3 structure | DFAA / V5 spirit |
 | E-M5 | Service is a **finite, ordered procedure** (example pattern below), executable by agent or human with standard tools; procedure documented in repo when CAD exists | Realistic DFAA for tensioned media |
 | E-M6 | Bearings at dual-hinge and link pivots are **COTS-replaceable** types; no proprietary sealed elbow-only bearing as sole path | DFAA + BOM |
