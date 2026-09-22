@@ -70,7 +70,7 @@ Out of scope for this task:
 - [x] C2.3 Elbow path: dual-hinge + **rigid link** (loads, bearings, DFAA cartridge); not only “cascade belt” → [0005-class-requirements-elbow.md](0005-class-requirements-elbow.md)
 - [x] C2.4 Sensors: absolute vs incremental minimum; joint output preferred long-term → [0005-class-requirements-sensors.md](0005-class-requirements-sensors.md)
 - [x] C2.5 Compute / battery: **on L2 upper arm** (not dock interface block); local RT vs central agent; bus → [0005-class-requirements-compute.md](0005-class-requirements-compute.md)
-- [ ] C2.6 Connectors: dock vs inter-link vs EE; tool-side serviceability
+- [x] C2.6 Connectors: dock vs inter-link vs EE; tool-side serviceability → [0005-class-requirements-connectors.md](0005-class-requirements-connectors.md)
 - [x] C2.7 **S2 fallback delta** (one short subsection): what changes if wrist pack returns to forearm + short belts (requirements that shrink/drop) → fallback in all documents in this section
 
 ### C3. COTS / open-hardware shortlist (URLs only in git)
