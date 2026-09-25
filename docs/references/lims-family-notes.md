@@ -156,25 +156,25 @@ Public LIMS3 material cited here gives **shoulder** continuous/peak torque and *
 
 **Continuous joint torque [N·m]** (from video description):
 
-| Joint | Continuous torque [N·m] |
-|-------|-------------------------|
-| Shoulder yaw | 93 |
-| Shoulder pitch | 72 |
-| Elbow | 63 |
-| Wrist pitch | 27 |
-| Wrist roll | 8 |
-| Wrist yaw | 19 |
+| Joint | Continuous torque [N·m] | Torque Norm |
+| ----- | ----------------------- | ----------- |
+| Shoulder yaw | 93 | 1.000 |
+| Shoulder pitch | 72 | 0.774 |
+| Elbow | 63 | 0.677 |
+| Wrist pitch | 27 | 0.290 |
+| Wrist yaw | 19 | 0.204 |
+| Wrist roll | 8 | 0.086 |
 
 **Max speed [°/s]:** shoulder & elbow 450; wrist axes 570 (as stated):
 
-| Joint | Max speed [°/s] |
-|-------|-----------------|
-| Shoulder yaw | 450 |
-| Shoulder pitch | 450 |
-| Elbow | 450 |
-| Wrist pitch | 570 |
-| Wrist roll | 570 |
-| Wrist yaw | 570 |
+| Joint | Max speed [°/s] | Max speed [RPM] |
+| ----- | --------------- | --------------- |
+| Shoulder yaw | 450 | 75 |
+| Schooler pitch | 450 | 75 |
+| Elbow | 450 | 75 |
+| Wrist pitch | 570 | 95 |
+| Wrist yaw | 570 | 95 |
+| Wrist roll | 570 | 95 |
 
 ### 3.3 Kinematic layout (interpreted)
 
