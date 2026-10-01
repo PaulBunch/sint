@@ -74,8 +74,8 @@ Out of scope for this task:
 - [x] C2.7 **S2 fallback delta** (one short subsection): what changes if wrist pack returns to forearm + short belts (requirements that shrink/drop) → fallback in all documents in this section
 
 ### C3. COTS / open-hardware shortlist (URLs only in git)
-- [ ] C3.1 Motors + gearboxes: proximal (J1–J3) and distal (wrist pack on L2) — 2–4 each
-- [ ] C3.2 Drivers / FOC stacks (e.g. SimpleFOC-class, ODrive-class, vendor FOC boards) — open or documented protocols preferred
+- [x] C3.1 Motors + gearboxes: proximal (J1–J3) and distal (wrist pack on L2) — 2–4 each → [0005-cots-shortlist-motors-drivers.md](0005-cots-shortlist-motors-drivers.md)
+- [x] C3.2 Drivers / FOC stacks (e.g. SimpleFOC-class, ODrive-class, vendor FOC boards) — open or documented protocols preferred → same
 - [ ] C3.3 Encoders / feedback
 - [ ] C3.4 Central compute module candidates (SBC / MCU-SoM class) — sized for **L2** mount
 - [ ] C3.5 Connectors & power path (24 V class, dock contact *type* not final metal design)
