@@ -4478,3 +4478,74 @@ CubeMars,AK80-64-KV80,proximal_high_N,98,61.9,850,, ,24/48,7,37/75,,48,220,, ,64
 После вставки в shortlist имеет смысл сделать **Path A′ = CubeMars QDD** рядом с Fulling iSVD / SteadyWin, без отдельного проектирования G.
 
 ---
+**Bunch**
+
+Ты сможешь сам подобрать подходящие актуаторы и заполнить их данные в csv-таблицу?
+
+Общий каталог: https://steadywin-motor.com/collections/all
+Каталог моторов с планетарными редукторами: https://steadywin-motor.com/collections/planetary-reduction-series
+
+На страницах актуаторов детальные параметры актуаторов приведены в таблице, которая вставлена в виде картинки. Думаю, разработчики это сделали, чтобы создать барьеры для автоматического парсинга. Ты сможешь с справиться сам с чтением этих данных?
+
+---
+**Grok 4.5 Fast**
+
+Да — **частично справился**, но не через OCR картинок на Shopify.
+
+На `steadywin-motor.com` детальные таблицы часто **в изображениях**, текстовый парсинг страницы их не отдаёт. Цифры собраны из:
+
+- китайской витрины SteadyWin / manuals  
+- реселлеров с **текстовыми** таблицами (AIFITLAB, RCDrone, OpenELAB и т.п.)
+
+Где варианты драйвера (GDS/GDZ) расходятся по τ — в CSV берётся **типичная nominal** конфигурация; в `notes` помечено `driver_variant_dependent`.
+
+---
+
+### Подбор под sint (без своего G, moderate N)
+
+| Роль | Модель | N | τ rated (out) | Зачем |
+|------|--------|---|----------------|--------|
+| J3 / light prox | **GIM6010-8** | 8 | ~5 N·m (stall ~11) | Лучший budget QDD; ~388 g с драйвером |
+| Prox / J3 | **GIM8108-8** | 8 | ~7.5 N·m (stall ~22) | Ближе к нижней proximal-полосе |
+| Prox | **GIM8108-9** | 9 | ~9 N·m (stall ~22) | Как AK80-класс, дешевле CubeMars |
+| QDD mid | **GIM8108-6** | 6 | ~5.5 N·m | Более «прямой» привод |
+| Distal | **GIM4310-10** | 10 | ~2.0 N·m | Компакт Ø53, wrist/J4–J6 |
+| Distal light | **GIM3510-8** | 8 | ~1.0–1.7 N·m | Лёгкая кисть |
+
+**Не default MVP:** GIM*‑36 / *‑40 / *‑64 (N≥36) — как AK45-36.
+
+**Проксимальный 15–25 N·m continuous** одним GIM* не закрывается без более крупного SKU или нескольких осей с запасом peak; для ADR нижней границы **5–10 N·m** SteadyWin как раз силён по цене.
+
+---
+
+### Новые строки CSV
+
+```csv
+SteadyWin,GIM6010-8,j3_or_light_prox_qdd,80,40,388,,14pp,24,10.5,420,,5,252,0.44,26,8,FOC_optional;_stall_~11;_second_enc_opt;_CAN;_price_oom_70USD;_J_motor_side_if_listed;_driver_variant_dependent
+SteadyWin,GIM6010-8-48V,j3_or_light_prox_qdd,80,40,388,,14pp,48,2.8-3.8,280-322,,4.6-5.4,134-182,1.45,,8,FOC_optional;_stall_~17-18;_same_mech;_driver_variant_dependent
+SteadyWin,GIM8108-8,proximal_or_j3_qdd,92,55,396,,21pp,48,7,320,,7.5,336,0.67,46,8,FOC_optional;_stall_~22;_second_enc_opt;_CAN;_price_oom_85USD;_J_motor_side_approx
+SteadyWin,GIM8108-9,proximal_qdd,96,41.5,567,,21pp,24-36,5-15,230-440,,9,125-170,0.28,800,9,FOC_optional;_stall_~22;_MIT_or_SHS_driver_variants;_J_varies_by_source
+SteadyWin,GIM8108-6,j3_or_light_prox_qdd,96,41.5,567,,21pp,48,4,363,,5.5,192,0.73,,6,FOC_optional;_stall_~18;_more_QDD_ratio
+SteadyWin,GIM4310-10,distal_qdd,53,32-38,227,,14pp,24,2.3,228,,2.05,55,1.89,,10,FOC_optional;_stall_~5.6;_CAN;_price_oom_80USD;_compact_wrist
+SteadyWin,GIM3510-8,distal_light_qdd,46,51.5,260,,7pp,24,2.5-4.1,560-590,,1.0-1.7,60-98,0.48,,8,FOC_optional;_stall_~6;_dual_enc_opt;_ALU_or_steel_gear_by_listing
+SteadyWin,GIM8108-36,proximal_high_N,96,57,760,,21pp,24-48,4-9,56-60,,33-36,120-192,, ,36,N36_not_QDD_default;_stall_~100;_exoskeleton_class
+```
+
+Оговорки (как у CubeMars):
+
+- `torque_rated_nm` = **выход** после N  
+- `j_rotor` где есть — **motor-side**; на сустав \(\times N^2\)  
+- Комплектация **with/without driver** и second encoder — опции заказа  
+- Цифры **сводятся из нескольких источников**; перед покупкой сверить PDF/мануал выбранного драйвера
+
+---
+
+### Итог
+
+| Вопрос | Ответ |
+|--------|--------|
+| Сам подобрать и заполнить CSV? | **Да** — строки выше можно вставить |
+| Прочитать таблицы-картинки на сайте? | **Напрямую нет**; обошёл через manuals/реселлеров |
+| Достаточно для shortlist? | **Да** для Path A′ budget: GIM6010-8 + GIM8108-8/9 + GIM4310-10 |
+
+Дальше логично в shortlist поставить **SteadyWin как primary budget QDD**, CubeMars/iSVD — как performance/fallback, и один раз сверить RU-цены на 1 ось.
