@@ -4734,3 +4734,154 @@ shortlist: `docs/tasks/0005-cots-shortlist-motors-drivers.md`
 **Про осреднённые параметры:** в shortlist достаточно **таблицы envelopes** выше. Отдельный файл с «средними» по отобранным SKU имеет смысл **после** выбора семейства (SteadyWin vs CubeMars vs iSVD), иначе среднее по разношёрстным τ/массам введёт CAD в заблуждение.
 
 ---
+**Bunch**
+
+Я отметил задачи C3.1 и C3.2. Что делаем дальше? Продолжаем выбирать конкретный актуатор или переходим к подбору следующего типа комплектующего по списку?
+
+```md
+### C3. COTS / open-hardware shortlist (URLs only in git)
+- [x] C3.1 Motors + gearboxes: proximal (J1–J3) and distal (wrist pack on L2) — 2–4 each → [0005-cots-shortlist-motors-drivers.md](0005-cots-shortlist-motors-drivers.md)
+- [x] C3.2 Drivers / FOC stacks (e.g. SimpleFOC-class, ODrive-class, vendor FOC boards) — open or documented protocols preferred → same
+- [ ] C3.3 Encoders / feedback
+- [ ] C3.4 Central compute module candidates (SBC / MCU-SoM class) — sized for **L2** mount
+- [ ] C3.5 Connectors & power path (24 V class, dock contact *type* not final metal design)
+- [ ] C3.6 Transmission COTS: through-elbow **belt and/or short cable**, idlers, rollers, **pretension options** (examples); dual-hinge bearings/fasteners class; bevel or printable gear options for wrist
+- [ ] C3.7 Reject/avoid list (sealed-only pods, industrial-only, V3/V5 fails)
+- [ ] C3.8 Optional: one paragraph **S2 fallback** shortlist reuse (same motors/drivers; different X/T layout)
+```
+
+С учётом [0005-class-requirements-sensors.md](docs/tasks/0005-class-requirements-sensors.md). Если нужно перечитай эти требования и файл с задачами.
+
+---
+**Grok 4.5 Fast**
+
+**Следующий шаг: C3.3 Encoders / feedback** — не углубление в один конкретный SKU мотора.
+
+### Почему не «выбрать один актуатор» сейчас
+
+C3.1/C3.2 уже дают **семьи + joint map** (J1 сильнее, J2=J3 пара, wrist отдельно). Жёсткий выбор «покупаем только GIM8115-9» лучше после:
+
+- одной оси на стенде (ток, шум, backdrive), или  
+- хотя бы C3.3 + черновика шины (24 vs 48),
+
+иначе риск купить модуль, у которого **моторный энкодер есть, а joint-output absolute — нет**, а по C2.4 это как раз Phase‑1 цель.
+
+Параллельно можно **заложить 1 ось** (например 1× GIM6010‑8 + драйвер) как smoke — это не закрытие C3 и не freeze BOM.
+
+---
+
+### Почему именно C3.3
+
+Из `0005-class-requirements-sensors.md`:
+
+| Стадия | Позиция | Сила |
+|--------|---------|------|
+| Smoke | motor encoder | ток драйвера |
+| MVP interim | motor all axes + **joint abs хотя бы на media-heavy** (elbow/wrist) | ток |
+| Phase 1 target | **absolute joint output J1–J6** (+ motor где есть) | ток; F/T не must |
+
+QDD (SteadyWin / CubeMars / iSVD) уже закрывают **E‑M1/E‑M2** (motor-side). C3.3 должен закрыть **дыры**:
+
+1. Что **уже внутри** модуля (магнитный on-driver, dual/secondary) — таблица «SKU → encoder story».  
+2. **Отдельные** absolute joint-output (магнитные on-axis / through-bore / AS504x-class и т.п.) для осей с через-локоть media.  
+3. 2–4 семьи incremental **и** 2–4 absolute с URL, DFAA-монтаж, без sealed-only lock-in.
+
+Без этого C3.4 (compute) и C3.6 (тросы/ремни) хуже стыкуются с «нужен ли observer / second encoder на выходе».
+
+---
+
+### Порядок дальше (предложение)
+
+```text
+C3.3 Encoders          ← сейчас
+C3.4 Compute on L2     (шина/RT уже намечены в C2.5)
+C3.5 Connectors/power  (тип контакта dock, не финальный металл)
+C3.6 Transmission COTS
+C3.7 Reject list
+C3.8 S2 one-liner (опционально)
+→ C4 matrix → C5 BOM risk → C6 ADR
+```
+
+C3.5 можно чуть сдвинуть, если хотите быстрее compute; **C3.3 логичнее сразу после моторов**.
+
+---
+
+### Формат deliverable C3.3
+
+Документ вроде `docs/tasks/0005-cots-shortlist-encoders.md`:
+
+1. **On-module** (из shortlist моторов): GIM* / AK* / iSVD — motor / dual / secondary, что считать joint abs, а что нет.  
+2. **Add-on absolute joint-output** — 2–4 COTS (магнитные, SPI/ABI, размеры под Ø53–96).  
+3. **MVP policy:** smoke = motor only; first full arm = + joint abs на elbow+wrist; Phase 1 = all DoF.  
+4. **Out:** MoCap, обязательные joint torque cells, industrial-only.
+
+---
+
+**Итог:** отмечаем C3.1/C3.2, **не замораживаем покупку всего комплекта**, переходим к **C3.3**. Если нужно — могу сразу набросать структуру и черновик shortlist энкодеров под ваши QDD-кандидаты.
+
+---
+**2026-10-05**
+---
+
+---
+**Bunch**
+
+Хорошо! 
+
+Вопросы:
+1. Марка и модель энкодеров из этой секции зависит от выбранной марки мотора или эти энкодеры не зависят от моторов, они устанавливаются непосредственно на выходное звено?
+2. Для этих энкодеров нужен независимый канал на плате управления?
+3. Имеет смысл делать акцент на типе энкодера: механический, магнитный, и т.п.?
+4. Мы ориентируемся на абсолютные энкодеры с учётом опыта LIMS?
+
+Подготовь черновик shortlist для энекодоров.
+
+---
+**Grok 4.5 Fast**
+
+### Ответы на вопросы
+
+**1. Зависят ли энкодеры от марки мотора?**  
+**Нет, не обязательно.** Есть два слоя:
+
+| Слой | Где сидит | Зависимость от мотора |
+|------|-----------|------------------------|
+| **Motor-side** (для FOC) | На роторе / в модуле драйвера | Часто **встроен** в QDD (SteadyWin, CubeMars, iSVD) — марка «идёт с мотором» |
+| **Joint-output absolute** (цель Phase 1) | На **выходном валу сустава** (после редуктора / на звене) | **Независим** от бренда мотора: магнит + IC или модуль на валу звена |
+
+Для S4 с through-elbow media угол мотора ≠ угол сустава → joint-output энкодер — отдельная деталь конструкции, не «тот же чип что в драйвере».
+
+**2. Нужен ли отдельный канал на плате управления?**  
+- **On-module motor encoder** — обычно уже заведён в драйвер модуля; на spine уходит уже **угол/скорость по CAN**, отдельный SPI на центральный compute не обязателен.  
+- **Внешний joint absolute** — да: отдельный интерфейс (**SPI / SSI / ABI / иногда RS-485**) на joint MCU или на L2 compute. Это не «ещё один CAN-мотор», а датчик положения звена.  
+- Path B (сырой BLDC + ODrive/SimpleFOC): motor encoder **обязан** быть на FOC-плате (SPI/ABI).
+
+**3. Акцент на типе (механический / магнитный / …)?**  
+**Да, кратко и нормативно:**
+
+| Тип | Для sint |
+|-----|----------|
+| **Магнитный on-axis** (Hall/AMR + diametric magnet) | **Default** — контактless, DFAA, дёшево, hollow-friendly |
+| **Ёмкостный модульный** (CUI AMT*) | Опция, если нужен готовый hub на вал |
+| **Оптический** | Не default (пыль, юстировка, цена) |
+| **Потенциометр / механический** | Out для DoF |
+
+**4. Абсолютные, как у LIMS?**  
+**Да.** C2.4 / LIMS3: цель — **absolute на joint output** (и motor-side где есть).  
+Smoke: только motor encoder.  
+MVP interim: + joint abs хотя бы на **elbow + wrist** (длинный compliant path).  
+Phase 1: joint abs на **J1–J6**.
+
+Важно: secondary encoder у SteadyWin часто **только «запомнить single-turn после power-off»**, а не полноценный независимый joint metrology для cascade — не путать с E-M3.
+
+---
+
+### Черновик: `docs/tasks/0005-cots-shortlist-encoders.md`
+
+---
+
+**Краткий вывод:** joint-output absolute **не привязаны к марке мотора**; для них нужен **свой канал** (SPI/SSI и т.д.), если они не «зашиты» в QDD; тип по умолчанию — **магнитный absolute**; ориентация на LIMS3 — **да**, с поэтапным MVP.  
+
+Можете вставить файл в `docs/tasks/` и отметить C3.3 как draft; при необходимости следующим шагом сузим до «AS5047P + магнит» vs «MT6701» под ваш L2 MCU.
+
+---
